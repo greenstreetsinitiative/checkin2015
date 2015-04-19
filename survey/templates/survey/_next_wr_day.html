@@ -35,8 +35,11 @@
 {% elif type == 'next_wr_day' %}
 
 <p style="font-weight:300; font-size: 18px;">
-	<strong>The next Walk/Ride Day is {{ date }}.</strong> You will be able to check-in from<br>
-	 <span class="date" style="display: inline-block;">{{ open }}</span> through <span class="date" style="display: inline-block;">{{ close }}</span> <span class="highlight"><a href="http://gogreenstreets.org/civicrm/profile/create?gid=14&reset=1">Get monthly updates by clicking here to join our newsletter</a></span>.</p>
+	<strong>The next Walk/Ride Day is <span class="date">{{ date }}</span></strong> You will be able to check-in from<br>
+	 <span class="date" style="display: inline-block;">{{ open }}</span> through <span class="date" style="display: inline-block;">{{ close }}</span>
+
+	 <p><span class="highlight"><a href="http://gogreenstreets.org/civicrm/profile/create?gid=14&reset=1">Get monthly updates by clicking here to join our newsletter</a></span>.</p>
+	 </p>
 
 	<p class="lead"><img src="{% static 'img/car-24.png' %}" height="32" width="32"><img src="{% static 'img/school-24.png' %}" height="32" width="32"><img src="{% static 'img/pitch-24.png' %}" height="32" width="32"><img src="{% static 'img/bicycle-24.png' %}" height="32" width="32"><img src="{% static 'img/rail-24.png' %}" height="32" width="32"><img src="{% static 'img/warehouse-24.png' %}" height="32" width="32"><img src="{% static 'img/scooter-24.png' %}" height="32" width="32"></p>
 	<p class="lead">Everyone is welcome to check in </p>
