@@ -1,6 +1,8 @@
 Django==1.8
+django-aggregate-if==0.5
 django-suit==0.2.12
 docopt==0.4.0
 mandrill==1.0.57
 psycopg2==2.6
 requests==2.6.0
+six==1.9.0

@@ -15,6 +15,14 @@ urlpatterns = patterns('',
     url(r'^checkin/$', 'survey.views.add_checkin', name='commuterform'),
     url(r'^checkin/complete/$', TemplateView.as_view(template_name='survey/thanks.html'), name='complete'),
 
+    # Leaderboard
+    url(r'^leaderboard/$', 'leaderboard.views.latest_leaderboard', name="all"),
+    url(r'^leaderboard/small/$', 'leaderboard.views.latest_leaderboard_small', name="small"),
+    url(r'^leaderboard/medium/$', 'leaderboard.views.latest_leaderboard_medium', name="medium"),
+    url(r'^leaderboard/large/$', 'leaderboard.views.latest_leaderboard_large', name="large"),
+    url(r'^leaderboard/largest/$', 'leaderboard.views.latest_leaderboard_largest', name="largest"),
+
+    # Admin
     url(r'^admin/', include(admin.site.urls))
 
 

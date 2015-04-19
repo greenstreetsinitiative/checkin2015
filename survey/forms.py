@@ -81,16 +81,19 @@ class LegForm1(ModelForm):
     fields = ['mode', 'duration', 'day', 'direction']
 
   def __init__(self, *args, **kwargs):
-      super(LegForm1, self).__init__(*args, **kwargs)
+    super(LegForm1, self).__init__(*args, **kwargs)
 
-      self.fields['mode'].widget.attrs['class'] = 'form-control'
-      self.fields['duration'].widget.attrs['class'] = 'form-control'
-      self.fields['day'].initial = 'n'
-      self.fields['direction'].initial = 'tw'
-      self.fields['day'].widget = HiddenInput()
-      self.fields['direction'].widget = HiddenInput()
-      self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
-      self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].label = "How you traveled"
+    self.fields['duration'].label = "Time in minutes"
+
+    self.fields['mode'].widget.attrs['class'] = 'form-control'
+    self.fields['duration'].widget.attrs['class'] = 'form-control'
+    self.fields['day'].initial = 'n'
+    self.fields['direction'].initial = 'tw'
+    self.fields['day'].widget = HiddenInput()
+    self.fields['direction'].widget = HiddenInput()
+    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
 
 class LegForm2(ModelForm):
 
@@ -99,16 +102,19 @@ class LegForm2(ModelForm):
     fields = ['mode', 'duration', 'day', 'direction']
 
   def __init__(self, *args, **kwargs):
-      super(LegForm2, self).__init__(*args, **kwargs)
+    super(LegForm2, self).__init__(*args, **kwargs)
 
-      self.fields['mode'].widget.attrs['class'] = 'form-control'
-      self.fields['duration'].widget.attrs['class'] = 'form-control'
-      self.fields['day'].initial = 'n'
-      self.fields['direction'].initial = 'fw'
-      self.fields['day'].widget = HiddenInput()
-      self.fields['direction'].widget = HiddenInput()
-      self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
-      self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].label = "How you traveled"
+    self.fields['duration'].label = "Time in minutes"
+
+    self.fields['mode'].widget.attrs['class'] = 'form-control'
+    self.fields['duration'].widget.attrs['class'] = 'form-control'
+    self.fields['day'].initial = 'n'
+    self.fields['direction'].initial = 'fw'
+    self.fields['day'].widget = HiddenInput()
+    self.fields['direction'].widget = HiddenInput()
+    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
 
 class LegForm3(ModelForm):
 
@@ -117,16 +123,19 @@ class LegForm3(ModelForm):
     fields = ['mode', 'duration', 'day', 'direction']
 
   def __init__(self, *args, **kwargs):
-      super(LegForm3, self).__init__(*args, **kwargs)
+    super(LegForm3, self).__init__(*args, **kwargs)
 
-      self.fields['mode'].widget.attrs['class'] = 'form-control'
-      self.fields['duration'].widget.attrs['class'] = 'form-control'
-      self.fields['day'].initial = 'w'
-      self.fields['direction'].initial = 'tw'
-      self.fields['day'].widget = HiddenInput()
-      self.fields['direction'].widget = HiddenInput()
-      self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
-      self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].label = "How you traveled"
+    self.fields['duration'].label = "Time in minutes"
+
+    self.fields['mode'].widget.attrs['class'] = 'form-control'
+    self.fields['duration'].widget.attrs['class'] = 'form-control'
+    self.fields['day'].initial = 'w'
+    self.fields['direction'].initial = 'tw'
+    self.fields['day'].widget = HiddenInput()
+    self.fields['direction'].widget = HiddenInput()
+    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
 
 class LegForm4(ModelForm):
 
@@ -135,16 +144,19 @@ class LegForm4(ModelForm):
     fields = ['mode', 'duration', 'day', 'direction']
 
   def __init__(self, *args, **kwargs):
-      super(LegForm4, self).__init__(*args, **kwargs)
+    super(LegForm4, self).__init__(*args, **kwargs)
 
-      self.fields['mode'].widget.attrs['class'] = 'form-control'
-      self.fields['duration'].widget.attrs['class'] = 'form-control'
-      self.fields['day'].initial = 'w'
-      self.fields['direction'].initial = 'fw'
-      self.fields['day'].widget = HiddenInput()
-      self.fields['direction'].widget = HiddenInput()
-      self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
-      self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].label = "How you traveled"
+    self.fields['duration'].label = "Time in minutes"
+
+    self.fields['mode'].widget.attrs['class'] = 'form-control'
+    self.fields['duration'].widget.attrs['class'] = 'form-control'
+    self.fields['day'].initial = 'w'
+    self.fields['direction'].initial = 'fw'
+    self.fields['day'].widget = HiddenInput()
+    self.fields['direction'].widget = HiddenInput()
+    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
 
 MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm1, extra=1, max_num=10, can_delete=True)
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm2, extra=1, max_num=10, can_delete=True)

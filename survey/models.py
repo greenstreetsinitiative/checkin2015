@@ -15,35 +15,12 @@ class Month(models.Model):
         ordering = ['wr_day']
 
     def __unicode__(self):
-        return self.wr_day.strftime('%B %Y')
+        return unicode(self.wr_day.strftime('%B %Y'))
 
     @property
     def short_name(self):
         return self.wr_day.strftime(u'%b\' %y'.encode('utf-8')).decode('utf-8')
     
-
-# Employers
-# class Employer(models.Model):
-#     """ Greens Streets Initiative Employer list """
-#     name = models.CharField("Employer name", max_length=200)
-#     nr_employees = models.IntegerField("Number of employees", null=True, blank=True)
-#     active = models.BooleanField("2014 Challenge", default=False)
-#     size_cat = models.ForeignKey(EmplSizeCategory, null=True, blank=True, verbose_name=u'Size Category')
-#     sector = models.ForeignKey(EmplSector, null=True, blank=True)
-#     is_parent = models.BooleanField(default=False)
-#     active2015 = models.BooleanField("2015 Challenge", default=False)
-
-#     class Meta:
-#         verbose_name = _('Employer')
-#         verbose_name_plural = _('Employers')
-#         ordering = ['name']
-
-#     def __unicode__(self):
-#         return self.name
-
-#     @property
-#     def teams(self):
-#         return self.team_set.all()
 class Employer(models.Model):
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)
@@ -53,7 +30,7 @@ class Employer(models.Model):
         ordering = ['name']
 
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 # Teams
 class Team(models.Model):
     name = models.CharField("Team", max_length=150)
@@ -61,7 +38,7 @@ class Team(models.Model):
     nr_members = models.PositiveSmallIntegerField(default=1)
 
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 
 # Checkins
 class Commutersurvey(models.Model):
@@ -97,7 +74,7 @@ class Commutersurvey(models.Model):
     calories_total = models.FloatField(blank=True, null=True, default=0.0) # calories burned on w/r day
 
     def __unicode__(self): 
-        return u'%s' % (self.id)  
+        return unicode(self.id)
 
     def calculate_difference(self):
         legs = self.leg_set.only('carbon','calories','day').all()
@@ -173,8 +150,8 @@ class Mode(models.Model):
     speed = models.FloatField(blank=True, null=True)
     green = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.name
+    def __unicode__(self):
+        return unicode(self.name)
 
 # Part of a commute
 class Leg(models.Model):
@@ -229,5 +206,5 @@ class Leg(models.Model):
         self.checkin.save() # resave the related survey (recalculates carbon and calories)
 
     def __unicode__(self):
-        return u'%s' % (self.mode) 
+        return unicode(self.mode) 
 

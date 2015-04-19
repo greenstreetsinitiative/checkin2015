@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}Leaderboard{% endblock %}
+
+
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'libs/chosen/chosen.min.css' %}">
+{% endblock %}
+
+{% block javascript %}
+<!-- <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script> -->
+{% endblock %}
+
+{% block body %}
+
+{% load absolutely %}
+
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <center><h1>Walk/Ride Day 2015 <br>Corporate Challenge Leaderboard</h1>
+    </div>
+</div>
+
+<center><h3>Total impact across everyone as of {% now "SHORT_DATETIME_FORMAT" %}</h3></center>
+
+<div class="row totals">
+  <div class="col-sm-4">
+    <p class="lead">Total Check-Ins</p>
+    <p class="total">{{ totals.total_checkins|floatformat:0|default:"0"}}</p>
+  </div>
+  <div class="col-sm-4">
+    <p class="lead">Total Carbon Saved</p>
+    <p class="total">{{ totals.total_carbon|absolutely|floatformat:0|default:"0" }} kg CO<sub>2</sub></p>
+  </div>
+  <div class="col-sm-4">
+    <p class="lead">Total Calories Expended</p>
+    <p class="total">{{ totals.total_calories|floatformat:0|default:"0"}} kcal</p>
+  </div>
+</div>
+
+<div class="row" style="padding: 15px 0px;">
+  <center>
+  <a class="lb-button alt" href="{% url 'all' %}">All companies</a>
+  <a class="lb-button" href="{% url 'small' %}">Small (less than 50)</a>
+  <a class="lb-button" href="{% url 'medium' %}">Medium (51 to 300)</a>
+  <a class="lb-button" href="{% url 'large' %}">Large (301 to 2000)</a>
+  <a class="lb-button" href="{% url 'largest' %}">Largest (2001+ employees)</a>
+  </center>
+</div>
+
+<div class="row stats" style="padding: 15px 0px;">
+  <div class="col-sm-3">
+    <h4>Staff Participation</h4>
+    <ol class="lbrank">
+    {% for key, value in ranks.percent_participation %}
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+    {% endfor %}
+    </ol>
+  </div>
+  <div class="col-sm-3">
+    <h4>Green Commutes</h4>
+    <ol class="lbrank">
+    {% for key, value in ranks.percent_green_commuters %}
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+    {% endfor %}
+    </ol>
+  </div>
+  <div class="col-sm-3">
+    <h4>Greener Switches</h4>
+    <ol class="lbrank">
+    {% for key, value in ranks.percent_green_switches %}
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+    {% endfor %}
+    </ol>
+  </div>
+  <div class="col-sm-3">
+    <h4>Healthier Switches</h4>
+    <ol class="lbrank">
+    {% for key, value in ranks.percent_healthy_switches %}
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+    {% endfor %}
+    </ol>
+  </div>
+
+
+
+</div>
+{% endblock %}
