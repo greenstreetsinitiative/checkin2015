@@ -20,7 +20,7 @@ class Month(models.Model):
     @property
     def short_name(self):
         return self.wr_day.strftime(u'%b\' %y'.encode('utf-8')).decode('utf-8')
-    
+
 class Employer(models.Model):
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)
@@ -37,8 +37,11 @@ class Team(models.Model):
     parent = models.ForeignKey('Employer')
     nr_members = models.PositiveSmallIntegerField(default=1)
 
+    class Meta:
+        ordering = ['parent__name', 'name']
+
     def __unicode__(self):
-        return unicode(self.name)
+        return unicode(self.parent.name + ' - ' + self.name)
 
 # Checkins
 class Commutersurvey(models.Model):
@@ -67,13 +70,13 @@ class Commutersurvey(models.Model):
     carbon_change = models.FloatField(blank=True, null=True, default=0.0)
     calorie_change = models.FloatField(blank=True, null=True, default=0.0)
     change_type = models.CharField(max_length=1, null=True, blank=True, choices=CHANGE_CHOICES)
-    
+
     # walk/ride day information that will be calculated
     already_green = models.BooleanField(default=False) # if normal day was green
     carbon_savings = models.FloatField(blank=True, null=True, default=0.0) # assuming normal day is driving
     calories_total = models.FloatField(blank=True, null=True, default=0.0) # calories burned on w/r day
 
-    def __unicode__(self): 
+    def __unicode__(self):
         return unicode(self.id)
 
     def calculate_difference(self):
@@ -142,7 +145,7 @@ class Commutersurvey(models.Model):
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
 
-# Information on different modes of transportation 
+# Information on different modes of transportation
 class Mode(models.Model):
     name = models.CharField("Mode", max_length=35)
     met = models.FloatField(blank=True, null=True)
@@ -206,5 +209,5 @@ class Leg(models.Model):
         self.checkin.save() # resave the related survey (recalculates carbon and calories)
 
     def __unicode__(self):
-        return unicode(self.mode) 
+        return unicode(self.mode)
 

@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<center><h3>Total impact across everyone as of {% now "SHORT_DATETIME_FORMAT" %}</h3></center>
+<center><h3>{% now "SHORT_DATETIME_FORMAT" %}</h3></center>
 
 <div class="row totals">
   <div class="col-sm-4">
@@ -22,11 +22,11 @@
     <p class="total">{{ totals.total_checkins|floatformat:0|default:"0"}}</p>
   </div>
   <div class="col-sm-4">
-    <p class="lead">Total Carbon Saved</p>
-    <p class="total">{{ totals.total_carbon|absolutely|floatformat:0|default:"0" }} kg CO<sub>2</sub></p>
+    <p class="lead">Total CO<sub>2</sub> Saved</p>
+    <p class="total">{{ totals.total_carbon|absolutely|floatformat:0|default:"0" }} kg</p>
   </div>
   <div class="col-sm-4">
-    <p class="lead">Total Calories Expended</p>
+    <p class="lead">Total Calories Burned</p>
     <p class="total">{{ totals.total_calories|floatformat:0|default:"0"}} kcal</p>
   </div>
 </div>
