@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load survey_extras %}
+
+{% load i18n %}
+
+{% block title %}Welcome!{% endblock %}
+
+
+{% block body %}
+<section class="front-page">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h1>Walk/Ride Day 2015<br>Check-In</h1>
+
+        <p class="wrday">{% wr_day %}</p>
+        
+        
+        <p><strong>Why?</strong>Your completion of this short survey for each Walk/Ride Day (the last Friday of every month) helps us see the impact of our initiative and only takes a few quick steps. After filling it out, you will get confirmation for Retail Partners' rewards and <strong>be entered into an online raffle</strong>! </p>
+        
+
+
+        <p><strong>And, if your company is participating in the <a href="http://gogreenstreets.org/2014-walkride-day-corporate-challenge">Walk/Ride Day Corporate Challenge</a>,</strong> your check-ins from April through October will count towards your company's standings, and <strong>make you eligible for additional raffle prizes</strong>.</p>
+
+        
+        <hr class="lite">
+        <p>Your check-in will be faster if you use the same computer and web browser next month again.</p>
+        <p class="lead">Thank you for checking in and for traveling sustainably!</p>
+      </div>
+    </div>
+</section>
+
+{% endblock %}

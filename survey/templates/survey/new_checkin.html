@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}Check-in your commute to work!{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
+
+<!-- <script src="{% static 'libs/jquery.json-2.4.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'libs/simpleStorage.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'libs/moment.min.js' %}" type="text/javascript"></script> -->
+<script src="{% static 'libs/jquery.formset.js' %}" type="text/javascript"></script>
+
+<script src="{% static 'js/form.js' %}" type="text/javascript"></script>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+  <center>
+    <h1>Walk/Ride Day Check-In</h1>
+    <h2>{{ wr_day }}</h2>
+    <p class="lead">Check in on the last Friday of every month. The Corporate Challenge takes place April through October.</p>
+  </center>
+</div>
+<hr class="green-big">
+
+<form name="form" method="post" action="{{request.path}}" class="form-horizontal">
+  <fieldset>
+  {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <div class="col-sm-3">
+          {{ field.label_tag }}
+        </div>
+        <div class="col-sm-9">
+          {{ field }}
+          {% if field.errors %}
+            <div class="help-block">
+            {% for error in field.errors %}
+              {{ error|escape }}<br>
+            {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        
+      </div>
+    {% endfor %}
+
+    <div>       
+      <label>This Could Be You...</label>
+      <div class="clearfix">
+        <div id="commute-distance"></div>
+        <div id="commute-distance3"></div>
+        <div id="commute-distance2"></div>
+      </div>
+      <div id="map-canvas" class="clearfix"></div>
+      <p class="commuteexamples"><strong>For illustrative purposes only.</strong> These routes are automatically generated from the locations typed above.</p> 
+    </div>    
+    <hr class="green-big">
+    <p class="center">Please enter all parts (legs) of your commute. You may also include time spent walking (e.g. walking from the bus stop to a connecting train), especially if it is 5 minutes or more.</p>
+
+    <div class="row to-work commute">
+      <div class="col-sm-6">
+        <div class="col-sm-12 normal-day">
+        <center><h3>Normal Commute</h3>
+        <h4>To Work</h4><hr class="green">
+        </center>
+        {% for form in NormalTW_formset %}
+            <div id="{{ form.prefix }}-row" class="leggedrow">
+              <hr class="lite">
+              {{ form }}
+            </div>
+        {% endfor %}
+        <hr>
+      </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="col-sm-12 wr-day">
+        <center><h3>Walk/Ride Day</h3>
+        <h4>To Work</h4>
+        <hr class="green">
+        </center>
+        {% for form in WRTW_formset %}
+            <div id="{{ form.prefix }}-row" class="leggedrow">
+              <hr class="lite">
+              {{ form }}
+            </div>
+        {% endfor %}
+        <hr>
+        </div>
+      </div>
+    </div>
+    <div class="row from-work commute">
+      <div class="col-sm-6">
+      <div class="col-sm-12 normal-day">
+        <center><h3>Normal Commute</h3>
+        <h4>From Work</h4><hr class="green"></center>
+        {% for form in NormalFW_formset %}
+            <div id="{{ form.prefix }}-row" class="leggedrow">
+              <hr class="lite">
+              {{ form }}
+            </div>
+        {% endfor %}
+      <hr>
+      </div>
+      </div>
+      <div class="col-sm-6">
+      <div class="col-sm-12 wr-day">
+        <center><h3>Walk/Ride Day</h3>
+        <h4>From Work</h4><hr class="green"></center>
+        {% for form in WRFW_formset %}
+            <div id="{{ form.prefix }}-row" class="leggedrow">
+              <hr class="lite">
+              {{ form }}
+            </div>
+        {% endfor %}
+      <hr>
+      </div>
+      </div>
+    </div>
+    <hr class="green-big">
+    {% for field in extra_form %}
+      <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <div class="col-sm-3">
+          {{ field.label_tag }}
+        </div>
+        <div class="col-sm-9">
+          {{ field }}
+          {% if field.errors %}
+            <div class="help-block">
+            {% for error in field.errors %}
+              {{ error|escape }}<br>
+            {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        
+      </div>
+    {% endfor %}
+
+    {{ NormalTW_formset.management_form }}
+    {{ NormalFW_formset.management_form }}
+    {{ WRTW_formset.management_form }}
+    {{ WRFW_formset.management_form }}
+
+    <center><button class="cool-button button--ujarak" type="submit" name="action" value="action">
+      Submit your checkin!
+    </button></center>
+
+  </fieldset>
+</form>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}500 Internal Server Error{% endblock %}
+
+{% block body %}
+
+<section>
+	<center><h3 style="color:#999;">We're sorry, something went wrong...</h3>
+    <p><a href="{% url "home" %}" class="btn btn-large btn-warning">Go back to the Walk/Ride Day checkin page</a></p></center>
+</section>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}404 Not Found{% endblock %}
+
+{% block body %}
+
+<section>
+	<center><h3 style="color:#999;">We're sorry, we couldn't find what you were looking for.</h3>
+    <p><a href="{% url "home" %}" class="btn btn-large btn-warning">Go back to the Walk/Ride Day checkin page</a></p></center>
+</section>
+
+{% endblock %}
