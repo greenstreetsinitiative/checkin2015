@@ -26,12 +26,12 @@ def export_as_csv(modeladmin, request, queryset):
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s.csv' % unicode(opts).replace('.', '_')
     writer = csv.writer(response)
-    
+
     field_names = [field.name for field in opts.fields]
-    
+
     # Write a first row with header information
     writer.writerow(field_names)
-    
+
     # Write data rows
     for obj in queryset:
         try:
@@ -51,9 +51,9 @@ class EmployerAdmin(admin.ModelAdmin):
 
 class CommutersurveyAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, 
+        (None,
             {'fields': ['wr_day_month', 'name', 'email', 'employer', 'share', 'comments', ]}),
-        ('Commute', 
+        ('Commute',
             {'fields': ['home_address', 'work_address']})
     ]
     list_display = ('id', 'wr_day_month', 'email', 'name', 'share', 'employer', 'home_address', 'work_address', 'carbon_change', 'calorie_change' )
@@ -71,8 +71,8 @@ class LegAdmin(admin.ModelAdmin):
         qs = super(LegAdmin, self).get_queryset(request)
         return qs.filter(commutersurvey__employer__active2015=True)
 
-class MonthsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'wr_day', 'open_checkin', 'close_checkin', 'short_name']
+class MonthAdmin(admin.ModelAdmin):
+    list_display = ['id', 'wr_day', 'open_checkin', 'close_checkin']
     list_editable = ['wr_day', 'open_checkin', 'close_checkin']
     actions = [export_as_csv]
 
@@ -95,7 +95,7 @@ class ModeAdmin(admin.ModelAdmin):
 
 admin.site.register(Commutersurvey, CommutersurveyAdmin)
 admin.site.register(Employer, EmployerAdmin)
-admin.site.register(Month, MonthsAdmin)
+admin.site.register(Month, MonthAdmin)
 admin.site.register(Leg, LegAdmin)
 admin.site.register(Mode, ModeAdmin)
 admin.site.register(Team, TeamAdmin)
