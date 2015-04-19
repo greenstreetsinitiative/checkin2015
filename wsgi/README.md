@@ -1,0 +1,1 @@
+This will be Apache's document root on OpenShift.
