@@ -13,7 +13,7 @@ except IOError:
 # line, it's possible required libraries won't be in your searchable path
 #
 
-application = checkin.wsgi.application
+application = checkin2015.wsgi.application
 
 #
 # Below for testing only
