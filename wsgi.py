@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import os
-import checkin.wsgi
+import checkin2015.wsgi
 
 virtenv = os.environ['OPENSHIFT_PYTHON_DIR'] + '/virtenv/'
 virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
