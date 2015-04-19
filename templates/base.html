@@ -13,9 +13,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
-        
+
     <!-- geotags -->
-    <meta name="DC.title" content="to school"> 
+    <meta name="DC.title" content="to school">
     <meta name="geo.placename" content="Boston">
     <meta name="geo.position" content="42.34;-71.08">
     <meta name="geo.region" content="US-MA">
@@ -33,31 +33,31 @@
     <meta itemprop="name" content="Green Streets Walk/Ride Day Check-in">
     <meta itemprop="description" content="Walk/Ride Days, which occur on the last Friday of every month, encourage and inspire people everywhere to go green by walking, bicycling, and using public transit as they travel to and from work, school, or other appointments.">
     <meta itemprop="image" content="http://gogreenstreets.org/sites/all/themes/vendor/theme525/images/header-banner.png">
-    
-    
+
+
     <link rel="stylesheet" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}" type="text/css" charset="utf-8" />
     <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300,400,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Martel+Sans:300,400,800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+
 
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/static/css/ie8.css">
     <![endif]-->
     {% block style %}{% endblock %}
-  
+
 
 </head>
 <body>
     <div id="fb-root"></div>
-    
+
 
     <div>
     <center><a href="http://gogreenstreets.org/" title="Green Streets Initiative" target="_blank"><img src="{% static 'img/header-banner.png' %}" width="1000" height="100" alt="Green Streets Initiative"></a></center>
     </div>
 
-<hr>  
+<hr>
     <div class="main container {{ LANGUAGE_CODE }}">
 
     {% block pageheader %}{% endblock %}
@@ -79,21 +79,20 @@
             <li><div class="fb-like" data-href="http://checkin.gogreenstreets.org" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false" style="width: 119px;"></div></li>
           </ul>
       </div>
-    </div> 
+    </div>
     </section>
 
     <footer class="footer">
         <p>
             {% trans "Questions? Please contact" %} <a class="nowrap" href="mailto:info@GoGreenStreets.org?subject=Walk/Ride Day Check-in Question">info@GoGreenStreets.org</a><br />
             &copy; <a href="http://www.gogreenstreets.org" title="Green Streets Initiative">Green Streets Initiative</a> 2015
-        </p>    
+        </p>
     </footer>
-    
+
     </div>
 
     <!-- JavaScripts -->
     <script src="{% static 'libs/jquery-1.11.0.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'libs/chosen/chosen.jquery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'libs/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
 
     {% block javascript %}{% endblock %}
@@ -128,6 +127,6 @@
       })();
     </script>
 
-    
+
 
 </body></html>

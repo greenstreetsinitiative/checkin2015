@@ -4,16 +4,6 @@
 
 {% block title %}Leaderboard{% endblock %}
 
-
-
-{% block style %}
-<link rel="stylesheet" href="{% static 'libs/chosen/chosen.min.css' %}">
-{% endblock %}
-
-{% block javascript %}
-<!-- <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script> -->
-{% endblock %}
-
 {% block body %}
 
 {% load absolutely %}
@@ -56,7 +46,7 @@
     <h4>Staff Participation</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_participation %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
     {% endfor %}
     </ol>
   </div>
@@ -64,7 +54,7 @@
     <h4>Green Commutes</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_green_commuters %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
     {% endfor %}
     </ol>
   </div>
@@ -72,7 +62,7 @@
     <h4>Greener Switches</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_green_switches %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
     {% endfor %}
     </ol>
   </div>
@@ -80,7 +70,7 @@
     <h4>Healthier Switches</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_healthy_switches %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li> 
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
     {% endfor %}
     </ol>
   </div>
