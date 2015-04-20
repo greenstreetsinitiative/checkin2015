@@ -21,6 +21,10 @@ class Month(models.Model):
     def short_name(self):
         return self.wr_day.strftime(u'%b\' %y'.encode('utf-8')).decode('utf-8')
 
+    @property
+    def month(self):
+        return self.wr_day.strftime(u'%B %Y'.encode('utf-8')).decode('utf-8')
+
 class Employer(models.Model):
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)

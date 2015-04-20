@@ -18,6 +18,9 @@ from datetime import date
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse, HttpResponseRedirect
+
 # Create your views here.
 def add_checkin(request):
 
@@ -58,6 +61,16 @@ def add_checkin(request):
                 leg_formset_WRTW.save()
                 leg_formset_WRFW.save()
 
+                # very simple email sending - replace using Mandrill API later
+                name = commutersurvey.name or 'Supporter'
+                subject = 'Walk/Ride Day ' + commutersurvey.wr_day_month.month + ' Checkin'
+                message_html = '<p>Dear ' + name +',</p><p>Thank you for checking in your Walk/Ride Day commute! This email confirms your participation in ' + commutersurvey.wr_day_month.month + '\'s Walk/Ride Day! Feel free to show it to our <a href="http://checkin-greenstreets.rhcloud.com/retail" style="color: #2ba6cb;text-decoration: none;">Retail Partners</a> to take advantage of their offers of freebies, discounts, and other goodies!</p><p>Now <a href="http://checkin2015-greenstreets.rhcloud.com/leaderboard/" style="color: #2ba6cb;text-decoration: none;">CLICK HERE</a> to see how your company is doing in the Corporate Challenge! Share with your friends and colleagues!</p><p>Thank you for being involved! Remember to check-in for next month\'s Walk/Ride Day.</p><p>Warmly,<br><span style="color:#006600;font-weight:bold;">Janie Katz-Christy, Director <br>Green Streets Initiative<br> <span class="mobile_link">617-299-1872 (office)</p><p>Share with your friends and colleagues! <a href="http://checkin.gogreenstreets.org" style="color: #2ba6cb;text-decoration: none;">Make sure they get a chance to check in</p>'
+                message_plain = 'Dear Supporter, Thank you for checking in your Walk/Ride Day commute! This email confirms your participation in ' + commutersurvey.wr_day_month.month + '\'s Walk/Ride Day! Feel free to show it to our Retail Partners to take advantage of their offers of freebies, discounts, and other goodies! Thank you for being involved! Remember to check-in for next month\'s Walk/Ride Day. Warmly, Green Streets Initiative'
+                recipient_list = [commutersurvey.email,]
+                from_email = 'checkin@gogreenstreets.org'
+                try:
+                    send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html)
+
                 return HttpResponseRedirect('complete/')
             pass
      
@@ -72,10 +85,3 @@ def add_checkin(request):
         leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
 
     return render(request, "survey/new_checkin.html", { 'wr_day': wr_day, 'form': commute_form, 'extra_form': extra_commute_form, 'NormalTW_formset': leg_formset_NormalTW, 'NormalFW_formset': leg_formset_NormalFW, 'WRTW_formset': leg_formset_WRTW, 'WRFW_formset': leg_formset_WRFW })
-
-def send_email(template, template_content, message):
-    try:
-        mandrill_client = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-        mandrill_client.messages.send_template(template_name=template, template_content=template_content, message=message)
-    except mandrill.Error, e:
-        pass
