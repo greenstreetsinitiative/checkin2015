@@ -68,12 +68,12 @@ def add_checkin(request):
                 message_plain = 'Dear Supporter, Thank you for checking in your Walk/Ride Day commute! This email confirms your participation in ' + commutersurvey.wr_day_month.month + '\'s Walk/Ride Day! Feel free to show it to our Retail Partners to take advantage of their offers of freebies, discounts, and other goodies! Thank you for being involved! Remember to check-in for next month\'s Walk/Ride Day. Warmly, Green Streets Initiative'
                 recipient_list = [commutersurvey.email,]
                 from_email = 'checkin@gogreenstreets.org'
-                try:
-                    send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html)
+
+                send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html, fail_silently=True)
 
                 return HttpResponseRedirect('complete/')
             pass
-     
+
 
     else:
         commute_form = CommuterForm()
