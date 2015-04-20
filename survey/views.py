@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404, redirect
-from django.http import HttpResponse
+
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 # from django.forms.models import inlineformset_factory
 
@@ -16,7 +16,7 @@ import mandrill
 from datetime import date
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+
 
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -71,8 +71,7 @@ def add_checkin(request):
 
                 send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html, fail_silently=True)
 
-                return HttpResponseRedirect('complete/')
-            pass
+                return redirect('/checkin/complete/')
 
 
     else:
