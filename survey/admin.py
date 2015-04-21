@@ -66,11 +66,6 @@ class LegAdmin(admin.ModelAdmin):
     list_filter = ('checkin__wr_day_month', 'mode__name')
     actions = [export_as_csv]
 
-    # show only legs from companies active in 2015
-    def get_queryset(self, request):
-        qs = super(LegAdmin, self).get_queryset(request)
-        return qs.filter(commutersurvey__employer__active2015=True)
-
 class MonthAdmin(admin.ModelAdmin):
     list_display = ['id', 'wr_day', 'open_checkin', 'close_checkin']
     list_editable = ['wr_day', 'open_checkin', 'close_checkin']
@@ -80,12 +75,6 @@ class TeamAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'parent', 'nr_members']
     list_editable = ['name', 'parent', 'nr_members']
     actions = [export_as_csv]
-
-    # only show 2015 employers for team admin
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "parent":
-            kwargs["queryset"] = Employer.objects.filter(active2015=True)
-        return super(TeamAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class ModeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'met', 'carb', 'speed', 'green' ]
