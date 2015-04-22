@@ -22,24 +22,25 @@ body {
 
 .lb-button {
   display: inline-block;
-  background-color: rgba(93,167,80,1);
+  background-color: #E3F0E3;
   padding: 6px 10px;
   margin: 4px 2px;
   text-align: center;
-  color: white;
+  color: black;
   font-family: 'Alegreya Sans SC';
   font-size: 16px;
-  transition: all 0.5s ease;
+  transition: all 0.8s ease-in-out;
 }
 
 .lb-button:hover {
-  background-color: rgba(58, 106, 50, 1);
+  background-color: rgba(93,167,80,1);
+  color: white;
   text-decoration: none;
 }
 
 .alt {
-  background-color: #E3F0E3;
-  color: black;
+  background-color: rgba(93,167,80,1);
+  color: white;
 }
 
 .stats h4 {
@@ -64,7 +65,7 @@ a.add-row:hover {
   text-decoration: none;
 }
 
-  
+
 a.delete-row {
   color: red;
   text-decoration: underline;
@@ -188,7 +189,7 @@ a.all-button {
 }
 
 .table td,th {
-   text-align: right;   
+   text-align: right;
 }
 
 .table td:first-child, th:first-child {
@@ -243,7 +244,7 @@ svg {
 
 #walkride > h3 > span, #normal > h3 > span {
   font-family:'Alegreya Sans SC';
-  
+
   font-size: 1.4em;
   text-transform: lowercase;
 }
@@ -264,7 +265,7 @@ svg {
 
 ul.list-unstyled > li {
   height: 25px;
-  vertical-align: top; 
+  vertical-align: top;
 }
 
 .legB {
@@ -287,17 +288,17 @@ h1,h2,h3,legend {
 
 strong {
   font-family: 'Alegreya Sans SC';
-  
+
 }
 
 em {
   font-family: 'Alegreya Sans SC';
-  
+
 }
 
 strong > em, em > strong {
   font-family: 'Alegreya Sans SC';
-  
+
 }
 
 h3,h4,h5,h6 {
@@ -313,7 +314,7 @@ legend {
 
 label {
   font-family: 'Alegreya Sans SC';
-  
+
   font-size: 16px;
 }
 
@@ -330,10 +331,10 @@ hr.lite {
 .right {
   text-align:right;
 }
-       
+
 span.button {
     display: block;
-    pointer-events: none;   
+    pointer-events: none;
 }
 
 .container {max-width: 1000px;}
@@ -360,7 +361,7 @@ a, a:hover {
   line-height: 1.1;
   margin-top: 14px;
   font-family: 'Alegreya Sans SC';
-  
+
 }
 
 /* leaderboard styles */
@@ -371,7 +372,7 @@ h2.leaderboard {
   letter-spacing: -1px;
   font-family:'Alegreya Sans SC';
   margin-bottom:0px;
-  
+
 }
 
 h1.leaderboard {
@@ -379,19 +380,19 @@ h1.leaderboard {
   margin-bottom:20px;
   text-align: center;
   font-family: 'Alegreya Sans SC';
-  
+
 }
 
 h3.leaderboard {
   font-family:'Alegreya Sans SC';
-  
+
 }
 
 .panel p {
   font-size: 16px;
   line-height: 1.2;
   font-family:'Alegreya Sans SC';
-  
+
 }
 
 .panel {
@@ -508,14 +509,14 @@ span.highlight > a:hover {
   white-space: nowrap;
   writing-mode: tb-rl;
   filter: flipv fliph;
-  -moz-transform: rotate(270deg);  /* FF3.5+ */        
-  -o-transform: rotate(270deg);  /* Opera 10.5 */   
-  -webkit-transform: rotate(270deg);  /* Saf3.1+, Chrome */  
-  -ms-transform:rotate(270deg); /* IE 9 */            
-  filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=3);  /* IE6,IE7 */          
+  -moz-transform: rotate(270deg);  /* FF3.5+ */
+  -o-transform: rotate(270deg);  /* Opera 10.5 */
+  -webkit-transform: rotate(270deg);  /* Saf3.1+, Chrome */
+  -ms-transform:rotate(270deg); /* IE 9 */
+  filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=3);  /* IE6,IE7 */
   -ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); /* IE8 */
-  transform:rotate(-90deg); 
-  -webkit-transform:rotate(-90deg); 
+  transform:rotate(-90deg);
+  -webkit-transform:rotate(-90deg);
   transform-origin:0 0;
   -webkit-transform-origin:0 0;
   text-align:right;
@@ -539,15 +540,15 @@ div.calories {background-color: #ecf;}
 .lbcontrols {
   background: #B6C1B2;
   font-family: 'Alegreya Sans SC';
-  
+
   padding:10px;
   padding-bottom:15px;
 }
 
 .selected {
   font-family: 'Alegreya Sans SC';
-  
-  
+
+
   outline: 5px solid #5cb85c;
   z-index:10;
 }
@@ -764,7 +765,7 @@ fieldset.studentgroup {
   .page-header {
     position: relative;
     padding-top: 0px;
-  } 
+  }
   .front-page .btn, #add_studentgroup.btn {
   	margin-bottom: 10px;
   }
