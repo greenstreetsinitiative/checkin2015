@@ -47,6 +47,32 @@ def calculate_metrics(company):
         'healthy_switch': percent_healthy_switch
         }
 
+def latest_leaderboard_teams(request):
+    # Obtain the context from the HTTP request.
+    context = RequestContext(request)
+
+    d = {}
+
+    ### TODO - filter related commutersurveys by MONTH
+
+    teams = Team.objects.only('id','name').filter(commutersurvey__created__gte=datetime.date(2015, 04, 15),
+        commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
+        saved_carbon=Sum('commutersurvey__carbon_savings'),
+        overall_calories=Sum('commutersurvey__calorie_change'),
+        num_checkins=Count('commutersurvey'))
+
+    totals = teams.aggregate(
+        total_carbon=Sum('saved_carbon'),
+        total_calories=Sum('overall_calories'),
+        total_checkins=Sum('num_checkins')
+    )
+
+    for team in teams:
+        d[str(team.parent.name + ' - ' + team.name)] = calculate_metrics(team)
+
+    ranks = calculate_rankings(d)
+
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request }, context)
 
 def latest_leaderboard(request):
     # Obtain the context from the HTTP request.

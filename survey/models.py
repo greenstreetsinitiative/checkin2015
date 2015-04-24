@@ -69,6 +69,27 @@ class Team(models.Model):
     def __unicode__(self):
         return unicode(self.parent.name + ' - ' + self.name)
 
+    def percent_participation(self):
+        return Commutersurvey.objects.filter(team=self).distinct('email').count() / self.nr_members
+
+    def percent_already_green(self):
+        surveys = Commutersurvey.objects.filter(team=self)
+        already_green = surveys.filter(already_green=True).count()
+        percent = already_green / surveys.count()
+        return percent
+
+    def percent_green_switch(self):
+        surveys = Commutersurvey.objects.filter(team=self)
+        green_switch = surveys.filter(change_type__in=['g','p']).count()
+        percent = green_switch / surveys.count()
+        return percent
+
+    def percent_healthy_switch(self):
+        surveys = Commutersurvey.objects.filter(team=self)
+        healthy_switch = surveys.filter(change_type__in=['h','p']).count()
+        percent = healthy_switch / surveys.count()
+        return percent
+
 # Checkins
 class Commutersurvey(models.Model):
     name = models.CharField("Full name", max_length=100, blank=True, null=True)

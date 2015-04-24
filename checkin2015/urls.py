@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^leaderboard/medium/$', 'leaderboard.views.latest_leaderboard_medium', name="medium"),
     url(r'^leaderboard/large/$', 'leaderboard.views.latest_leaderboard_large', name="large"),
     url(r'^leaderboard/largest/$', 'leaderboard.views.latest_leaderboard_largest', name="largest"),
+    url(r'^leaderboard/teams/$', 'leaderboard.views.latest_leaderboard_teams', name="teams"),
 
     # Admin
     url(r'^admin/', include(admin.site.urls))
