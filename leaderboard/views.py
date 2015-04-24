@@ -58,7 +58,7 @@ def latest_leaderboard_teams(request):
     teams = Team.objects.only('id','name').filter(commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calorie_change'),
+        overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
     totals = teams.aggregate(
@@ -87,7 +87,7 @@ def latest_leaderboard(request):
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calorie_change'),
+        overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
     totals = companies.aggregate(
@@ -117,7 +117,7 @@ def latest_leaderboard_small(request):
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calorie_change'),
+        overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
     totals = companies.aggregate(
@@ -149,7 +149,7 @@ def latest_leaderboard_medium(request):
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calorie_change'),
+        overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
     totals = companies.aggregate(
@@ -180,7 +180,7 @@ def latest_leaderboard_large(request):
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calorie_change'),
+        overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
     totals = companies.aggregate(
@@ -210,7 +210,7 @@ def latest_leaderboard_largest(request):
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calorie_change'),
+        overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
     totals = companies.aggregate(
