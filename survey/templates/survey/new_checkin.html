@@ -27,6 +27,9 @@
   </center>
 </div>
 <hr class="green-big">
+{% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
+  <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your checkin.</center></div>
+{% endif %}
 
 <form name="form" method="post" action="{{request.path}}" class="form-horizontal">
   <fieldset>
@@ -148,9 +151,14 @@
     {{ WRTW_formset.management_form }}
     {{ WRFW_formset.management_form }}
 
-    <center><button class="cool-button button--ujarak" type="submit" name="action" value="action">
+    <center>
+    {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
+      <div class="alert alert-danger" role="alert">Oops! Please finish completing your checkin.</div>
+    {% endif %}
+    <button class="cool-button button--ujarak" type="submit" name="action" value="action">
       Submit your checkin!
-    </button></center>
+    </button>
+    </center>
 
   </fieldset>
 </form>
