@@ -33,7 +33,7 @@ class CommuterForm(ModelForm):
       super(CommuterForm, self).__init__(*args, **kwargs)
 
       self.fields['employer'].label = "Employer (use 'Other employer not participating in CHALLENGE', 'Self', or 'None' as appropriate)"
-      self.fields['team'].label = "Team (if applicable)"
+      self.fields['team'].label = "Sub-team (if applicable)"
       self.fields['work_address'].label = "Workplace Address (or, if you are not employed, other destination)"
       
       # add CSS classes for bootstrap

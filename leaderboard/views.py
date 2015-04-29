@@ -47,7 +47,7 @@ def calculate_metrics(company):
         'healthy_switch': percent_healthy_switch
         }
 
-def latest_leaderboard_teams(request):
+def latest_leaderboard_subteams(request):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 

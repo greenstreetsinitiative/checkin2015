@@ -34,7 +34,7 @@
 <div class="row" style="padding: 15px 0px;">
   <center>
   <a class="lb-button {% if request.get_full_path = '/leaderboard/' %}alt{% endif %}" href="{% url 'all' %}">All companies</a>
-  <a class="lb-button {% if request.get_full_path = '/leaderboard/teams/' %}alt{% endif %}" href="{% url 'teams' %}">All teams</a>
+  <a class="lb-button {% if request.get_full_path = '/leaderboard/subteams/' %}alt{% endif %}" href="{% url 'subteams' %}">All sub-teams</a>
   <a class="lb-button {% if request.get_full_path = '/leaderboard/small/' %}alt{% endif %}" href="{% url 'small' %}">Small (less than 50)</a>
   <a class="lb-button {% if request.get_full_path = '/leaderboard/medium/' %}alt{% endif %}" href="{% url 'medium' %}">Medium (51 to 300)</a>
   <a class="lb-button {% if request.get_full_path = '/leaderboard/large/' %}alt{% endif %}" href="{% url 'large' %}">Large (301 to 2000)</a>
