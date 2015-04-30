@@ -1,0 +1,263 @@
+body { /* helps not screw up the map */
+	padding: 0;
+	padding-top: 50px;
+	height: 100%; 
+	margin: 0; 
+}
+
+html { /* helps not screw up the map */
+	height: 100%; 
+}
+
+.nojs { /* bar that shows up if javascript is disabled */
+	height: 50px;
+	width: 100%;
+	position: absolute;
+	top: 0px;
+	background-color: red;
+	font-size: 1.5em;
+	font-family: 'areobold', sans-serif;
+	color: white;
+	z-index: 2147483647;
+	text-align: center;
+}
+
+/* Navbar */
+.navbar {
+	background-color: rgb(80,186,36);
+}
+
+.navbar-text {
+	color: rgb(51,51,51)!important;
+}
+
+.brand {
+	float: left;
+	padding-left: 0.25em;
+	font-size: 1.5em;
+	font-family: 'aleoregular', sans-serif;
+	color: white;
+	float: right;
+}
+
+.brand img {
+	height: 50px!important;
+	width: 102px!important;
+}
+
+/* Main content */
+#map { 
+	width: 70%;
+	height: 97%;
+	float: left;
+}
+
+#rightbar {
+	width:100%;
+	height:97%;
+	float:right;
+	overflow: scroll;
+}
+
+.retail-partners-list {
+	padding-left: 1.25em;
+	padding-top: 1em;
+	list-style-type: none; /* Hides numbers */
+}
+
+.rp-name { /* Retail partner names */
+	font-size: 1.25em;
+	font-family: aleoregular, sans-serif;
+	color: #00A950;	
+	font-weight: 900;
+	margin: 3px 0px 0px 0px;
+}
+
+.rp-name-url:link { /* Retail partner names that are also links */
+	font-size: 1.25em;
+	font-family: aleoregular, sans-serif;
+	color: #00A950;	
+	font-weight: 900;
+	text-decoration: none;
+}
+
+.rp-name-url:visited {
+	color: #00A950;
+}
+
+.rp-name-url:hover {
+	color: #11850a;
+}
+
+.rp-object a {
+	color: black;
+	margin: 3px 0px 0px 0px;
+}
+
+.rp-p {
+	font-size: small;
+	margin: 3px 0px 0px 0px;
+}
+
+/* Mobile navbar */
+.mobile-nav {
+	color: white;
+	font-family: aleobold, sans-serif;
+}
+
+.mobile-nav .navbar-brand {
+	color: white;
+}
+
+.dropdown a {
+	color: white;
+}
+
+.drop-nav-elem {
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+
+	width: 90%;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.m-btn {
+	width: 70%;
+	margin: 0 auto;
+	padding-top: 1em;
+	margin-bottom: 1em;
+}
+
+.dropdown-li {
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0.25em;
+	width: 90%;
+	position: static;
+	z-index: 65000!important;
+}
+
+.mobile-btn {
+	width: 100%;
+	z-index: 65000!important;
+}
+
+.mobile-btn #searchbox {
+	text-align: center;
+}
+
+.nav-dropdown {
+	float: left;
+}
+
+.nav-logo {
+	float: right;
+}
+
+.dropdown-backdrop {
+	z-index: 65000!important;
+	position: static;
+}
+
+.modal-body {
+	width: 90%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+/* footer */
+.footer{
+	width: 100%;
+	height: 3%;
+	position: fixed;
+	bottom: 0px;
+	background-color: rgb(129,255,0);
+	background-color: rgba(129,255,0,0.75);
+	z-index: 2147483647;
+}
+
+.footer-copyright {
+	font-family: aleoregular,sans-serif;
+	font-size: 1em;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.footer-copyright a {
+	color: rgb(51,51,51);
+	text-decoration: underline;
+}
+
+.footer-copyright-desktop {
+	margin-left: 1%;
+	float: left;	
+}
+
+.footer-copyright-mobile {
+	text-align: center;
+	padding-right: 0.25em;
+	padding-bottom: 0.25em;
+	float: right;
+}
+
+.footer-link {
+	float: right;
+	font-family: aleoregular,sans-serif;
+	font-size: 1em;
+	margin-left: 1%;
+	padding-right: 1%;
+}
+
+.footer-link:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.footer-link a {
+	color: rgb(51,51,51);
+}
+
+.footer-separator {
+	float: right;
+	font-family: aleoregular,sans-serif;
+	font-size: 1em;
+}
+
+.footer-separator::after {
+	content: '|'
+}
+
+/* Become retail partner modal */
+.gsi-modal-title {
+	font-family: aleobold,sans-serif;
+}
+
+.modal-link {
+	color: #00A950;
+}
+
+/* Sorts out tablet rotations */
+@media screen and (orientation:landscape){
+	#map {
+		width: 70%;
+		float: left;
+	}
+	#rightbar {
+		width: 30%;
+		float: right;
+	}
+}
+
+@media screen and (orientation:portrait){
+	#map {
+		visibility: hidden;
+		width: 0;
+		height: 0;
+	}
+	#rightbar {
+		width: 100%;
+		float: left;
+	}
+}

@@ -1,0 +1,142 @@
+{% if not isMobile %}
+<div class="footer">
+	<p data-toggle="modal" data-target="#joinretailpartners-modal" class="footer-link">Become a retail partner!</p>
+	<p class="footer-separator"></p>
+	<p data-toggle="modal" data-target="#discountinfo-modal" class="footer-link">How do I get these discounts?</p>
+	<p class="footer-separator"></p>
+	<p class="footer-link"><a class="modal-link" href="../" target="_blank">Check-In!</a></p>
+	<p class="footer-copyright footer-copyright-desktop">© <a href="http://gogreenstreets.org">Green Streets Initiative</a> {% now "Y" %}<p>
+</div>
+
+<!-- Become Retail Partner form -->
+<div class="modal fade" id="joinretailpartners-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title gsi-modal-title" id="myModalLabel"><center>Become a Retail Partner<center></h4>
+			</div>
+			<div class="modal-body">
+				<!-- START FORM -->
+				<form role="form" method="post">
+				{% csrf_token %}
+					<!-- Accordion with information about joining up -->
+					<div class="panel-group" id="accordion">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">What?</a>
+								</h4>
+							</div>
+							<div id="collapseOne" class="panel-collapse collapse in">
+								<div class="panel-body">
+									Is your business interested in encouraging people to explore the use of sustainable, healthy transportation, and in tapping into a growing community of health- and environmentally-conscious customers? If so, Green Streets will be happy to welcome you into our network of Walk/Ride Day Retail Partners. <b>Just sign up below!</b>
+								</div>
+							</div>
+						</div>
+						
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Who will we reach?</a>
+								</h4>
+							</div>
+							<div id="collapseTwo" class="panel-collapse collapse">
+								<div class="panel-body">
+									Green Streets runs a Corporate Challenge that encourages companies to compete to see which has the most on-line check-ins. Read about the Challenge <a href="http://gogreenstreets.org/2014-walkride-day-corporate-challenge" target="_blank">here</a>. This year we have 40 area companies competing.  See who's competing <a href="../leaderboard/" target="_blank">here</a>.  These companies employ over 80,000 people. Competing companies often post on boards, publish in newsletters or group email the company standings.  Participants are encouraged to visit our Retail Partners and  'get rewarded' for checking in.
+								</div>
+							</div>
+						</div>
+						
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">What's Involved?</a>
+								</h4>
+							</div>
+							<div id="collapseThree" class="panel-collapse collapse">
+								<div class="panel-body">
+									As a Walk/Ride Day Retail Partner, you will be taking action to grow your business, while strengthening ties to the local community and demonstrating your support for safer streets and cleaner air. In return, we'll spread information about your business through our web site and other promotional materials. Here's the basic outline:<br><br>
+									<b>1. Develop an Incentive to Offer Walk/Ride Day Participants</b><br>
+									To be a Retail Partner, you must offer a discount, door prize, or other incentive for Walk/Ride Day participants who visit your business on the last Friday of the month (or other days too, if that works for you). Every Retail Partner chooses an incentive that suits its particular business style and concept, and is fun and manageable for them.<br><br>
+									<b>2. Spread the Word</b><br>
+									Green Streets will provide you with window decals, business cards, and a flyer template to help advertise your business’s involvement as a Walk/Ride Day retail partner. Please position these materials prominently in your retail location to demonstrate your support for Green Streets and draw customers to your business on Walk/Ride Days. Other methods of promotion are also encouraged.<br><br>
+									<b>3. Reward Participants</b><br>
+									On the last Friday of every month, reward Walk/Ride Day participants with your business’s incentive. In order to qualify, Walk/Ride Day participants will identify themselves as such by showing you a print out of their check-in confirmation; many also stand out from the crowd by wearing green clothing or accessories to mark the occasion, but wearing green isn't actually required! 
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Contact Information -->
+					<p class="form-control-static"><b>Contact Information</b></p>
+					<p class="form-control-static">This is the information we need to be able to contact you (or your business).</p>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1">Name of contact person</label>
+						<input type="email" class="form-control" id="contactname" placeholder="Enter name">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Contact e-mail</label>
+						<input type="email" class="form-control" id="contactemail" placeholder="Enter email">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Contact Phone</label>
+						<input type="email" class="form-control" id="contactphone" placeholder="Enter phone number">
+					</div>
+
+					<!-- Business Information -->	
+					<p class="form-control-static"><b>Business Information</b></p>
+					<p class="form-control-static">This is the information that will be displayed on the retail partners page.</p>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1">Name of Business</label>
+						<input type="email" class="form-control" id="businessname" placeholder="Enter name">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Business Address</label>
+						<input type="email" class="form-control" id="businessaddress" placeholder="Enter address">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Business Phone</label>
+						<input type="email" class="form-control" id="businessphone" placeholder="Enter phone number">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Business Website</label>
+						<input type="email" class="form-control" id="businesswebsite" placeholder="Enter website">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Discount or incentive you're offering</label>
+						<input type="email" class="form-control" id="businessoffer" placeholder="Enter offer">
+					</div>						
+				</form>	<!-- END FORM -->
+			</div>
+			<div class="modal-footer">
+				<p class="form-control-static">Hit the submit button below to submit your application.</p>
+				<button type="button" class="btn btn-default" id="jrp-close" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="jrp-submit-button">Submit</button>
+			</div>
+		</div>
+	</div>
+</div><!-- End Bootstrap Modal -->
+{% else %}
+<p class="footer-copyright footer-copyright-mobile">© <a href="http://gogreenstreets.org">Green Streets Initiative</a> {% now "Y" %}<p>
+{% endif %}
+<!-- Discount information modal -->
+<div class="modal fade" id="discountinfo-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title gsi-modal-title" id="myModalLabel2"><center>How do I get these discounts?</center></h4>
+      </div>
+      <div class="modal-body">
+        <p>All you have to do is <a class="modal-link" href="../" target="_blank">check-In</a> on Walk/Ride Day!</p>
+		<p>You should receive an e-mail confirmation receipt, which you can show to our retail partners in order to get some great discounts!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Got it!</button>
+      </div>
+    </div>
+  </div>
+</div>

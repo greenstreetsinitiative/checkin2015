@@ -1,0 +1,14 @@
+<!--<div class="nojs">Please enable JavaScript! You won't have access to the sorting and filtering functionality, and you won't be able to view the map!</div>-->
+<noscript>
+{% for r in partners %}
+	<li class="rp-object">
+		{%if r.website %}
+			<a href="{{ r.website }}" class="rp-name-url">{{ r.name }}</a>
+		{% else %}
+			<p class="rp-name">{{ r.name }}</p>
+		{% endif %}
+		<p class="rp-p">{{ r.address }}</p>
+		<p class="rp-p">{{ r.offer }}</p>
+	</li>
+{% endfor %}
+</noscript>

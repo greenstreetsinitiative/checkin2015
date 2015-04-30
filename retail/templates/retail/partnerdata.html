@@ -1,0 +1,31 @@
+<script type="text/javascript">
+var rpData = [
+	{% for r in partners %}
+		{% if not forloop.last %} {
+				"name": "{{ r.name }}",
+				"address": "{{ r.address }}",
+				"city": "{{ r.city }}",
+				"website": "{{ r.website }}",
+				"phone": "{{ r.phone }}",
+				"offer": "{{ r.offer }}",
+				"latitude": {{ r.latitude }},
+				"longitude": {{ r.longitude }},
+				"category": "{{ r.category }}",
+				"distance": Math.Infinity
+		},	
+		{% else %} {
+				"name": "{{ r.name }}",
+				"address": "{{ r.address }}",
+				"city": "{{ r.city }}",
+				"website": "{{ r.website }}",
+				"phone": "{{ r.phone }}",
+				"offer": "{{ r.offer }}",
+				"latitude": {{ r.latitude }},
+				"longitude": {{ r.longitude }},
+				"category": "{{ r.category }}",
+				"distance": Math.Infinity
+		}
+		{% endif %}
+	{% endfor %}
+];
+</script>

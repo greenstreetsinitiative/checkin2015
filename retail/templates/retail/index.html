@@ -1,0 +1,66 @@
+{% extends 'retail/base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Retail Partners{% endblock %}
+
+{% block style %}
+	<link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	{% if not isMobile %}
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.0/leaflet.awesome-markers.css">
+	{% endif %}
+	<link rel="stylesheet" href="{% static 'css/fonts.css' %}" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" href="{% static 'retail/css/style.css' %}">
+	<noscript><style type="text/css">
+		#map { visibility: hidden; width: 0; height: 0; }
+		#rightbar {	width: 100%; float: left; }
+	</style></noscript>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript">
+		document.body.innerHTML += "<div id='map'></div>";
+	</script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+ 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+ 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	{% if not isMobile %}
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+		<script src="http://open.mapquestapi.com/sdk/leaflet/v1.s/mq-map.js?key=key=Fmjtd%7Cluur2h68n9%2C7x%3Do5-9w2wdz"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.0/leaflet.awesome-markers.min.js"></script>
+	{% endif %}
+	{% include 'retail/partnerdata.html' %}
+	<script type="text/javascript" src="{% static 'retail/js/main.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+	{% include 'retail/navbar.html' %}
+	<noscript>
+		<div class="nojs">Please enable JavaScript to get the most out of this webpage!</div>
+	</noscript>
+
+	<div id='rightbar'>
+		<div class="retail-content">
+			<ol class="retail-partners-list">
+				<noscript>
+				{% for r in partners %}
+					<li class="rp-object">
+						{%if r.website %}
+							<a href="{{ r.website }}" class="rp-name-url">{{ r.name }}</a>
+						{% else %}
+							<p class="rp-name">{{ r.name }}</p>
+						{% endif %}
+						<p class="rp-p">{{ r.address }}</p>
+						<p class="rp-p">{{ r.offer }}</p>
+					</li>
+				{% endfor %}
+				</noscript>
+			</ol>
+		</div>
+	</div>
+
+	{% include 'retail/footer.html' %}
+{% endblock %}

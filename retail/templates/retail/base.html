@@ -1,0 +1,26 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/Organization">
+<head>
+	<title>{% block title %}{% endblock %} | Walk/Ride Day check-in</title>
+
+	<meta name="description" content="Green Streets Walk Ride Day Retail Partners">
+	<meta name="keywords" content="Boston, Metro, Planning, Education, Survey, Pedestrian, Walking, Green Streets, Walk/Ride Day">
+	<meta name="author" content="Green Streets Initiative">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+	<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+	<!-- CSS -->
+	{% block style %}{% endblock %}
+</head>
+<body>
+	{% block body %}
+	{% endblock %}
+
+	<!-- Javascript -->
+	{% block javascript %}{% endblock %}
+</body>
+</html>

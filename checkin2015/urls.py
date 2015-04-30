@@ -24,7 +24,10 @@ urlpatterns = patterns('',
     url(r'^leaderboard/subteams/$', 'leaderboard.views.latest_leaderboard_subteams', name="subteams"),
 
     # Admin
-    url(r'^admin/', include(admin.site.urls))
+    url(r'^admin/', include(admin.site.urls)),
+
+    # Retail Partners
+    url(r'^retail/$', include('retail.urls', namespace='retail'))
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
