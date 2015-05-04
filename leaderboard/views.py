@@ -13,7 +13,8 @@ import datetime
 
 def calculate_rankings(company_dict):
     ranks = {}
-    ranks['percent_green_commuters'], ranks['percent_participation'], ranks['percent_green_switches'], ranks['percent_healthy_switches'] = [],[],[],[]
+    ranks['percent_green_commuters'], ranks['percent_participation'], ranks['percent_green_switches'], ranks['percent_healthy_switches'], ranks[
+    'percent_frequency'] = [],[],[],[],[]
 
     top_percent_green = sorted(company_dict.keys(), key=lambda x: company_dict[x]['already_green'], reverse=True)[:10]
     for key in top_percent_green:
@@ -31,6 +32,10 @@ def calculate_rankings(company_dict):
     for key in top_hs:
         ranks['percent_healthy_switches'].append([key, company_dict[key]['healthy_switch']])
 
+    top_freq = sorted(company_dict.keys(), key=lambda x: company_dict[x]['avg_frequency'], reverse=True)[:10]
+    for key in top_freq:
+        ranks['percent_frequency'].append([key, company_dict[key]['avg_frequency']])
+
     return ranks
 
 
@@ -39,12 +44,14 @@ def calculate_metrics(company):
     percent_already_green = 100*company.percent_already_green()
     percent_green_switch = 100*company.percent_green_switch()
     percent_healthy_switch = 100*company.percent_healthy_switch()
+    percent_frequency = 100*company.percent_average_frequency()
 
     return {
         'participants': percent_participants,
         'already_green': percent_already_green,
         'green_switch': percent_green_switch,
-        'healthy_switch': percent_healthy_switch
+        'healthy_switch': percent_healthy_switch,
+        'avg_frequency': percent_frequency
         }
 
 def latest_leaderboard_subteams(request):

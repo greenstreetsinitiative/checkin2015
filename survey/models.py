@@ -2,7 +2,8 @@ from __future__ import division
 from django.db import models
 from django.db.models import Sum
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+import datetime
+from datetime import date
 # Create your models here.
 
 # Walk/Ride Day Months
@@ -56,6 +57,11 @@ class Employer(models.Model):
         healthy_switch = surveys.filter(change_type__in=['h','p']).count()
         percent = healthy_switch / surveys.count()
         return percent
+
+    def percent_average_frequency(self):
+        startdate = date(2015,4,15)
+        num_passed_months = Month.objects.filter(open_checkin__gte=startdate,open_checkin__lte=date.today()).count()
+        return Commutersurvey.objects.filter(employer=self).distinct('email').count() / (self.nr_employees * num_passed_months)
 
 # Teams
 class Team(models.Model):

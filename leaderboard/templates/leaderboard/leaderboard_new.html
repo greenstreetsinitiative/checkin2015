@@ -51,6 +51,14 @@
     </ol>
   </div>
   <div class="col-sm-3">
+    <h4>Staff Average Participation</h4>
+    <ol class="lbrank">
+    {% for key, value in ranks.percent_frequency %}
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
+    {% endfor %}
+    </ol>
+  </div>
+  <div class="col-sm-3">
     <h4>Green Commutes</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_green_commuters %}
