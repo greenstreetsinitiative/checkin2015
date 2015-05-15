@@ -26,10 +26,4 @@ def wr_day():
                 'close': next_wr_day.close_checkin.strftime('%A, %B %d, %Y'),
             }
         except IndexError:
-            another_wr_day = Month.objects.filter(open_checkin__gt=date.today()).order_by('wr_day')[0]
-            return {
-                'type': 'post_season',
-                'date': another_wr_day.wr_day.strftime('%A, %B %d, %Y'),
-                'open': another_wr_day.open_checkin.strftime('%A, %B %d, %Y'),
-                'close': another_wr_day.close_checkin.strftime('%A, %B %d, %Y'),
-            }
+            return

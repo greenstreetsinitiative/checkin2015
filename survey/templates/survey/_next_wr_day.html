@@ -1,51 +1,25 @@
 {% load staticfiles %}
 
 {% if type == 'current_wr_day' %}
-<center>
-<a style="font-size:18px; font-weight:300;" href="{% url "commuterform" %}" class="cool-button button--ujarak" tabindex="3">Check-in your <br>commute here!</a>
-</center>
-<p style="font-weight: 300; font-size: 16px;">
+
+	<center>
+	<a style="font-size:18px; font-weight:300;" href="{% url "commuterform" %}" class="cool-button button--ujarak" tabindex="3">Check-in your <br>commute here!</a>
+	</center>
+
+	<p style="font-weight: 300; font-size: 16px;">
 	<strong>Current Walk/Ride Day: <span class="date">{{ date }}</span></strong>
 	<br>
 	Check-ins will be accepted from<br> <span class="date" style="display: inline-block;">{{ open }}</span> through <span class="date" style="display: inline-block;">{{ close }}</span></p>
 
-<hr class="lite">
-<p class="lead"><img src="{% static 'img/car-24.png' %}" height="32" width="32"><img src="{% static 'img/school-24.png' %}" height="32" width="32"><img src="{% static 'img/pitch-24.png' %}" height="32" width="32"><img src="{% static 'img/bicycle-24.png' %}" height="32" width="32"><img src="{% static 'img/rail-24.png' %}" height="32" width="32"><img src="{% static 'img/warehouse-24.png' %}" height="32" width="32"><img src="{% static 'img/scooter-24.png' %}" height="32" width="32"></p>
-<p class="lead">Everyone is welcome to check in </p>
-<hr class="lite">
-<p> Walk/Ride Day is the last Friday of every month. If that Friday is impossible for you, you may substitute another day within the week.</p>
-
-
-{% elif  type == 'post_season' %}
-
-
-
-  <p>THE 2014 CORPORATE CHALLENGE HAS ENDED!  CONGRATULATIONS TO ALL WHO PARTICIPATED AND ESPECIALLY TO THIS YEAR'S WINNERS! SEE THE WINNERS <a href="http://checkin-greenstreets.rhcloud.com/leaderboard/">HERE</a>.</p>
-
-  <p>Although the Challenge is over, Walk/Ride Days continue.  Be sure to check in your commute to be eligible for prizes and the great deals offered by our <a href="http://checkin-greenstreets.rhcloud.com/retail/">Retail Partners</a>.</p>
-
-<p style="font-weight:300; font-size: 18px;">
-	<strong>The next Walk/Ride Day is <span class="date">{{ date }}</span></strong> You will be able to check-in from <br>
-	<span class="date" style="display: inline-block;">{{ open }}</span> through <span class="date" style="display: inline-block;">{{ close }}</span> <span class="highlight"><a href="http://gogreenstreets.org/civicrm/profile/create?gid=14&reset=1">Sign up for our newsletter</a> for events and more, like FREE Walk/Ride Day breakfasts!</span></p>
-
-
-
-<hr class="lite">
-
 {% elif type == 'next_wr_day' %}
 
-<p style="font-weight:300; font-size: 18px;">
+	<p style="font-weight:300; font-size: 18px;">
 	<strong>The next Walk/Ride Day is <span class="date">{{ date }}</span></strong> You will be able to check-in from<br>
 	 <span class="date" style="display: inline-block;">{{ open }}</span> through <span class="date" style="display: inline-block;">{{ close }}</span>
-
-	 <p><span class="highlight"><a href="http://gogreenstreets.org/civicrm/profile/create?gid=14&reset=1">Get monthly updates by clicking here to join our newsletter</a></span>.</p>
 	 </p>
 
-	<p class="lead"><img src="{% static 'img/car-24.png' %}" height="32" width="32"><img src="{% static 'img/school-24.png' %}" height="32" width="32"><img src="{% static 'img/pitch-24.png' %}" height="32" width="32"><img src="{% static 'img/bicycle-24.png' %}" height="32" width="32"><img src="{% static 'img/rail-24.png' %}" height="32" width="32"><img src="{% static 'img/warehouse-24.png' %}" height="32" width="32"><img src="{% static 'img/scooter-24.png' %}" height="32" width="32"></p>
-	<p class="lead">Everyone is welcome to check in </p>
-	<hr class="lite">
-<hr class="lite">
-<p>Walk/Ride Day is the last Friday of every month. If that Friday is impossible for you, you may substitute another day within the week.</p>
+{% else %}
 
+  <p>Although the Challenge is over, Walk/Ride Days continue.</p> <p><span class="highlight"><a href="http://gogreenstreets.org/civicrm/profile/create?gid=14&reset=1">Get monthly updates by clicking here to join our newsletter</a></span>.</p>
 
 {% endif %}
