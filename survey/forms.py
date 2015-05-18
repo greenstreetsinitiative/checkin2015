@@ -16,7 +16,7 @@ class AlertErrorList(ErrorList):
   def as_divs(self):
     if not self: return u''
     for e in self:
-      return u'<div class="alert alert-danger dangerous" role="alert">%s</div>' % e 
+      return u'<div class="alert alert-danger dangerous" role="alert">%s</div>' % e
 
 class CommuterForm(ModelForm):
   class Meta:
@@ -35,7 +35,7 @@ class CommuterForm(ModelForm):
       self.fields['employer'].label = "Employer (use 'Other employer not participating in CHALLENGE', 'Self', or 'None' as appropriate)"
       self.fields['team'].label = "Sub-team (if applicable)"
       self.fields['work_address'].label = "Workplace Address (or, if you are not employed, other destination)"
-      
+
       # add CSS classes for bootstrap
       self.fields['name'].widget.attrs['class'] = 'form-control'
       self.fields['email'].widget.attrs['class'] = 'form-control'
@@ -48,7 +48,7 @@ class CommuterForm(ModelForm):
       self.fields['work_address'].error_messages['required'] = 'Please enter an address.'
       self.fields['employer'].error_messages['required'] = 'Please pick an option from the list.'
       self.fields['email'].error_messages['required'] = 'Please enter an email address.'
-  
+
 class ExtraCommuterForm(ModelForm):
   class Meta:
       model = Commutersurvey
@@ -61,7 +61,7 @@ class ExtraCommuterForm(ModelForm):
       self.fields['comments'].label = "Add a comment"
       self.fields['comments'].widget.attrs['placeholder'] = "We'd love to hear from you!"
       self.fields['comments'].widget.attrs['rows'] = 2
-      
+
       # add CSS classes for bootstrap
       self.fields['share'].widget.attrs['class'] = 'form-control'
       self.fields['comments'].widget.attrs['class'] = 'form-control'
@@ -94,6 +94,8 @@ class LegForm1(ModelForm):
     self.fields['direction'].widget = HiddenInput()
     self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].required = False
+    self.fields['duration'].required = False
 
 class LegForm2(ModelForm):
 
@@ -115,6 +117,8 @@ class LegForm2(ModelForm):
     self.fields['direction'].widget = HiddenInput()
     self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].required = False
+    self.fields['duration'].required = False
 
 class LegForm3(ModelForm):
 
@@ -157,9 +161,21 @@ class LegForm4(ModelForm):
     self.fields['direction'].widget = HiddenInput()
     self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+    self.fields['mode'].required = False
+    self.fields['duration'].required = False
 
-MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm1, extra=1, max_num=10, can_delete=True)
-MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm2, extra=1, max_num=10, can_delete=True)
-MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm3, extra=1, max_num=10, can_delete=True)
-MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm4, extra=1, max_num=10, can_delete=True)
 
+MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm3, extra=1, max_num=10, can_delete=True)
+# MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm3, extra=1, max_num=10, can_delete=True)
+MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm4, extra=1, max_num=10, can_delete=True)
+MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1, extra=1, max_num=10, can_delete=True)
+MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2, extra=1, max_num=10, can_delete=True)
+
+class NormalFromWorkSameAsAboveForm(forms.Form):
+  normal_same_as_reverse = forms.BooleanField(widget=forms.RadioSelect(choices=((True,'YES'),(False,'NO'))), initial=True, label='I did the same as to work, but in reverse.')
+
+class WalkRideFromWorkSameAsAboveForm(forms.Form):
+  walkride_same_as_reverse = forms.BooleanField(widget=forms.RadioSelect(choices=((True,'YES'),(False,'NO'))), initial=True, label='I did the same as to work, but in reverse.')
+
+class NormalIdenticalToWalkrideForm(forms.Form):
+  normal_same_as_walkride = forms.BooleanField(widget=forms.RadioSelect(choices=((True,'YES'),(False,'NO'))), initial=True, label='My normal commute is exactly like my walk ride day commute.')

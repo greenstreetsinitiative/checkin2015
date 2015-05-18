@@ -67,64 +67,91 @@
     <hr class="green-big">
     <p class="center">Please enter all parts (legs) of your commute. You may also include time spent walking (e.g. walking from the bus stop to a connecting train), especially if it is 5 minutes or more.</p>
 
-    <div class="row to-work commute">
+    <div class="row wr-day">
+
       <div class="col-sm-6">
-        <div class="col-sm-12 normal-day">
-        <center><h3>Normal Commute</h3>
-        <h4>To Work</h4><hr class="green">
-        </center>
-        {% for form in NormalTW_formset %}
-            <div id="{{ form.prefix }}-row" class="leggedrow">
-              <hr class="lite">
-              {{ form }}
-            </div>
-        {% endfor %}
-        <hr>
-      </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="col-sm-12 wr-day">
+        <div class="to-work">
         <center><h3>Walk/Ride Day</h3>
         <h4>To Work</h4>
         <hr class="green">
         </center>
+
+        <div class="legs-wrapper">
         {% for form in WRTW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
-              <hr class="lite">
+
               {{ form }}
             </div>
         {% endfor %}
+        </div>
         <hr>
         </div>
       </div>
-    </div>
-    <div class="row from-work commute">
+
       <div class="col-sm-6">
-      <div class="col-sm-12 normal-day">
-        <center><h3>Normal Commute</h3>
-        <h4>From Work</h4><hr class="green"></center>
-        {% for form in NormalFW_formset %}
-            <div id="{{ form.prefix }}-row" class="leggedrow">
-              <hr class="lite">
-              {{ form }}
-            </div>
-        {% endfor %}
-      <hr>
-      </div>
-      </div>
-      <div class="col-sm-6">
-      <div class="col-sm-12 wr-day">
+      <div class="from-work">
         <center><h3>Walk/Ride Day</h3>
         <h4>From Work</h4><hr class="green"></center>
+        {{ wrday_copy }}
+
+        <div class="legs-wrapper">
         {% for form in WRFW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
-              <hr class="lite">
+
               {{ form }}
             </div>
         {% endfor %}
+        </div>
       <hr>
       </div>
       </div>
+    </div>
+
+    <div class="row">
+    <hr class="green">
+    {{ commute_copy }}
+
+    </div>
+
+    <div class="row normal-day">
+      <hr class="green">
+      <div class="col-sm-6">
+        <div class="to-work">
+
+        <center><h3>Normal Commute</h3>
+        <h4>To Work</h4><hr class="green">
+        </center>
+
+        <div class="legs-wrapper">
+        {% for form in NormalTW_formset %}
+            <div id="{{ form.prefix }}-row" class="leggedrow">
+
+              {{ form }}
+            </div>
+        {% endfor %}
+        </div>
+        <hr>
+      </div>
+      </div>
+
+      <div class="col-sm-6">
+      <div class="from-work">
+        <center><h3>Normal Commute</h3>
+        <h4>From Work</h4><hr class="green"></center>
+        {{ normal_copy }}
+
+        <div class="legs-wrapper">
+        {% for form in NormalFW_formset %}
+            <div id="{{ form.prefix }}-row" class="leggedrow">
+
+              {{ form }}
+            </div>
+        {% endfor %}
+        </div>
+      <hr>
+      </div>
+      </div>
+
     </div>
     <hr class="green-big">
     {% for field in extra_form %}

@@ -46,7 +46,7 @@ class EmployerAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display_links = ['id']
     list_display = ['id', 'name', 'active2015', 'nr_employees']
-    list_editable = ['name', 'nr_employees']
+    list_editable = ['name', 'nr_employees', 'active2015']
     actions = [export_as_csv]
 
 class CommutersurveyAdmin(admin.ModelAdmin):

@@ -1,6 +1,9 @@
 body {
   font-family: 'Martel Sans', Helvetica, Arial, sans-serif;
 }
+#id_normal_same_as_walkride, #id_walkride_same_as_reverse, #id_normal_same_as_reverse {
+   list-style-type: none;
+}
 
 .date {
   font-weight: 700;
@@ -57,6 +60,9 @@ a.add-row {
   color: white;
   font-family: 'Alegreya Sans SC';
   font-size: 18px;
+  -webkit-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(100, 170, 79, 0.6);
+  -moz-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(100, 170, 79, 0.6);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(100, 170, 79, 0.6);
   transition: background-color 0.5s ease;
 }
 
@@ -69,6 +75,9 @@ a.add-row:hover {
 a.delete-row {
   color: red;
   text-decoration: underline;
+  text-align: right;
+  display: block;
+  margin: 10px 0;
 }
 
 .cool-button {

@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from survey.models import Commutersurvey, Employer, Leg, Month
 from survey.forms import CommuterForm, ExtraCommuterForm
 from survey.forms import MakeLegs_NormalTW, MakeLegs_NormalFW, MakeLegs_WRTW, MakeLegs_WRFW
-
+from survey.forms import NormalFromWorkSameAsAboveForm, WalkRideFromWorkSameAsAboveForm, NormalIdenticalToWalkrideForm
 
 import json
 import mandrill
@@ -30,36 +30,95 @@ def add_checkin(request):
         return redirect('/')
 
     if request.method == 'POST':
+
+        # send the fillted out forms in!
+        # if the forms turn out to be not valid, they will still retain
+        # the form data from the POST request this way.
         commute_form = CommuterForm(request.POST)
         extra_commute_form = ExtraCommuterForm(request.POST)
-        leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=Commutersurvey(), prefix='ntw')
-        leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=Commutersurvey(), prefix='nfw')
-        leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=Commutersurvey(), prefix='wtw')
-        leg_formset_WRFW = MakeLegs_WRFW(request.POST, instance=Commutersurvey(), prefix='wfw')
+        # leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=Commutersurvey(), prefix='ntw')
+        # leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=Commutersurvey(), prefix='nfw')
+        # leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=Commutersurvey(), prefix='wtw')
+        # leg_formset_WRFW = MakeLegs_WRFW(request.POST, instance=Commutersurvey(), prefix='wfw')
+        normal_copy = NormalFromWorkSameAsAboveForm(request.POST)
+        wrday_copy = WalkRideFromWorkSameAsAboveForm(request.POST)
+        commute_copy = NormalIdenticalToWalkrideForm(request.POST)
 
+        # if the main form is correct
         if commute_form.is_valid():
             commutersurvey = commute_form.save(commit=False)
-            leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
-            leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=commutersurvey, prefix='nfw')
+            commutersurvey.wr_day_month = wr_day
+            commutersurvey.email = commute_form.cleaned_data['email']
+            commutersurvey.employer = commute_form.cleaned_data['employer']
+            commutersurvey.team = commute_form.cleaned_data['team']
+            extra_commute_form.is_valid() # creates cleaned_data
+            commutersurvey.share = extra_commute_form.cleaned_data['share']
+            commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+
             leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
-            leg_formset_WRFW = MakeLegs_WRFW(request.POST, instance=commutersurvey, prefix='wfw')
+            leg_formset_WRFW = None
+            leg_formset_NormalTW = None
+            leg_formset_NormalFW = None
 
-            if leg_formset_NormalTW.is_valid() and leg_formset_NormalFW.is_valid() and leg_formset_WRTW.is_valid() and leg_formset_WRFW.is_valid():
-                commutersurvey.wr_day_month = wr_day
-                commutersurvey.email = commute_form.cleaned_data['email']
-                commutersurvey.employer = commute_form.cleaned_data['employer']
-                commutersurvey.team = commute_form.cleaned_data['team']
+            if wrday_copy.is_valid():
+                if wrday_copy.cleaned_data['walkride_same_as_reverse']:
+                    leg_formset_WRFW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                else:
+                    leg_formset_WRFW = MakeLegs_WRFW(request.POST, instance=commutersurvey, prefix='wfw')
 
-                if extra_commute_form.is_valid():
-                    commutersurvey.share = extra_commute_form.cleaned_data['share']
-                    commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+                if commute_copy.is_valid() and normal_copy.is_valid():
+                    if commute_copy.cleaned_data['normal_same_as_walkride']:
+                        leg_formset_NormalTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                        if wrday_copy.cleaned_data['walkride_same_as_reverse']:
+                            leg_formset_NormalFW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                        else:
+                            leg_formset_NormalFW = MakeLegs_WRFW(request.POST, instance=commutersurvey, prefix='wfw')
+                    else:
+                        leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
+                        if normal_copy.cleaned_data['normal_same_as_reverse']:
+                            leg_formset_NormalFW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
+                        else:
+                            leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=commutersurvey, prefix='nfw')
+
+            # need to correct for the hidden fields
+            for form in leg_formset_WRFW:
+                leg = form.save(commit=False)
+                leg.day = 'w'
+                leg.direction = 'fw'
+
+            for form in leg_formset_NormalTW:
+                leg = form.save(commit=False)
+                leg.day = 'n'
+                leg.direction = 'tw'
+
+            for form in leg_formset_NormalFW:
+                leg = form.save(commit=False)
+                leg.day = 'n'
+                leg.direction = 'fw'
+
+
+            # def printLegs(formset):
+            #     print("formset")
+            #     for form in formset:
+            #         leg = form.save(commit=False)
+            #         print(leg.mode)
+            #         print(leg.duration)
+            #         print(leg.day)
+            #         print(leg.direction)
+
+            # # if all the legs are filled properly
+            # printLegs(leg_formset_WRTW)
+            # printLegs(leg_formset_WRFW)
+            # printLegs(leg_formset_NormalTW)
+            # printLegs(leg_formset_NormalFW)
+
+            if leg_formset_WRTW.is_valid() and leg_formset_NormalTW.is_valid() and leg_formset_NormalFW.is_valid() and leg_formset_WRFW.is_valid():
 
                 commutersurvey.save()
-
-                leg_formset_NormalTW.save()
-                leg_formset_NormalFW.save()
                 leg_formset_WRTW.save()
                 leg_formset_WRFW.save()
+                leg_formset_NormalTW.save()
+                leg_formset_NormalFW.save()
 
                 # very simple email sending - replace using Mandrill API later
                 name = commutersurvey.name or 'Supporter'
@@ -73,14 +132,18 @@ def add_checkin(request):
 
                 return redirect('/checkin/complete/')
 
-
     else:
+        # initialize empty forms for everything
         commute_form = CommuterForm()
         extra_commute_form = ExtraCommuterForm()
 
-        leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(), prefix='ntw')
-        leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(), prefix='nfw')
-        leg_formset_WRTW = MakeLegs_WRTW(instance=Commutersurvey(), prefix='wtw')
-        leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
+    leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(), prefix='ntw')
+    leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(), prefix='nfw')
+    leg_formset_WRTW = MakeLegs_WRTW(instance=Commutersurvey(), prefix='wtw')
+    leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
 
-    return render(request, "survey/new_checkin.html", { 'wr_day': wr_day, 'form': commute_form, 'extra_form': extra_commute_form, 'NormalTW_formset': leg_formset_NormalTW, 'NormalFW_formset': leg_formset_NormalFW, 'WRTW_formset': leg_formset_WRTW, 'WRFW_formset': leg_formset_WRFW })
+    normal_copy = NormalFromWorkSameAsAboveForm({ 'normal_same_as_reverse': True })
+    wrday_copy = WalkRideFromWorkSameAsAboveForm({ 'walkride_same_as_reverse': True })
+    commute_copy = NormalIdenticalToWalkrideForm({ 'normal_same_as_walkride': True })
+
+    return render(request, "survey/new_checkin.html", { 'wr_day': wr_day, 'form': commute_form, 'extra_form': extra_commute_form, 'NormalTW_formset': leg_formset_NormalTW, 'NormalFW_formset': leg_formset_NormalFW, 'WRTW_formset': leg_formset_WRTW, 'WRFW_formset': leg_formset_WRFW, 'normal_copy': normal_copy, 'wrday_copy': wrday_copy, 'commute_copy': commute_copy })

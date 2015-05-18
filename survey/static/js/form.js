@@ -5,33 +5,73 @@ $(function() {
   });
 
   // activate formset plugin for the 4 formsets
-  $('.from-work .normal-day .leggedrow').formset({
+  $(' .normal-day .from-work .legs-wrapper .leggedrow').formset({
       prefix: 'nfw',
       addText: 'Add Leg',
       deleteText: 'Remove this leg',
       formCssClass: 'dynamic-nfw-form',
       keepFieldValues: 'input[type="hidden"][name^="nfw-0-d"]'
   });
-  $('.to-work .normal-day .leggedrow').formset({
+  $('.normal-day .to-work .legs-wrapper .leggedrow').formset({
       prefix: 'ntw',
       addText: 'Add Leg',
       deleteText: 'Remove this leg',
       formCssClass: 'dynamic-ntw-form',
       keepFieldValues: 'input[type="hidden"][name^="ntw-0-d"]'
   });
-  $('.from-work .wr-day .leggedrow').formset({
+  $('.wr-day .from-work .legs-wrapper .leggedrow').formset({
       prefix: 'wfw',
       addText: 'Add Leg',
       deleteText: 'Remove this leg',
       formCssClass: 'dynamic-wfw-form',
       keepFieldValues: 'input[type="hidden"][name^="wfw-0-d"]'
   });
-  $('.to-work .wr-day .leggedrow').formset({
+  $('.wr-day .to-work .legs-wrapper .leggedrow').formset({
       prefix: 'wtw',
       addText: 'Add Leg',
       deleteText: 'Remove this leg',
       formCssClass: 'dynamic-wtw-form',
       keepFieldValues: 'input[type="hidden"][name^="wtw-0-d"]'
+  });
+
+  // don't let people delete that first leg!! trick by making the link invisible!
+  $('.legs-wrapper .leggedrow:first-of-type .delete-row:first-of-type').css('visibility','hidden')
+
+  // hide extra leg stuff at first
+  $('.wr-day .from-work .legs-wrapper').hide();
+  $('.normal-day').hide();
+  $('.normal-day .from-work .legs-wrapper').hide();
+
+  function clearLegData(selector) {
+    var $legs = $(selector).find('.leggedrow'); //legs
+    var $durations = $legs.find('input[name$="duration"]'); //durations
+    var $modes = $legs.find('select[name$="mode"]'); //modes
+    $durations.val('');
+    $modes.val('').trigger('change');
+    $legs.find('.delete-row').each(function(){
+      if ($(this).css("visibility") != "hidden") { $(this).trigger('click'); } //deletes extra blank legs
+    });
+  }
+
+  // handles options for if walkride day's commute FROM work is same as TO work
+  $('#id_walkride_same_as_reverse input:radio').change(function() {
+    $('.wr-day .from-work .legs-wrapper').toggle({ start: function() {
+      if ($(this).is(':visible')) { clearLegData($(this)); }}
+    });
+  });
+
+  // handles options for if the normal commute happens to be the same as the walk-ride day commute
+  $('#id_normal_same_as_walkride input:radio').change(function() {
+    $('.normal-day').toggle({ start: function() {
+      if ($(this).is(':visible')) { clearLegData($(this)); }}
+    });
+  });
+
+  // handles options for if normal day's commute FROM work is same as TO work
+  $('#id_normal_same_as_reverse input:radio').change(function() {
+    $('.normal-day .from-work .legs-wrapper').toggle({ start: function() {
+      if ($(this).is(':visible')) { clearLegData($(this)); }}
+    });
   });
 
   // do all this stuff for geocoding
@@ -46,8 +86,8 @@ $(function() {
         if ($address.attr('id') == "id_home_address") {
           position1 = results[0].geometry.location;
 
-          if (marker1) { 
-            marker1.setMap(null); 
+          if (marker1) {
+            marker1.setMap(null);
           }
 
           marker1 = new google.maps.Marker({
@@ -59,8 +99,8 @@ $(function() {
         } else if ($address.attr('id') == "id_work_address") {
           position2 = results[0].geometry.location;
 
-          if (marker2) { 
-            marker2.setMap(null); 
+          if (marker2) {
+            marker2.setMap(null);
           }
 
           marker2 = new google.maps.Marker({
@@ -81,7 +121,7 @@ $(function() {
       }
     });
 
-    
+
   }
 
   function setCommuteGeom(origin, destination) {
@@ -99,7 +139,7 @@ $(function() {
       }
     });
   }
-  
+
   function setCommuteGeom2(origin, destination) {
     directionsService2.route({
       origin: origin,
@@ -115,7 +155,7 @@ $(function() {
          }
        });
      }
-   
+
   function setCommuteGeom3(origin, destination) {
     directionsService3.route({
       origin: origin,
@@ -141,7 +181,7 @@ $(function() {
       $('#commute-distance').css('background', '#fff');
     }
   }
-  
+
   function toggleCommuteDistance2(text) {
     if (text !== '') {
       $('#commute-distance2').text(text);
@@ -151,7 +191,7 @@ $(function() {
       $('#commute-distance2').css('background', '#fff');
     }
   }
-  
+
   function toggleCommuteDistance3(text) {
     if (text !== '') {
       $('#commute-distance3').text(text);
@@ -188,7 +228,7 @@ $(function() {
     geocodeAddress($(this));
   });
 
-  var directionsService, directionsDisplay, 
+  var directionsService, directionsDisplay,
       directionsService2, directionsDisplay2,
       directionsService3, directionsDisplay3;
 
