@@ -7,29 +7,29 @@ $(function() {
   // activate formset plugin for the 4 formsets
   $(' .normal-day .from-work .legs-wrapper .leggedrow').formset({
       prefix: 'nfw',
-      addText: 'Add Leg',
-      deleteText: 'Remove this leg',
+      addText: 'Add more segments',
+      deleteText: 'Remove this segment',
       formCssClass: 'dynamic-nfw-form',
       keepFieldValues: 'input[type="hidden"][name^="nfw-0-d"]'
   });
   $('.normal-day .to-work .legs-wrapper .leggedrow').formset({
       prefix: 'ntw',
-      addText: 'Add Leg',
-      deleteText: 'Remove this leg',
+      addText: 'Add more segments',
+      deleteText: 'Remove this segment',
       formCssClass: 'dynamic-ntw-form',
       keepFieldValues: 'input[type="hidden"][name^="ntw-0-d"]'
   });
   $('.wr-day .from-work .legs-wrapper .leggedrow').formset({
       prefix: 'wfw',
-      addText: 'Add Leg',
-      deleteText: 'Remove this leg',
+      addText: 'Add more segments',
+      deleteText: 'Remove this segment',
       formCssClass: 'dynamic-wfw-form',
       keepFieldValues: 'input[type="hidden"][name^="wfw-0-d"]'
   });
   $('.wr-day .to-work .legs-wrapper .leggedrow').formset({
       prefix: 'wtw',
-      addText: 'Add Leg',
-      deleteText: 'Remove this leg',
+      addText: 'Add more segments',
+      deleteText: 'Remove this segment',
       formCssClass: 'dynamic-wtw-form',
       keepFieldValues: 'input[type="hidden"][name^="wtw-0-d"]'
   });
