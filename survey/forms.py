@@ -32,7 +32,7 @@ class CommuterForm(ModelForm):
   def __init__(self, *args, **kwargs):
       super(CommuterForm, self).__init__(*args, **kwargs)
 
-      self.fields['employer'].label = "Employer (use 'None/Self', 'Student', or 'Other employer not involved in this year’s Corporate Challenge' as appropriate)"
+      self.fields['employer'].label = "Employer (use 'None/Self', 'Student', or 'Other employer not involved in this year's Corporate Challenge' as appropriate)"
       self.fields['team'].label = "Sub-team (if applicable)"
       self.fields['work_address'].label = "Workplace Address (or, if you are not employed, other destination)"
 
