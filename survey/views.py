@@ -130,7 +130,8 @@ def add_checkin(request):
 
                 send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html, fail_silently=True)
 
-                return redirect('/checkin/complete/')
+                return render_to_response('survey/thanks.html', { 'person': commutersurvey.name, 'calories_burned': commutersurvey.calories_total, 'calorie_change': commutersurvey.calorie_change, 'carbon_savings': commutersurvey.carbon_savings, 'change_type': commutersurvey.change_type })
+
 
     else:
         # initialize empty forms for everything

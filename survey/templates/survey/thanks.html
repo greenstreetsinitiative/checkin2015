@@ -12,7 +12,16 @@
     <div class="row">
       <div class="span12">
         <h1 class="thanks-page">You successfully checked-in for <span class="nowrap">Walk/Ride Day</span> <span class="nowrap">{{ month }}</span></h1>
-        <p class="lead">Thank you for checking in!</p>
+        <p class="lead">Thank you {{ person }} for checking in!</p>
+        <p>
+        {% if calories_burned > 0 %}
+            On Walk/Ride Day you burned {{ calories_burned }} calories (a {{ calorie_change }} calorie difference from your normal commute!).
+        {% endif %}
+        {% if carbon_savings > 0 %}
+            Thanks to avoiding driving alone, you saved an estimated {{ carbon_savings }} kilograms of carbon dioxide.
+        {% endif %}
+        </p>
+
         <a id="checkin-another" class="btn btn-large btn-primary" href="/checkin/">Check in another person</a>
         <a class="btn btn-large btn-warning" href="/leaderboard/">View Leaderboard</a>
         <hr>
