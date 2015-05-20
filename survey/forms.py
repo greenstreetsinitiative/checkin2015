@@ -92,7 +92,7 @@ class LegForm1(ModelForm):
     self.fields['direction'].initial = 'tw'
     self.fields['day'].widget = HiddenInput()
     self.fields['direction'].widget = HiddenInput()
-    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
     self.fields['mode'].required = False
     self.fields['duration'].required = False
@@ -115,7 +115,7 @@ class LegForm2(ModelForm):
     self.fields['direction'].initial = 'fw'
     self.fields['day'].widget = HiddenInput()
     self.fields['direction'].widget = HiddenInput()
-    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
     self.fields['mode'].required = False
     self.fields['duration'].required = False
@@ -138,7 +138,7 @@ class LegForm3(ModelForm):
     self.fields['direction'].initial = 'tw'
     self.fields['day'].widget = HiddenInput()
     self.fields['direction'].widget = HiddenInput()
-    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
 
 class LegForm4(ModelForm):
@@ -159,7 +159,7 @@ class LegForm4(ModelForm):
     self.fields['direction'].initial = 'fw'
     self.fields['day'].widget = HiddenInput()
     self.fields['direction'].widget = HiddenInput()
-    self.fields['duration'].error_messages['min_value'] = 'Please enter at least 5 minutes of travel.'
+    self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
     self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
     self.fields['mode'].required = False
     self.fields['duration'].required = False

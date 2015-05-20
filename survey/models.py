@@ -223,7 +223,7 @@ class Leg(models.Model):
     )
 
     mode = models.ForeignKey('Mode')
-    duration = models.PositiveSmallIntegerField(default=5, validators=[MinValueValidator(5),MaxValueValidator(1440)]) # ensures legs are longer than 5 minutes and shorter than a day
+    duration = models.PositiveSmallIntegerField(default=5, validators=[MaxValueValidator(1440)]) # ensures legs are shorter than a day
     direction = models.CharField(max_length=2, choices=LEG_DIRECTIONS)
     day = models.CharField(max_length=1, choices=LEG_DAYS)
     checkin = models.ForeignKey('Commutersurvey')
