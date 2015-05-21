@@ -77,7 +77,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'survey',
     'leaderboard',
-    'retail'
+    'retail',
+    'smart_selects' # for the subteams dropdown functionality
 )
 
 MIDDLEWARE_CLASSES = (
@@ -178,3 +179,6 @@ EMAIL_HOST = 'smtp.mandrillapp.com'
 EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = MANDRILL_API_KEY
 EMAIL_HOST_USER = 'jkatzchristy@gogreenstreets.org'
+
+USE_DJANGO_JQUERY = False
+JQUERY_URL = 'static/libs/jquery-1.11.0.min.js'

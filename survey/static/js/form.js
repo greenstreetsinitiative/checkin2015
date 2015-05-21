@@ -1,7 +1,20 @@
 $(function() {
   //activate chosen plugin
-  $("#id_employer, #id_team").chosen({
+  $("#id_employer").chosen({
     width: "99%"
+  });
+
+  //make subteam dropdown required only when there are subteams populated
+  $('#id_team').parent().parent().hide()
+  $(document).ajaxSuccess(function() {
+    // the subteams get populated via ajax which triggers here
+    if ($('#id_team').find('option').length > 1) {
+      $('#id_team').prop('required', true);
+      $('#id_team').parent().parent().show()
+    } else {
+      $('#id_team').prop('required', false);
+      $('#id_team').parent().parent().hide()
+    }
   });
 
   // activate formset plugin for the 4 formsets

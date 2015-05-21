@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 
     # Checkin page
     url(r'^checkin/$', 'survey.views.add_checkin', name='commuterform'),
+    url(r'^chaining/', include('smart_selects.urls')),
     url(r'^checkin/complete/$', TemplateView.as_view(template_name='survey/thanks.html'), name='complete'),
 
     # Leaderboard

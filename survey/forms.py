@@ -21,13 +21,13 @@ class AlertErrorList(ErrorList):
 class CommuterForm(ModelForm):
   class Meta:
       model = Commutersurvey
-      fields = ['name', 'email', 'home_address', 'work_address']
+      fields = ['name', 'email', 'home_address', 'work_address', 'employer', 'team']
 
   # provides a dropdown list of active employers
-  employer = forms.ModelChoiceField(queryset=Employer.objects.filter(active2015=True))
+  # employer = forms.ModelChoiceField(queryset=Employer.objects.filter(active2015=True))
 
-  # provides a dropdown list of teams
-  team = forms.ModelChoiceField(queryset=Team.objects.filter(parent__active2015=True))
+  # # provides a dropdown list of teams
+  # team = forms.ModelChoiceField(queryset=Team.objects.filter(parent__active2015=True))
 
   def __init__(self, *args, **kwargs):
       super(CommuterForm, self).__init__(*args, **kwargs)

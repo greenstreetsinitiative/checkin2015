@@ -4,6 +4,7 @@ from django.db.models import Sum
 from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
 from datetime import date
+from smart_selects.db_fields import ChainedForeignKey
 # Create your models here.
 
 # Walk/Ride Day Months
@@ -104,7 +105,16 @@ class Commutersurvey(models.Model):
     work_address = models.CharField("Workplace address", max_length=300)
     email = models.EmailField("Work email address")
     employer = models.ForeignKey('Employer')
-    team = models.ForeignKey('Team', null=True, blank=True)
+    # team = models.ForeignKey('Team', null=True, blank=True)
+    team = ChainedForeignKey(
+        Team,
+        chained_field="employer",
+        chained_model_field="parent",
+        show_all=False,
+        auto_choose=True,
+        null=True,
+        blank=True
+    )
     comments = models.TextField(null=True, blank=True)
     share = models.BooleanField("Please don't share my identifying information with my employer", default=False)
     contact = models.BooleanField("Contact me", default=False)
