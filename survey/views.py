@@ -57,71 +57,58 @@ def add_checkin(request):
 
             leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
 
+            # time for convoluted logic!
             if request.POST['walkride_same_as_reverse']:
-                # at minimum this formset(walk/ride day to work) needs to be filled out right!
-                if leg_formset_WRTW.is_valid():
-                    print('setting wrfw with tw')
-                    leg_formset_WRFW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                # set w/r legs from work = w/r legs to work
+                leg_formset_WRFW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                # need to correct for the hidden fields
+                for form in leg_formset_WRFW:
+                    leg = form.save(commit=False)
+                    leg.direction = 'fw'
             else:
-                print('setting wrfw')
+                # set w/r legs from work based on user input
                 leg_formset_WRFW = MakeLegs_WRFW(request.POST, instance=commutersurvey, prefix='wfw')
 
             if request.POST['normal_same_as_walkride']:
-                # copy the walk/ride day legs to the normal legs
-                if leg_formset_WRTW.is_valid():
-                    print('setting n tw with wr tw')
-                    leg_formset_NormalTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                # set normal legs to work = w/r legs to work
+                leg_formset_NormalTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                # need to correct for the hidden fields
+                for form in leg_formset_NormalTW:
+                    leg = form.save(commit=False)
+                    leg.day = 'n'
 
+                # AND set normal legs from work based on w/r legs from work
                 if request.POST['walkride_same_as_reverse']:
-                    if leg_formset_WRTW.is_valid():
-                        print('setting n fw with wr tw')
-                        leg_formset_NormalFW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                    # if w/r legs from work = w/r legs to work, use w/r legs to work to set normal legs from work
+                    leg_formset_NormalFW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
+                    # need to correct for the hidden fields
+                    for form in leg_formset_NormalFW:
+                        leg = form.save(commit=False)
+                        leg.day = 'n'
+                        leg.direction = 'fw'
                 else:
-                    if leg_formset_WRFW.is_valid():
-                        print('setting n fw with wr fw')
-                        leg_formset_NormalFW = MakeLegs_WRFW(request.POST, instance=commutersurvey, prefix='wfw')
+                    # if w/r legs from work =/= w/r legs to work, use w/r legs from work to set normal legs from work
+                    leg_formset_NormalFW = MakeLegs_WRFW(request.POST, instance=commutersurvey, prefix='wfw')
+                    # need to correct for the hidden fields
+                    for form in leg_formset_NormalFW:
+                        leg = form.save(commit=False)
+                        leg.day = 'n'
             else:
-                print('setting n tw')
+                # set normal legs to work based on user input
                 leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
                 if request.POST['normal_same_as_reverse']:
-                    if leg_formset_NormalTW.is_valid():
-                        print('setting n fw with n tw')
-                        leg_formset_NormalFW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
+                    # set normal legs from work = normal legs to work
+                    leg_formset_NormalFW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
+                    # need to correct for the hidden fields
+                    for form in leg_formset_NormalFW:
+                        leg = form.save(commit=False)
+                        leg.direction = 'fw'
                 else:
-                    print('setting n fw')
+                    # set normal legs from work based on user input
                     leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=commutersurvey, prefix='nfw')
 
-            # need to correct for the hidden fields
-            for form in leg_formset_WRFW:
-                leg = form.save(commit=False)
-                leg.day = 'w'
-                leg.direction = 'fw'
 
-            for form in leg_formset_NormalTW:
-                leg = form.save(commit=False)
-                leg.day = 'n'
-                leg.direction = 'tw'
-
-            for form in leg_formset_NormalFW:
-                leg = form.save(commit=False)
-                leg.day = 'n'
-                leg.direction = 'fw'
-
-            def printLegs(formset):
-                print("formset")
-                for form in formset:
-                    leg = form.save(commit=False)
-                    print(leg.mode)
-                    print(leg.duration)
-                    print(leg.day)
-                    print(leg.direction)
-
-            # if all the legs are filled properly
-            printLegs(leg_formset_WRTW)
-            printLegs(leg_formset_WRFW)
-            printLegs(leg_formset_NormalTW)
-            printLegs(leg_formset_NormalFW)
-
+            # finally! we're good to go.
             if leg_formset_WRTW.is_valid() and leg_formset_NormalTW.is_valid() and leg_formset_NormalFW.is_valid() and leg_formset_WRFW.is_valid():
 
                 commutersurvey.save()
