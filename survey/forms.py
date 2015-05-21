@@ -32,9 +32,10 @@ class CommuterForm(ModelForm):
   def __init__(self, *args, **kwargs):
       super(CommuterForm, self).__init__(*args, **kwargs)
 
-      self.fields['employer'].label = "Employer (use 'Not employed', 'Self', 'Student', or 'Other employer not involved in this year's Corporate Challenge' as appropriate)"
-      self.fields['team'].label = "Sub-team (if applicable)"
-      self.fields['work_address'].label = "Workplace Address (or, if you are not employed, other destination)"
+      self.fields['employer'].help_text = "Use 'Not employed', 'Self', 'Student', or 'Other employer not involved in this year's Corporate Challenge' as appropriate"
+      self.fields['team'].label = "Sub-team"
+      self.fields['team'].help_text = "If your company has participating sub-teams you must choose a sub-team."
+      self.fields['work_address'].help_text = "Or, if you are not employed, other destination"
 
       # add CSS classes for bootstrap
       self.fields['name'].widget.attrs['class'] = 'form-control'

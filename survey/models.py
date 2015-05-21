@@ -101,7 +101,7 @@ class Commutersurvey(models.Model):
     name = models.CharField("Full name", max_length=100, blank=True, null=True)
     wr_day_month = models.ForeignKey('Month')
     home_address = models.CharField("Home address", max_length=300)
-    work_address = models.CharField("Work address", max_length=300)
+    work_address = models.CharField("Workplace address", max_length=300)
     email = models.EmailField("Work email address")
     employer = models.ForeignKey('Employer')
     team = models.ForeignKey('Team', null=True, blank=True)

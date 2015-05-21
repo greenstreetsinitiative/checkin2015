@@ -42,6 +42,9 @@
         </div>
         <div class="col-sm-7">
           {{ field }}
+          {% if field.help_text %}
+              <span style="font-family: 'Alegreya Sans';">{{ field.help_text }}</span>
+          {% endif %}
           {% if field.errors %}
             <div class="help-block">
             {% for error in field.errors %}
