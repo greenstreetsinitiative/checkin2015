@@ -5,6 +5,18 @@ body {
    list-style-type: none;
 }
 
+.to-work, .from-work {
+   padding: 0 20px 10px 20px;
+}
+
+.headingthing {
+  text-align: center;
+  background-color: rgb(134, 169, 156);
+  color: rgb(227, 240, 227);
+  margin-bottom: 20px;
+  padding: 1px 0 8px 0;
+}
+
 .date {
   font-weight: 700;
   font-family: 'Alegreya Sans SC';
@@ -55,14 +67,15 @@ body {
 a.add-row {
   display: block;
   background-color: rgba(93,167,80,1);
+  border: rgb(47, 119, 35) 1px solid;
   padding: 6px;
   text-align: center;
   color: white;
   font-family: 'Alegreya Sans SC';
   font-size: 18px;
-  -webkit-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(100, 170, 79, 0.6);
-  -moz-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(100, 170, 79, 0.6);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(100, 170, 79, 0.6);
+  -webkit-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.55), 0 0 8px rgba(100, 170, 79, 0.8);
+  -moz-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.55), 0 0 8px rgba(100, 170, 79, 0.8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.55), 0 0 8px rgba(100, 170, 79, 0.8);
   transition: background-color 0.5s ease;
 }
 
@@ -92,6 +105,9 @@ a.delete-row {
   vertical-align: middle;
   position: relative;
   z-index: 1;
+  -webkit-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.55), 0 0 8px rgba(100, 170, 79, 0.8);
+  -moz-box-shadow:  0 1px 1px rgba(0, 0, 0, 0.55), 0 0 8px rgba(100, 170, 79, 0.8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.55), 0 0 8px rgba(100, 170, 79, 0.8);
 }
 
 .cool-button:focus {

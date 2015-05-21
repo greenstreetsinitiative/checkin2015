@@ -37,10 +37,10 @@
     {{ form.non_field_errors }}
     {% for field in form %}
       <div class="form-group {% if field.errors %}has-error{% endif %}">
-        <div class="col-sm-3">
+        <div class="col-sm-5">
           {{ field.label_tag }}
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-7">
           {{ field }}
           {% if field.errors %}
             <div class="help-block">
@@ -68,11 +68,13 @@
     <p class="center">Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). Note: Feel free to check in an anticipated commute. After you submit your check-in, you are allowed to go back and make changes. The system will only record your most recent submission.</p>
 
     <div class="row wr-day">
-
+      <div class="headingthing">
+        <h2>Your Walk/Ride Day commute</h2>
+      </div>
       <div class="col-sm-6">
         <div class="to-work">
-        <center><h3>Walk/Ride Day</h3>
-        <h4>To Work</h4>
+        <center>
+        <h4>From Home To Work</h4>
         <hr class="green">
         </center>
 
@@ -90,8 +92,8 @@
 
       <div class="col-sm-6">
       <div class="from-work">
-        <center><h3>Walk/Ride Day</h3>
-        <h4>From Work</h4><hr class="green"></center>
+        <center>
+        <h4>From Work To Home</h4><hr class="green"></center>
         {{ wrday_copy }}
 
         <div class="legs-wrapper">
@@ -109,17 +111,20 @@
 
     <div class="row">
     <hr class="green">
-    {{ commute_copy }}
-
+      <div class="col-sm-12">
+      {{ commute_copy }}
+      </div>
     </div>
 
     <div class="row normal-day">
-      <hr class="green">
+      <div class="headingthing">
+        <h2>Your normal commute</h2>
+      </div>
       <div class="col-sm-6">
         <div class="to-work">
 
-        <center><h3>Normal Commute</h3>
-        <h4>To Work</h4><hr class="green">
+        <center>
+        <h4>From Home To Work</h4><hr class="green">
         </center>
 
         <div class="legs-wrapper">
@@ -136,8 +141,8 @@
 
       <div class="col-sm-6">
       <div class="from-work">
-        <center><h3>Normal Commute</h3>
-        <h4>From Work</h4><hr class="green"></center>
+        <center>
+        <h4>From Work To Home</h4><hr class="green"></center>
         {{ normal_copy }}
 
         <div class="legs-wrapper">
@@ -156,10 +161,10 @@
     <hr class="green-big">
     {% for field in extra_form %}
       <div class="form-group {% if field.errors %}has-error{% endif %}">
-        <div class="col-sm-3">
+        <div class="col-sm-5">
           {{ field.label_tag }}
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-7">
           {{ field }}
           {% if field.errors %}
             <div class="help-block">

@@ -52,13 +52,14 @@ class CommuterForm(ModelForm):
 class ExtraCommuterForm(ModelForm):
   class Meta:
       model = Commutersurvey
-      fields = ['share', 'comments']
+      fields = ['share', 'comments', 'volunteer']
 
   def __init__(self, *args, **kwargs):
       super(ExtraCommuterForm, self).__init__(*args, **kwargs)
 
       self.fields['share'].label = "Please don't share my identifying information with my employer"
       self.fields['comments'].label = "Add a comment"
+      self.fields['volunteer'].label = "Please contact me with information on ways to help or volunteer with Green Streets Initiative"
       self.fields['comments'].widget.attrs['placeholder'] = "We'd love to hear from you!"
       self.fields['comments'].widget.attrs['rows'] = 2
 
