@@ -29,6 +29,15 @@ def add_checkin(request):
     except Month.DoesNotExist:
         return redirect('/')
 
+    leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(), prefix='ntw')
+    leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(), prefix='nfw')
+    leg_formset_WRTW = MakeLegs_WRTW(instance=Commutersurvey(), prefix='wtw')
+    leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
+
+    normal_copy = NormalFromWorkSameAsAboveForm({ 'normal_same_as_reverse': True })
+    wrday_copy = WalkRideFromWorkSameAsAboveForm({ 'walkride_same_as_reverse': True })
+    commute_copy = NormalIdenticalToWalkrideForm({ 'normal_same_as_walkride': True })
+
     if request.method == 'POST':
 
         # send the filled out forms in!
@@ -36,13 +45,6 @@ def add_checkin(request):
         # the form data from the POST request this way.
         commute_form = CommuterForm(request.POST)
         extra_commute_form = ExtraCommuterForm(request.POST)
-        # leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=Commutersurvey(), prefix='ntw')
-        # leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=Commutersurvey(), prefix='nfw')
-        # leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=Commutersurvey(), prefix='wtw')
-        # leg_formset_WRFW = MakeLegs_WRFW(request.POST, instance=Commutersurvey(), prefix='wfw')
-        normal_copy = NormalFromWorkSameAsAboveForm(request.POST)
-        wrday_copy = WalkRideFromWorkSameAsAboveForm(request.POST)
-        commute_copy = NormalIdenticalToWalkrideForm(request.POST)
 
         # if the main form is correct
         if commute_form.is_valid():
@@ -54,6 +56,7 @@ def add_checkin(request):
             extra_commute_form.is_valid() # creates cleaned_data
             commutersurvey.share = extra_commute_form.cleaned_data['share']
             commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+
 
             leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
 
@@ -128,20 +131,13 @@ def add_checkin(request):
                 send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html, fail_silently=True)
 
                 return render_to_response('survey/thanks.html', { 'person': commutersurvey.name, 'calories_burned': commutersurvey.calories_total, 'calorie_change': commutersurvey.calorie_change, 'carbon_savings': commutersurvey.carbon_savings, 'change_type': commutersurvey.change_type })
-
+        else:
+            pass
 
     else:
         # initialize empty forms for everything
         commute_form = CommuterForm()
         extra_commute_form = ExtraCommuterForm()
 
-        leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(), prefix='ntw')
-        leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(), prefix='nfw')
-        leg_formset_WRTW = MakeLegs_WRTW(instance=Commutersurvey(), prefix='wtw')
-        leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
-
-        normal_copy = NormalFromWorkSameAsAboveForm({ 'normal_same_as_reverse': True })
-        wrday_copy = WalkRideFromWorkSameAsAboveForm({ 'walkride_same_as_reverse': True })
-        commute_copy = NormalIdenticalToWalkrideForm({ 'normal_same_as_walkride': True })
 
     return render(request, "survey/new_checkin.html", { 'wr_day': wr_day, 'form': commute_form, 'extra_form': extra_commute_form, 'NormalTW_formset': leg_formset_NormalTW, 'NormalFW_formset': leg_formset_NormalFW, 'WRTW_formset': leg_formset_WRTW, 'WRFW_formset': leg_formset_WRFW, 'normal_copy': normal_copy, 'wrday_copy': wrday_copy, 'commute_copy': commute_copy })
