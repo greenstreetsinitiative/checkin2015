@@ -190,6 +190,9 @@
     {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
       <div class="alert alert-danger" role="alert">Oops! Please finish completing your checkin.</div>
     {% endif %}
+    <div id="validation1" class="alert alert-danger" role="alert"></div>
+    <div id="validation2" class="alert alert-danger" role="alert"></div>
+    <div id="confirmation" class="alert alert-success" role="alert">Almost there! Click below to finish.</div>
     <button class="cool-button button--ujarak" type="submit" name="action" value="action">
       Submit your checkin!
     </button>

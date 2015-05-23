@@ -114,6 +114,22 @@ a.delete-row {
   outline: none;
 }
 
+.cool-button:disabled {
+  -webkit-box-shadow:  none;
+  -moz-box-shadow:  none;
+  box-shadow: none;
+  color: #aaaaaa;
+  background-color: #666666;
+}
+
+.cool-button:disabled:hover {
+  -webkit-box-shadow:  none;
+  -moz-box-shadow:  none;
+  box-shadow: none;
+  color: #aaaaaa;
+  background-color: #666666;
+}
+
 .cool-button > span {
   vertical-align: middle;
 }
@@ -140,28 +156,17 @@ a.delete-row {
   -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
   transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
 }
-.button--ujarak.button--round-s::before {
-  border-radius: 2px;
-}
-.button--ujarak.button--inverted::before {
-  background: #E3F0E3;
-}
 .button--ujarak,
 .button--ujarak::before {
   -webkit-transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
   transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
 }
-.button--ujarak:hover {
+.button--ujarak:hover:not([disabled]) {
   color: #fff;
   border-color: rgba(93,167,80,100);
   text-decoration: none;
 }
-.button--ujarak.button--inverted:hover {
-  color: rgba(93,167,80,100);
-  border-color: #fff;
-  text-decoration: none;
-}
-.button--ujarak:hover::before {
+.button--ujarak:hover::before :not([disabled]){
   opacity: 1;
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);

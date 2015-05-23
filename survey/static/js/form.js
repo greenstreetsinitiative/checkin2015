@@ -5,7 +5,37 @@ $(function() {
   });
 
   //make subteam dropdown required only when there are subteams populated
-  $('#id_team').parent().parent().hide()
+  $('#id_team').parent().parent().hide();
+
+  $('#validation1, #validation2, #confirmation').hide();
+
+  $('button[type="submit"]').prop('disabled', true);
+
+  // enable the submit button only when stuff is filled in!
+  stuff = 'input[name="email"], input[name="home_address"], input[name="work_address"], select[name="employer"], select[name="team"]:visible, input[name$="duration"]:visible, select[name$="mode"]:visible';
+
+  $('form').on('change', stuff, function(){
+    $('#confirmation').hide();
+    // check if legs are filled
+    empty_legs = $('input[name$="duration"]:visible, select[name$="mode"]:visible').filter(function(el){ return $(this).val() === ""; });
+    // check if other required fields are filled
+    empty_required_fields = $('input[name="email"], input[name="home_address"], input[name="work_address"], select[name="employer"], select[name="team"]:visible').filter(function(el){ return $(this).val() === ""; });
+
+    if (empty_legs.length > 0) {
+      $('#validation2').text('Please make sure all parts of all segments on the screen are filled out.').show();
+    }
+
+    if (empty_required_fields.length > 0) {
+      $('#validation1').text('Please check-in with your email address, two addresses, employer, and your team if applicable.').show();
+    }
+
+    if (empty_required_fields.length + empty_legs.length == 0) {
+      $('#validation1, #validation2').hide();
+      $('#confirmation').show();
+      $('button[type="submit"]').removeAttr('disabled');
+    }
+  });
+
   $(document).ajaxSuccess(function() {
     // the subteams get populated via ajax which triggers here
     if ($('#id_team').find('option').length > 1) {
