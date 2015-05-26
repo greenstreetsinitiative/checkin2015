@@ -23,14 +23,11 @@ class CommuterForm(ModelForm):
       model = Commutersurvey
       fields = ['name', 'email', 'home_address', 'work_address', 'employer', 'team']
 
-  # provides a dropdown list of active employers
-  # employer = forms.ModelChoiceField(queryset=Employer.objects.filter(active2015=True))
-
-  # # provides a dropdown list of teams
-  # team = forms.ModelChoiceField(queryset=Team.objects.filter(parent__active2015=True))
-
   def __init__(self, *args, **kwargs):
       super(CommuterForm, self).__init__(*args, **kwargs)
+
+      self.fields['employer'].queryset = Employer.objects.filter(active2015=True)
+      self.fields['team'].queryset = Team.objects.filter(parent__active2015=True)
 
       self.fields['employer'].help_text = "Use 'Not employed', 'Self', 'Student', or 'Other employer not involved in this year's Corporate Challenge' as appropriate"
       self.fields['team'].label = "Sub-team"
