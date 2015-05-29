@@ -89,7 +89,7 @@ def latest_leaderboard(request):
 
     ### TODO - filter related commutersurveys by MONTH
 
-    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34]).filter(
+    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
         active2015=True,
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
         commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
@@ -118,7 +118,7 @@ def latest_leaderboard_small(request):
 
     ### TODO - filter related commutersurveys by MONTH
 
-    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34]).filter(
+    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
         nr_employees__lte=50,
         active2015=True,
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
@@ -149,7 +149,7 @@ def latest_leaderboard_medium(request):
 
     ### TODO - filter related commutersurveys by MONTH
 
-    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34]).filter(
+    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
         nr_employees__gt=50,
         nr_employees__lte=300,
         active2015=True,
@@ -180,7 +180,7 @@ def latest_leaderboard_large(request):
 
     ### TODO - filter related commutersurveys by MONTH
 
-    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34]).filter(
+    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
         nr_employees__gt=300,
         nr_employees__lte=2000,
         active2015=True,
@@ -211,7 +211,7 @@ def latest_leaderboard_largest(request):
 
     ### TODO - filter related commutersurveys by MONTH
 
-    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34]).filter(
+    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
         nr_employees__gt=2000,
         active2015=True,
         commutersurvey__created__gte=datetime.date(2015, 04, 15),
