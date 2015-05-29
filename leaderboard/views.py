@@ -32,9 +32,9 @@ def calculate_rankings(company_dict):
     for key in top_hs:
         ranks['percent_healthy_switches'].append([key, company_dict[key]['healthy_switch']])
 
-    top_freq = sorted(company_dict.keys(), key=lambda x: company_dict[x]['avg_frequency'], reverse=True)[:10]
-    for key in top_freq:
-        ranks['percent_frequency'].append([key, company_dict[key]['avg_frequency']])
+    # top_freq = sorted(company_dict.keys(), key=lambda x: company_dict[x]['avg_frequency'], reverse=True)[:10]
+    # for key in top_freq:
+    #     ranks['percent_frequency'].append([key, company_dict[key]['avg_frequency']])
 
     return ranks
 
@@ -44,17 +44,17 @@ def calculate_metrics(company):
     percent_already_green = 100*company.percent_already_green()
     percent_green_switch = 100*company.percent_green_switch()
     percent_healthy_switch = 100*company.percent_healthy_switch()
-    percent_frequency = 100*company.percent_average_frequency()
+    # percent_frequency = 100*company.percent_average_frequency()
 
     return {
         'participants': percent_participants,
         'already_green': percent_already_green,
         'green_switch': percent_green_switch,
         'healthy_switch': percent_healthy_switch,
-        'avg_frequency': percent_frequency
+        # 'avg_frequency': percent_frequency
         }
 
-def latest_leaderboard_subteams(request):
+def latest_leaderboard_subteams(request, parentid=None):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
@@ -68,6 +68,9 @@ def latest_leaderboard_subteams(request):
         overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
+    if parentid:
+        teams = teams.filter(parent_id=parentid)
+
     totals = teams.aggregate(
         total_carbon=Sum('saved_carbon'),
         total_calories=Sum('overall_calories'),
@@ -75,11 +78,11 @@ def latest_leaderboard_subteams(request):
     )
 
     for team in teams:
-        d[str(team.parent.name + ' - ' + team.name)] = calculate_metrics(team)
+        d[str(team.name)] = calculate_metrics(team)
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request }, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct(), 'employerName': Employer.objects.get(id=parentid) }, context)
 
 def latest_leaderboard(request):
     # Obtain the context from the HTTP request.
@@ -108,7 +111,7 @@ def latest_leaderboard(request):
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request }, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct() }, context)
 
 def latest_leaderboard_small(request):
     # Obtain the context from the HTTP request.
@@ -138,7 +141,7 @@ def latest_leaderboard_small(request):
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request}, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct()}, context)
 
 
 def latest_leaderboard_medium(request):
@@ -170,7 +173,7 @@ def latest_leaderboard_medium(request):
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request }, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct() }, context)
 
 def latest_leaderboard_large(request):
     # Obtain the context from the HTTP request.
@@ -201,7 +204,7 @@ def latest_leaderboard_large(request):
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request }, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct() }, context)
 
 def latest_leaderboard_largest(request):
     # Obtain the context from the HTTP request.
@@ -231,4 +234,4 @@ def latest_leaderboard_largest(request):
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request }, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct() }, context)

@@ -4,6 +4,27 @@
 
 {% block title %}Leaderboard{% endblock %}
 
+{% block javascript %}
+<script type="text/javascript">
+  // bind change event to select
+  $('#team_parent').bind('change', function () {
+      var url = $(this).val(); // get selected value
+      if (url) { // require a URL
+          window.location = url; // redirect
+      }
+      return false;
+   });
+
+  //select right one initially
+  var parent = '{{employerName}}';
+  if (parent != '') {
+    $("#team_parent option:contains("+parent+")").attr('selected', 'selected');
+  }
+
+
+</script>
+{% endblock %}
+
 {% block body %}
 
 {% load absolutely %}
@@ -38,10 +59,23 @@
   <a class="lb-button {% if request.get_full_path = '/leaderboard/medium/' %}alt{% endif %}" href="{% url 'medium' %}">Medium (51 to 300)</a>
   <a class="lb-button {% if request.get_full_path = '/leaderboard/large/' %}alt{% endif %}" href="{% url 'large' %}">Large (301 to 2000)</a>
   <a class="lb-button {% if request.get_full_path = '/leaderboard/largest/' %}alt{% endif %}" href="{% url 'largest' %}">Largest (2001+ employees)</a>
+
+  <select id="team_parent" name="team_parent">
+    <option>Looking for a subteam?
+    </option>
+
+  {% for employer in employersWithSubteams %}
+     <option value="{% url 'leaderboard.views.latest_leaderboard_subteams' parentid=employer.id %}"
+         {% if employer.name == employerName %}selected="selected"{% endif %}>
+         {{employer.name}}
+     </option>
+  {% endfor %}
+  </select>
   </center>
 </div>
-
+<center>{% if employerName %}<h3>{{employerName}}</h3>{% endif %}</center>
 <div class="row stats" style="padding: 15px 0px;">
+
   <div class="col-sm-3">
     <h4>Staff Participation</h4>
     <ol class="lbrank">
@@ -79,3 +113,5 @@
 
 </div>
 {% endblock %}
+
+
