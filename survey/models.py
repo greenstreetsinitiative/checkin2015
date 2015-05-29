@@ -74,7 +74,7 @@ class Team(models.Model):
         ordering = ['parent__name', 'name']
 
     def __unicode__(self):
-        return unicode(self.parent.name + ' - ' + self.name)
+        return unicode(self.name)
 
     def percent_participation(self):
         return Commutersurvey.objects.filter(team=self).distinct('email').count() / self.nr_members
