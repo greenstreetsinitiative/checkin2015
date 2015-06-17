@@ -54,11 +54,11 @@
 
 <div class="row" style="padding: 15px 0px;">
   <center>
-  <a class="lb-button {% if request.get_full_path = '/leaderboard/' %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='all' %}">All companies</a>
-  <a class="lb-button {% if request.get_full_path = '/leaderboard/small/' %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='small' %}">Small (less than 50)</a>
-  <a class="lb-button {% if request.get_full_path = '/leaderboard/medium/' %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='medium' %}">Medium (51 to 300)</a>
-  <a class="lb-button {% if request.get_full_path = '/leaderboard/large/' %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='large' %}">Large (301 to 2000)</a>
-  <a class="lb-button {% if request.get_full_path = '/leaderboard/largest/' %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='largest' %}">Largest (2001+ employees)</a>
+  <a class="lb-button {% if request.get_full_path = '/leaderboard/' %}alt{% endif %}" href="{% url 'all' %}">All companies</a>
+  <a class="lb-button {% if request.get_full_path = '/leaderboard/small/' %}alt{% endif %}" href="{% url 'small' %}">Small (less than 50)</a>
+  <a class="lb-button {% if request.get_full_path = '/leaderboard/medium/' %}alt{% endif %}" href="{% url 'medium' %}">Medium (51 to 300)</a>
+  <a class="lb-button {% if request.get_full_path = '/leaderboard/large/' %}alt{% endif %}" href="{% url 'large' %}">Large (301 to 2000)</a>
+  <a class="lb-button {% if request.get_full_path = '/leaderboard/largest/' %}alt{% endif %}" href="{% url 'largest' %}">Largest (2001+ employees)</a>
 
   <select id="team_parent" name="team_parent">
     <option>Looking for a subteam?
