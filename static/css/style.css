@@ -47,7 +47,25 @@ body {
   transition: all 0.8s ease-in-out;
 }
 
+.lb-button-month {
+  display: inline-block;
+  border: 2px solid #E3F0E3;
+  padding: 6px 10px;
+  margin: 4px 2px;
+  text-align: center;
+  color: black;
+  font-family: 'Alegreya Sans SC';
+  font-size: 16px;
+  transition: all 0.8s ease-in-out;
+}
+
 .lb-button:hover {
+  background-color: rgba(93,167,80,1);
+  color: white;
+  text-decoration: none;
+}
+
+.lb-button-month:hover {
   background-color: rgba(93,167,80,1);
   color: white;
   text-decoration: none;

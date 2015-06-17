@@ -32,9 +32,6 @@ def calculate_rankings(company_dict):
     for key in top_hs:
         ranks['percent_healthy_switches'].append([key, company_dict[key]['healthy_switch']])
 
-    # top_freq = sorted(company_dict.keys(), key=lambda x: company_dict[x]['avg_frequency'], reverse=True)[:10]
-    # for key in top_freq:
-    #     ranks['percent_frequency'].append([key, company_dict[key]['avg_frequency']])
 
     return ranks
 
@@ -54,19 +51,24 @@ def calculate_metrics(company):
         # 'avg_frequency': percent_frequency
         }
 
-def latest_leaderboard(request, selected_month='all', size='all', parentid=None):
+def latest_leaderboard(request, size='all', parentid=None, selected_month='all'):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
     d = {}
 
+    parent = None
+
     if parentid: # this is a bunch of subteams
+        parent = Employer.objects.get(id=parentid)
+
         survey_data = Team.objects.only('id','name').filter(parent_id=parentid,
             commutersurvey__created__gte=datetime.date(2015, 04, 15),
             commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
             saved_carbon=Sum('commutersurvey__carbon_savings'),
             overall_calories=Sum('commutersurvey__calories_total'),
             num_checkins=Count('commutersurvey'))
+
     else: # this is a bunch of companies
         survey_data = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
             active2015=True,
@@ -109,4 +111,4 @@ def latest_leaderboard(request, selected_month='all', size='all', parentid=None)
 
     ranks = calculate_rankings(d)
 
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct() }, context)
+    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct(), 'size': size, 'selected_month': selected_month, 'parent': parent }, context)

@@ -17,14 +17,15 @@ urlpatterns = patterns('',
     url(r'^checkin/complete/$', TemplateView.as_view(template_name='survey/thanks.html'), name='complete'),
 
     # Leaderboard
-    # Example leaderboard/may(or all)/small (or all or subteams)/
-
     url(r'^leaderboard/$', 'leaderboard.views.latest_leaderboard', name="all"),
-    # Add leaderboards by month too
-    url(r'^leaderboard/(?P<selected_month>\w+)/$', 'leaderboard.views.latest_leaderboard', name="months"),
-    url(r'^leaderboard/(?P<selected_month>\w+)/(?P<size>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="all"),
-    url(r'^leaderboard/(?P<selected_month>\w+)/(?P<size>[\w\.-]*)/subteams/$', 'leaderboard.views.latest_leaderboard', name="subteams_all"),
-    url(r'^leaderboard/(?P<selected_month>\w+)/(?P<size>[\w\.-]*)/subteams/(?P<parentid>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams"),
+    url(r'^leaderboard/(?P<size>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="all"),
+    url(r'^leaderboard/all/subteams/$', 'leaderboard.views.latest_leaderboard', name="subteams_all"),
+    url(r'^leaderboard/all/subteams/(?P<parentid>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams"),
+    url(r'^leaderboard/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="all_months"),
+    url(r'^leaderboard/(?P<size>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="all_months"),
+    # url(r'^leaderboard/subteams/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams_all_months"),
+    url(r'^leaderboard/all/subteams/(?P<parentid>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams_months"),
+    url(r'^leaderboard/(?P<size>[\w\.-]*)/subteams/(?P<parentid>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams_months_sized"),
 
     # Admin
     url(r'^admin/', include(admin.site.urls)),
