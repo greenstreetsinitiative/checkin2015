@@ -64,22 +64,13 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
 
         survey_data = Team.objects.only('id','name').filter(parent_id=parentid,
             commutersurvey__created__gte=datetime.date(2015, 04, 15),
-            commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
-            saved_carbon=Sum('commutersurvey__carbon_savings'),
-            overall_calories=Sum('commutersurvey__calories_total'),
-            num_checkins=Count('commutersurvey'))
+            commutersurvey__created__lte=datetime.date(2015, 11, 01))
 
     else: # this is a bunch of companies
         survey_data = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
             active2015=True,
             commutersurvey__created__gte=datetime.date(2015, 04, 15),
             commutersurvey__created__lte=datetime.date(2015, 11, 01))
-
-    survey_data = survey_data.annotate(
-        saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calories_total'),
-        num_checkins=Count('commutersurvey'))
-
 
     if selected_month != 'all':
         months_dict = { 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
@@ -99,6 +90,11 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
             else:
                 if size == 'largest':
                     survey_data = survey_data.filter(nr_employees__gt=2000)
+
+    survey_data = survey_data.annotate(
+        saved_carbon=Sum('commutersurvey__carbon_savings'),
+        overall_calories=Sum('commutersurvey__calories_total'),
+        num_checkins=Count('commutersurvey'))
 
     totals = survey_data.aggregate(
         total_carbon=Sum('saved_carbon'),
