@@ -54,76 +54,57 @@ def calculate_metrics(company):
         # 'avg_frequency': percent_frequency
         }
 
-def latest_leaderboard_subteams(request, parentid=None):
+def latest_leaderboard(request, selected_month='all', size='all', parentid=None):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
     d = {}
 
-    ### TODO - filter related commutersurveys by MONTH
+    if parentid: # this is a bunch of subteams
+        survey_data = Team.objects.only('id','name').filter(parent_id=parentid,
+            commutersurvey__created__gte=datetime.date(2015, 04, 15),
+            commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
+            saved_carbon=Sum('commutersurvey__carbon_savings'),
+            overall_calories=Sum('commutersurvey__calories_total'),
+            num_checkins=Count('commutersurvey'))
+    else: # this is a bunch of companies
+        survey_data = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
+            active2015=True,
+            commutersurvey__created__gte=datetime.date(2015, 04, 15),
+            commutersurvey__created__lte=datetime.date(2015, 11, 01))
 
-    teams = Team.objects.only('id','name').filter(commutersurvey__created__gte=datetime.date(2015, 04, 15),
-        commutersurvey__created__lte=datetime.date(2015, 11, 01)).annotate(
+    survey_data = survey_data.annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
         overall_calories=Sum('commutersurvey__calories_total'),
         num_checkins=Count('commutersurvey'))
 
-    if parentid:
-        teams = teams.filter(parent_id=parentid)
 
-    totals = teams.aggregate(
-        total_carbon=Sum('saved_carbon'),
-        total_calories=Sum('overall_calories'),
-        total_checkins=Sum('num_checkins')
-    )
+    if selected_month != 'all':
+        months_dict = { 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
+        shortmonth = months_dict[selected_month]
+        month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=shortmonth)
+        survey_data = survey_data.filter(commutersurvey__wr_day_month=month_model)
 
-    for team in teams:
-        d[str(team.name)] = calculate_metrics(team)
-
-    ranks = calculate_rankings(d)
-
-    return render_to_response('leaderboard/leaderboard_new.html', { 'ranks': ranks, 'totals': totals, 'request': request, 'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct(), 'employerName': Employer.objects.get(id=parentid) }, context)
-
-def latest_leaderboard(request, size='all', month=None):
-    # Obtain the context from the HTTP request.
-    context = RequestContext(request)
-
-    d = {}
-
-    companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
-        active2015=True,
-        commutersurvey__created__gte=datetime.date(2015, 04, 15),
-        commutersurvey__created__lte=datetime.date(2015, 11, 01))
-
-
-    ### TODO - filter related commutersurveys by MONTH
-    if month:
-        companies = companies.filter(commutersurvey__wr_day_id=month)
-
-    companies.annotate(
-        saved_carbon=Sum('commutersurvey__carbon_savings'),
-        overall_calories=Sum('commutersurvey__calories_total'),
-        num_checkins=Count('commutersurvey'))
-
+    # Filtering the results by size
     if size == 'small':
-        companies = companies.filter(nr_employees__lte=50)
+        survey_data = survey_data.filter(nr_employees__lte=50)
     else:
         if size == 'medium':
-            companies = companies.filter(nr_employees__gt=50,nr_employees__lte=300)
+            survey_data = survey_data.filter(nr_employees__gt=50,nr_employees__lte=300)
         else:
             if size == 'large':
-                companies = companies.filter(nr_employees__gt=300,nr_employees__lte=2000)
+                survey_data = survey_data.filter(nr_employees__gt=300,nr_employees__lte=2000)
             else:
                 if size == 'largest':
-                    companies = companies.filter(nr_employees__gt=2000)
+                    survey_data = survey_data.filter(nr_employees__gt=2000)
 
-    totals = companies.aggregate(
+    totals = survey_data.aggregate(
         total_carbon=Sum('saved_carbon'),
         total_calories=Sum('overall_calories'),
         total_checkins=Sum('num_checkins')
     )
 
-    for company in companies:
+    for company in survey_data:
         d[str(company.name)] = calculate_metrics(company)
 
     ranks = calculate_rankings(d)
