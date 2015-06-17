@@ -39,7 +39,8 @@ class Employer(models.Model):
         return unicode(self.name)
 
     def percent_participation(self):
-        return Commutersurvey.objects.filter(employer=self).distinct('email').count() / self.nr_employees
+        elapsed_months = Month.objects.filter(wr_day__year='2015', open_checkin__lte=date.today()).count()
+        return Commutersurvey.objects.filter(employer=self).count() / (self.nr_employees * elapsed_months)
 
     def percent_already_green(self):
         surveys = Commutersurvey.objects.filter(employer=self)
