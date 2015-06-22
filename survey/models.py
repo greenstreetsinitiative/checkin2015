@@ -45,25 +45,29 @@ class Employer(models.Model):
     def percent_already_green(self):
         surveys = Commutersurvey.objects.filter(employer=self)
         already_green = surveys.filter(already_green=True).count()
-        percent = already_green / surveys.count()
+        if surveys.count() > 0:
+            percent = already_green / surveys.count()
+        else:
+            percent = 0.0
         return percent
 
     def percent_green_switch(self):
         surveys = Commutersurvey.objects.filter(employer=self)
         green_switch = surveys.filter(change_type__in=['g','p']).count()
-        percent = green_switch / surveys.count()
+        if surveys.count() > 0:
+            percent = green_switch / surveys.count()
+        else:
+            percent = 0.0
         return percent
 
     def percent_healthy_switch(self):
         surveys = Commutersurvey.objects.filter(employer=self)
         healthy_switch = surveys.filter(change_type__in=['h','p']).count()
-        percent = healthy_switch / surveys.count()
+        if surveys.count() > 0:
+            percent = healthy_switch / surveys.count()
+        else:
+            percent = 0.0
         return percent
-
-    def percent_average_frequency(self):
-        startdate = date(2015,4,15)
-        num_passed_months = Month.objects.filter(open_checkin__gte=startdate,open_checkin__lte=date.today()).count()
-        return Commutersurvey.objects.filter(employer=self).distinct('email').count() / (self.nr_employees * num_passed_months)
 
 # Teams
 class Team(models.Model):
@@ -83,19 +87,28 @@ class Team(models.Model):
     def percent_already_green(self):
         surveys = Commutersurvey.objects.filter(team=self)
         already_green = surveys.filter(already_green=True).count()
-        percent = already_green / surveys.count()
+        if surveys.count() > 0:
+            percent = already_green / surveys.count()
+        else:
+            percent = 0.0
         return percent
 
     def percent_green_switch(self):
         surveys = Commutersurvey.objects.filter(team=self)
         green_switch = surveys.filter(change_type__in=['g','p']).count()
-        percent = green_switch / surveys.count()
+        if surveys.count() > 0:
+            percent = green_switch / surveys.count()
+        else:
+            percent = 0.0
         return percent
 
     def percent_healthy_switch(self):
         surveys = Commutersurvey.objects.filter(team=self)
         healthy_switch = surveys.filter(change_type__in=['h','p']).count()
-        percent = healthy_switch / surveys.count()
+        if surveys.count() > 0:
+            percent = healthy_switch / surveys.count()
+        else:
+            percent = 0.0
         return percent
 
 # Checkins

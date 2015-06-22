@@ -62,34 +62,30 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
     if parentid: # this is a bunch of subteams
         parent = Employer.objects.get(id=parentid)
 
-        survey_data = Team.objects.only('id','name').filter(parent_id=parentid,
-            commutersurvey__created__gte=datetime.date(2015, 04, 15),
-            commutersurvey__created__lte=datetime.date(2015, 11, 01))
+        teams = Team.objects.only('id','name').filter(parent_id=parentid)
+
+        survey_data = teams
 
     else: # this is a bunch of companies
-        survey_data = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(
-            active2015=True,
-            commutersurvey__created__gte=datetime.date(2015, 04, 15),
-            commutersurvey__created__lte=datetime.date(2015, 11, 01))
+        companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(active2015=True)
+
+        # Filtering the results by size
+        if size == 'small':
+            companies = companies.filter(nr_employees__lte=50)
+        elif size == 'medium':
+            companies = companies.filter(nr_employees__gt=50,nr_employees__lte=300)
+        elif size == 'large':
+            companies = companies.filter(nr_employees__gt=300,nr_employees__lte=2000)
+        elif size == 'largest':
+            companies = companies.filter(nr_employees__gt=2000)
+
+        survey_data = companies
 
     if selected_month != 'all':
         months_dict = { 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
         shortmonth = months_dict[selected_month]
         month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=shortmonth)
         survey_data = survey_data.filter(commutersurvey__wr_day_month=month_model)
-
-    # Filtering the results by size
-    if size == 'small':
-        survey_data = survey_data.filter(nr_employees__lte=50)
-    else:
-        if size == 'medium':
-            survey_data = survey_data.filter(nr_employees__gt=50,nr_employees__lte=300)
-        else:
-            if size == 'large':
-                survey_data = survey_data.filter(nr_employees__gt=300,nr_employees__lte=2000)
-            else:
-                if size == 'largest':
-                    survey_data = survey_data.filter(nr_employees__gt=2000)
 
     survey_data = survey_data.annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
