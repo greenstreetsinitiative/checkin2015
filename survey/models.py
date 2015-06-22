@@ -153,6 +153,9 @@ class Commutersurvey(models.Model):
     carbon_savings = models.FloatField(blank=True, null=True, default=0.0) # assuming normal day is driving
     calories_total = models.FloatField(blank=True, null=True, default=0.0) # calories burned on w/r day
 
+    class Meta:
+        unique_together = ("email", "wr_day_month")
+
     def __unicode__(self):
         return unicode(self.id)
 
@@ -213,6 +216,14 @@ class Commutersurvey(models.Model):
 
     # overwrite the save method so we can calculate all the data!
     def save(self, *args, **kwargs):
+        # if there's an existing checkin for this month/email, delete that one and replace it with this checkin
+        existing_checkin = Commutersurvey.objects.filter(wr_day_month=self.wr_day_month, email=self.email)
+        if self.id:
+            # if this instance has already been saved we need to filter out this instance from our results.
+            existing_checkin = existing_checkin.exclude(pk=self.id)
+        if existing_checkin.exists():
+            existing_checkin.delete()
+
         changes = self.calculate_difference()
         self.carbon_change = changes["carbon"]
         self.calorie_change = changes["calories"]
