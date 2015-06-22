@@ -4,6 +4,14 @@ $(function() {
     width: "99%"
   });
 
+  // show message for those running IE 7 or lower
+  var isIE = document.all && !document.querySelector;
+  if (isIE) {
+    $('.browser').show();
+  } else {
+    $('.browser').hide();
+  }
+
   //make subteam dropdown required only when there are subteams populated
   $('#id_team').parent().parent().hide();
 
