@@ -50,7 +50,7 @@ class CommuterForm(ModelForm):
             "Or, if you are not "
             "employed, other destination")
 
-       # add CSS classes for bootstrap
+        # add CSS classes for bootstrap
         self.fields['name'].widget.attrs['class'] = 'form-control'
         self.fields['email'].widget.attrs['class'] = 'form-control'
         self.fields['home_address'].widget.attrs['class'] = 'form-control'
@@ -97,6 +97,7 @@ class RequiredFormSet(BaseInlineFormSet):
             form.empty_permitted = False
             form.error_class = AlertErrorList
 
+#FIXME: LegForms 1 2 3 and 4 should all be a single class
 class LegForm1(ModelForm):
 
     class Meta:
@@ -197,7 +198,6 @@ class LegForm4(ModelForm):
 
 
 MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm3, extra=1, max_num=10, can_delete=True)
-# MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm3, extra=1, max_num=10, can_delete=True)
 MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm4,
                                       extra=1, max_num=10, can_delete=True)
 MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
