@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
-# Create your models here.
+
 
 # Walk/Ride Day Months
 class Month(models.Model):
@@ -247,7 +247,8 @@ class Leg(models.Model):
     )
 
     mode = models.ForeignKey('Mode')
-    duration = models.PositiveSmallIntegerField(default=5, validators=[MaxValueValidator(1440)]) # ensures legs are shorter than a day
+    duration = models.PositiveSmallIntegerField(default=5, 
+        validators=[MaxValueValidator(1440)]) #ensures legs < a day
     direction = models.CharField(max_length=2, choices=LEG_DIRECTIONS)
     day = models.CharField(max_length=1, choices=LEG_DAYS)
     checkin = models.ForeignKey('Commutersurvey')
@@ -257,34 +258,29 @@ class Leg(models.Model):
     def calc_metrics(self):
         calories = 0.0
         carbon = 0.0
-
         if self.mode:
             kcal = float(self.mode.met) # kcal/(kg*hour) from this mode
-
             if kcal > 0.0:
-                # amount of calories (kcal) burned by this leg using average American weight of 81 kg based on a duration in minutes
+                #kcal burned by leg using average weight of 81 kg 
+                #based on duration in minutes
                 calories = kcal * (self.duration/60) * 81
-
-            coo = float(self.mode.carb) # grams carbon dioxide per passenger-mile on this mode
-
+            #grams carbon dioxide per passenger-mile on this mode
+            coo = float(self.mode.carb)
             if coo > 0.0:
-
-                s = float(self.mode.speed) # average speed of this mode in mph
-
-                # amount of carbon in kilograms expended by this leg based on a duration in minutes
+                s = float(self.mode.speed) # average speed in mph
+                #kilograms carbon expended in leg based on duration in minutes
                 carbon = (coo/1000) * s * (self.duration/60)
 
         return {'carbon': carbon, 'calories': calories }
 
     def save(self, *args, **kwargs):
-        # save carbon change
+        """save carbon change"""
         metrics = self.calc_metrics()
         self.carbon = metrics['carbon']
         self.calories = metrics['calories']
         super(Leg, self).save(*args, **kwargs)
-
-        self.checkin.save() # resave the related survey (recalculates carbon and calories)
-
+        #resave the related survey (recalculates carbon and calories)
+        self.checkin.save() 
     def __unicode__(self):
         return unicode(self.mode)
 
