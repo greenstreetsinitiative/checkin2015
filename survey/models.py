@@ -2,7 +2,7 @@ from __future__ import division
 from django.db import models
 from django.db.models import Sum
 from django.core.validators import MaxValueValidator
-# unused: MinValueValidator
+# unused import: MinValueValidator
 import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
@@ -42,12 +42,16 @@ class Employer(models.Model):
         return unicode(self.name)
 
     def percent_participation(self):
+        """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.filter(
             wr_day__year='2015', open_checkin__lte=date.today()).count()
         return Commutersurvey.objects.filter(employer=self).count() / \
             (self.nr_employees * elapsed_months)
 
     def percent_already_green(self):
+        """Calculates and returns the percentage of employees who
+        already have a green commute
+        """
         surveys = Commutersurvey.objects.filter(employer=self)
         already_green = surveys.filter(already_green=True).count()
         if surveys.count() > 0:
@@ -57,6 +61,9 @@ class Employer(models.Model):
         return percent
 
     def percent_green_switch(self):
+        """
+        Calculates and returns the % of employees who made a green switch
+        """
         surveys = Commutersurvey.objects.filter(employer=self)
         green_switch = surveys.filter(change_type__in=['g', 'p']).count()
         if surveys.count() > 0:
@@ -66,6 +73,9 @@ class Employer(models.Model):
         return percent
 
     def percent_healthy_switch(self):
+        """
+        Calculates and returns the % of employees who made a healthy switch
+        """
         surveys = Commutersurvey.objects.filter(employer=self)
         healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
         if surveys.count() > 0:
@@ -89,7 +99,8 @@ class Team(models.Model):
 
     def percent_participation(self):
         """percent of team participating in wrday"""
-        return Commutersurvey.objects.filter(team=self).distinct('email').count() / self.nr_members
+        return Commutersurvey.objects.filter(team=self).distinct('email').\
+            count() / self.nr_members
 
     def percent_already_green(self):
         """percent of commute already 'green' """
@@ -123,7 +134,7 @@ class Team(models.Model):
 
 
 class Commutersurvey(models.Model):
-    """Checkins """
+    """Represents an individual (I think individual) checkin"""
     name = models.CharField("Full name", max_length=100, blank=True, null=True)
     wr_day_month = models.ForeignKey('Month')
     home_address = models.CharField("Home address", max_length=300)
