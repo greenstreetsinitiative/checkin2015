@@ -15,7 +15,7 @@ class Month(models.Model):
     open_checkin = models.DateField(null=True)
     close_checkin = models.DateField(null=True)
 
-    class Meta:
+    class Meta(object):
         ordering = ['wr_day']
 
     def __unicode__(self):
@@ -35,7 +35,7 @@ class Employer(models.Model):
     nr_employees = models.PositiveIntegerField(default=1)
     active2015 = models.BooleanField("2015 Challenge", default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['name']
 
     def __unicode__(self):
@@ -81,7 +81,7 @@ class Team(models.Model):
     parent = models.ForeignKey('Employer')
     nr_members = models.PositiveSmallIntegerField(default=1)
 
-    class Meta:
+    class Meta(object):
         ordering = ['parent__name', 'name']
 
     def __unicode__(self):
