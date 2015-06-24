@@ -31,6 +31,7 @@ class Month(models.Model):
 
 
 class Employer(models.Model):
+    """Represents a participating employer"""
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)
     active2015 = models.BooleanField("2015 Challenge", default=False)
@@ -182,6 +183,13 @@ class Commutersurvey(models.Model):
         return unicode(self.id)
 
     def calculate_difference(self):
+        """
+        Calculates the difference in terms of calories burned and
+            carbon emmitted between the commute of this check-in and that
+            of an average (driving) commute.
+        Returns results as a dict, with 'carbon' and 'calories' keyed to
+            their changes
+        """
         legs = self.leg_set.only('carbon', 'calories', 'day').all()
         difference = {'carbon': 0.000, 'calories': 0.000}
         for leg in legs:
@@ -194,6 +202,10 @@ class Commutersurvey(models.Model):
         return difference
 
     def change_analysis(self):
+        """
+        Determines if the change is healthy, green, both or neither.
+        Returns results as a single-letter string.
+        """
         if self.carbon_change < 0:
             if self.calorie_change > 0:
                 return 'p' # positive change!
@@ -206,11 +218,11 @@ class Commutersurvey(models.Model):
                 return 'n' # no change
 
     def check_green(self):
-        """return true if any leg on a normal day commute is green."""
+        """returns true if any leg on a normal day commute is green."""
         return self.leg_set.filter(day='n', mode__green=True).exists()
 
     def carbon_saved(self):
-        """return the total carbon saved from all legs in kg"""
+        """returns the total carbon saved from all legs in kg"""
         normal_car_carbon = 0.0
         wr_day_carbon = 0.0
         legs = self.leg_set.only('carbon', 'day').all()
@@ -226,6 +238,7 @@ class Commutersurvey(models.Model):
         return carbon_saved
 
     def calories_totalled(self):
+        """Returns the total amount of calories burned due to wrday"""
         wr_day_calories = 0.0
         wr_day_calories = self.leg_set.only('calories').filter(
             day='w').aggregate(Sum('calories'))['calories__sum']
@@ -233,7 +246,7 @@ class Commutersurvey(models.Model):
 
 
     def save(self, *args, **kwargs):
-        """overwrite the save method so we can calculate all the data!"""
+        """overwrites the save method in order to calculate all the data!"""
         changes = self.calculate_difference()
         self.carbon_change = changes["carbon"]
         self.calorie_change = changes["calories"]
