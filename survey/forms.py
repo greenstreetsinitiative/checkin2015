@@ -9,7 +9,7 @@ from django.forms.util import ErrorList
 from django.forms.widgets import HiddenInput
 
 #just for now - remove later
-#pylint: disable=line-too-long
+#pylint: disable=missing-docstring
 
 class AlertErrorList(ErrorList):
     """define custom formatting for the leg errors"""
@@ -17,9 +17,12 @@ class AlertErrorList(ErrorList):
         return self.as_divs()
 
     def as_divs(self):
-        if not self: return u''
-        for e in self:
-            return u'<div class="alert alert-danger dangerous" role="alert">%s</div>' % e
+        if not self:
+            return u''
+        #FIXME: will this even work as intended?
+        for error in self:
+            return (u'<div class="alert alert-danger dangerous" '
+                    'role="alert">%s</div>' % error)
 
 class CommuterForm(ModelForm):
     class Meta:
@@ -30,15 +33,24 @@ class CommuterForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
 
-        self.fields['employer'].queryset = Employer.objects.filter(active2015=True)
-        self.fields['team'].queryset = Team.objects.filter(parent__active2015=True)
+        self.fields['employer'].queryset = Employer.objects.filter(
+            active2015=True)
+        self.fields['team'].queryset = Team.objects.filter(
+            parent__active2015=True)
 
-        self.fields['employer'].help_text = "Use 'Not employed', 'Self', 'Student', or 'Other employer not involved in this year's Corporate Challenge' as appropriate"
+        self.fields['employer'].help_text = (
+            "Use 'Not employed', 'Self',"
+            " 'Student', or 'Other employer not involved in this year's"
+            " Corporate Challenge' as appropriate")
         self.fields['team'].label = "Sub-team"
-        self.fields['team'].help_text = "If your company has participating sub-teams you must choose a sub-team."
-        self.fields['work_address'].help_text = "Or, if you are not employed, other destination"
+        self.fields['team'].help_text = (
+            "If your company has participating "
+            "sub-teams you must choose a sub-team.")
+        self.fields['work_address'].help_text = (
+            "Or, if you are not "
+            "employed, other destination")
 
-      # add CSS classes for bootstrap
+       # add CSS classes for bootstrap
         self.fields['name'].widget.attrs['class'] = 'form-control'
         self.fields['email'].widget.attrs['class'] = 'form-control'
         self.fields['home_address'].widget.attrs['class'] = 'form-control'
@@ -46,10 +58,14 @@ class CommuterForm(ModelForm):
         self.fields['employer'].widget.attrs['class'] = 'form-control'
         self.fields['team'].widget.attrs['class'] = 'form-control'
         self.fields['team'].required = False
-        self.fields['home_address'].error_messages['required'] = 'Please enter a home address.'
-        self.fields['work_address'].error_messages['required'] = 'Please enter an address.'
-        self.fields['employer'].error_messages['required'] = 'Please pick an option from the list.'
-        self.fields['email'].error_messages['required'] = 'Please enter an email address.'
+        self.fields['home_address'].error_messages['required'] = (
+            'Please enter a home address.')
+        self.fields['work_address'].error_messages['required'] = (
+            'Please enter an address.')
+        self.fields['employer'].error_messages['required'] = (
+            'Please pick an option from the list.')
+        self.fields['email'].error_messages['required'] = (
+            'Please enter an email address.')
 
 class ExtraCommuterForm(ModelForm):
     class Meta:
@@ -59,10 +75,14 @@ class ExtraCommuterForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ExtraCommuterForm, self).__init__(*args, **kwargs)
 
-        self.fields['share'].label = "Please don't share my identifying information with my employer"
+        self.fields['share'].label = (
+            "Please don't share my identifying information with my employer")
         self.fields['comments'].label = "Add a comment"
-        self.fields['volunteer'].label = "Please contact me with information on ways to help or volunteer with Green Streets Initiative"
-        self.fields['comments'].widget.attrs['placeholder'] = "We'd love to hear from you!"
+        self.fields['volunteer'].label = (
+            "Please contact me with information on ways to help or volunteer"
+            " with Green Streets Initiative")
+        self.fields['comments'].widget.attrs['placeholder'] = (
+            "We'd love to hear from you!")
         self.fields['comments'].widget.attrs['rows'] = 2
 
         # add CSS classes for bootstrap
@@ -95,8 +115,10 @@ class LegForm1(ModelForm):
         self.fields['direction'].initial = 'tw'
         self.fields['day'].widget = HiddenInput()
         self.fields['direction'].widget = HiddenInput()
-        self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
-        self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+        self.fields['duration'].error_messages['max_value'] = (
+            'Did you really travel a whole day?')
+        self.fields['mode'].error_messages['required'] = (
+            'Please tell us how you traveled.')
         self.fields['mode'].required = False
         self.fields['duration'].required = False
 
@@ -118,8 +140,10 @@ class LegForm2(ModelForm):
         self.fields['direction'].initial = 'fw'
         self.fields['day'].widget = HiddenInput()
         self.fields['direction'].widget = HiddenInput()
-        self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
-        self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+        self.fields['duration'].error_messages['max_value'] = (
+            'Did you really travel a whole day?')
+        self.fields['mode'].error_messages['required'] = (
+            'Please tell us how you traveled.')
         self.fields['mode'].required = False
         self.fields['duration'].required = False
 
@@ -141,8 +165,10 @@ class LegForm3(ModelForm):
         self.fields['direction'].initial = 'tw'
         self.fields['day'].widget = HiddenInput()
         self.fields['direction'].widget = HiddenInput()
-        self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
-        self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+        self.fields['duration'].error_messages['max_value'] = (
+            'Did you really travel a whole day?')
+        self.fields['mode'].error_messages['required'] = (
+            'Please tell us how you traveled.')
 
 class LegForm4(ModelForm):
 
@@ -162,22 +188,28 @@ class LegForm4(ModelForm):
         self.fields['direction'].initial = 'fw'
         self.fields['day'].widget = HiddenInput()
         self.fields['direction'].widget = HiddenInput()
-        self.fields['duration'].error_messages['max_value'] = 'Did you really travel a whole day?'
-        self.fields['mode'].error_messages['required'] = 'Please tell us how you traveled.'
+        self.fields['duration'].error_messages['max_value'] = (
+            'Did you really travel a whole day?')
+        self.fields['mode'].error_messages['required'] = (
+            'Please tell us how you traveled.')
         self.fields['mode'].required = False
         self.fields['duration'].required = False
 
 
 MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm3, extra=1, max_num=10, can_delete=True)
 # MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, formset=RequiredFormSet, form=LegForm3, extra=1, max_num=10, can_delete=True)
-MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm4, extra=1, max_num=10, can_delete=True)
-MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1, extra=1, max_num=10, can_delete=True)
-MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2, extra=1, max_num=10, can_delete=True)
+MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm4,
+                                      extra=1, max_num=10, can_delete=True)
+MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
+                                          extra=1, max_num=10, can_delete=True)
+MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
+                                          extra=1, max_num=10, can_delete=True)
 
 class NormalFromWorkSameAsAboveForm(forms.Form):
-    normal_same_as_reverse = forms.BooleanField(widget=forms.RadioSelect(
-        choices=((True, 'YES'), (False, 'NO'))), initial=True,
-        label='I did the same as to work, but in reverse.')
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'I did the same as to work, but in reverse.'
+    normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
+                                                label=label)
 
 class WalkRideFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
@@ -188,6 +220,6 @@ class WalkRideFromWorkSameAsAboveForm(forms.Form):
 class NormalIdenticalToWalkrideForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
     label = 'My normal commute is exactly like my walk ride day commute.'
-    normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True, 
+    normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
                                                  label=label)
 
