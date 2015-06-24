@@ -15,8 +15,6 @@ import json
 import mandrill
 from datetime import date
 
-from django.shortcuts import render
-
 
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -127,36 +125,84 @@ def add_checkin(request):
                         request.POST, instance=commutersurvey, prefix='nfw')
 
             # finally! we're good to go.
-            if (leg_formset_WRTW.is_valid()
-                and leg_formset_NormalTW.is_valid()
-                and leg_formset_NormalFW.is_valid()
-                and leg_formset_WRFW.is_valid()):
+            if (leg_formset_WRTW.is_valid() and
+                leg_formset_NormalTW.is_valid() and
+                leg_formset_NormalFW.is_valid() and
+                leg_formset_WRFW.is_valid()):
+
                 commutersurvey.save()
                 leg_formset_WRTW.save()
                 leg_formset_WRFW.save()
                 leg_formset_NormalTW.save()
                 leg_formset_NormalFW.save()
-
                 # very simple email sending - replace using Mandrill API later
                 name = commutersurvey.name or 'Supporter'
                 subject = ('Walk/Ride Day ' +
                            commutersurvey.wr_day_month.month + ' Checkin')
-                message_html = '<p>Dear ' + name +',</p><p>Thank you for checking in your Walk/Ride Day commute! This email confirms your participation in ' + commutersurvey.wr_day_month.month + '\'s Walk/Ride Day! Feel free to show it to our <a href="http://checkin-greenstreets.rhcloud.com/retail" style="color: #2ba6cb;text-decoration: none;">Retail Partners</a> to take advantage of their offers of freebies, discounts, and other goodies!</p><p>Now <a href="http://checkin2015-greenstreets.rhcloud.com/leaderboard/" style="color: #2ba6cb;text-decoration: none;">CLICK HERE</a> to see how your company is doing in the Corporate Challenge! Share with your friends and colleagues!</p><p>Thank you for being involved! Remember to check-in for next month\'s Walk/Ride Day.</p><p>Warmly,<br><span style="color:#006600;font-weight:bold;">Janie Katz-Christy, Director <br>Green Streets Initiative<br> <span class="mobile_link">617-299-1872 (office)</p><p>Share with your friends and colleagues! <a href="http://checkin.gogreenstreets.org" style="color: #2ba6cb;text-decoration: none;">Make sure they get a chance to check in</p>'
+                message_html = (
+                    '<p>Dear {name},</p><p>Thank you for checking'
+                    ' in your Walk/Ride Day commute! This email confirms your'
+                    'participation in {survey_date}\'s Walk/Ride Day! Feel '
+                    'free to show it to our <a href="http://checkin'
+                    '-greenstreets.rhcloud.com/retail" style="color:'
+                    '#2ba6cb;text-decoration: none;">Retail Partners</a> '
+                    'to take advantage of their offers of freebies, '
+                    'discounts, and other goodies!</p><p>Now <a href="http://'
+                    'checkin2015-greenstreets.rhcloud.com/leaderboard/" '
+                    'style="color: #2ba6cb;text-decoration: none;">CLICK HERE'
+                    '</a> to see how your company is doing in the Corporate'
+                    ' Challenge! Share with your friends and colleagues!</p>'
+                    '<p>Thank you for being involved! Remember to check-in '
+                    'for next month\'s Walk/Ride Day.</p><p>Warmly,<br>'
+                    '<span style="color:#006600;font-weight:bold;">Janie Katz'
+                    '-Christy, Director <br>Green Streets Initiative<br> '
+                    '<span class="mobile_link">617-299-1872 (office)</p>'
+                    '<p>Share with your friends and colleagues! '
+                    '<a href="http://checkin.gogreenstreets.org" '
+                    'style="color: #2ba6cb;text-decoration: none;">Make sure'
+                    ' they get a chance to check in</p>'.format(
+                        name=name,
+                        survey_date=commutersurvey.wr_day_month.month))
 
-                message_plain = 'Dear Supporter, Thank you for checking in your Walk/Ride Day commute! This email confirms your participation in ' + commutersurvey.wr_day_month.month + '\'s Walk/Ride Day! Feel free to show it to our Retail Partners to take advantage of their offers of freebies, discounts, and other goodies! Thank you for being involved! Remember to check-in for next month\'s Walk/Ride Day. Warmly, Green Streets Initiative'
+                message_plain = (
+                    'Dear Supporter, Thank you for checking in '
+                    'your Walk/Ride Day commute! This email confirms your'
+                    'participation in ' + commutersurvey.wr_day_month.month +
+                    '\'s Walk/Ride Day! Feel free to show it to our Retail'
+                    ' Partners to take advantage of their offers of freebies,'
+                    ' discounts, and other goodies! Thank you for being'
+                    ' involved! Remember to check-in for next month\'s Walk/Ride'
+                    ' Day. Warmly, Green Streets Initiative')
                 recipient_list = [commutersurvey.email,]
                 from_email = 'checkin@gogreenstreets.org'
-
-                send_mail(subject, message_plain, from_email, recipient_list, html_message=message_html, fail_silently=True)
-
-                return render_to_response('survey/thanks.html', { 'person': commutersurvey.name, 'calories_burned': commutersurvey.calories_total, 'calorie_change': commutersurvey.calorie_change, 'carbon_savings': commutersurvey.carbon_savings, 'change_type': commutersurvey.change_type })
+                send_mail(subject, message_plain, from_email, recipient_list,
+                          html_message=message_html, fail_silently=True)
+                return render_to_response(
+                        'survey/thanks.html',
+                        {
+                            'person': commutersurvey.name,
+                            'calories_burned': commutersurvey.calories_total,
+                            'calorie_change': commutersurvey.calorie_change,
+                            'carbon_savings': commutersurvey.carbon_savings,
+                            'change_type': commutersurvey.change_type
+                        })
         else:
             pass
-
     else:
         # initialize empty forms for everything
         commute_form = CommuterForm()
         extra_commute_form = ExtraCommuterForm()
+    return render(request, "survey/new_checkin.html",
+                  {
+                      'wr_day': wr_day,
+                      'form': commute_form,
+                      'extra_form': extra_commute_form,
+                      'NormalTW_formset': leg_formset_NormalTW,
+                      'NormalFW_formset': leg_formset_NormalFW,
+                      'WRTW_formset': leg_formset_WRTW,
+                      'WRFW_formset': leg_formset_WRFW,
+                      'normal_copy': normal_copy,
+                      'wrday_copy': wrday_copy,
+                      'commute_copy': commute_copy
+                  })
 
-
-    return render(request, "survey/new_checkin.html", { 'wr_day': wr_day, 'form': commute_form, 'extra_form': extra_commute_form, 'NormalTW_formset': leg_formset_NormalTW, 'NormalFW_formset': leg_formset_NormalFW, 'WRTW_formset': leg_formset_WRTW, 'WRFW_formset': leg_formset_WRFW, 'normal_copy': normal_copy, 'wrday_copy': wrday_copy, 'commute_copy': commute_copy })
