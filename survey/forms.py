@@ -8,8 +8,6 @@ from django.forms.models import BaseInlineFormSet
 from django.forms.util import ErrorList
 from django.forms.widgets import HiddenInput
 
-#just for now - remove later
-#pylint: disable=missing-docstring
 
 class AlertErrorList(ErrorList):
     """define custom formatting for the leg errors"""
