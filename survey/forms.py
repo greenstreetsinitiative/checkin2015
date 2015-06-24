@@ -15,8 +15,8 @@ class AlertErrorList(ErrorList):
 
   def as_divs(self):
     if not self: return u''
-    for e in self:
-      return u'<div class="alert alert-danger dangerous" role="alert">%s</div>' % e
+    for error in self:
+      return u'<div class="alert alert-danger dangerous" role="alert">{}</div>'.format(error)
 
 class CommuterForm(ModelForm):
   class Meta:
