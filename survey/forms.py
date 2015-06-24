@@ -8,6 +8,8 @@ from django.forms.models import BaseInlineFormSet
 from django.forms.util import ErrorList
 from django.forms.widgets import HiddenInput
 
+#just for now - remove later
+#pylint: disable=line-too-long
 
 class AlertErrorList(ErrorList):
     """define custom formatting for the leg errors"""
@@ -16,13 +18,13 @@ class AlertErrorList(ErrorList):
 
     def as_divs(self):
         if not self: return u''
-        for error in self:
-        return u'<div class="alert alert-danger dangerous" role="alert">{}</div>'.format(error)
+        for e in self:
+            return u'<div class="alert alert-danger dangerous" role="alert">%s</div>' % e
 
 class CommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
-        fields = ['name', 'email', 'home_address', 'work_address', 
+        fields = ['name', 'email', 'home_address', 'work_address',
                   'employer', 'team']
 
     def __init__(self, *args, **kwargs):
@@ -173,10 +175,19 @@ MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1, ex
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2, extra=1, max_num=10, can_delete=True)
 
 class NormalFromWorkSameAsAboveForm(forms.Form):
-    normal_same_as_reverse = forms.BooleanField(widget=forms.RadioSelect(choices=((True,'YES'),(False,'NO'))), initial=True, label='I did the same as to work, but in reverse.')
+    normal_same_as_reverse = forms.BooleanField(widget=forms.RadioSelect(
+        choices=((True, 'YES'), (False, 'NO'))), initial=True,
+        label='I did the same as to work, but in reverse.')
 
 class WalkRideFromWorkSameAsAboveForm(forms.Form):
-    walkride_same_as_reverse = forms.BooleanField(widget=forms.RadioSelect(choices=((True,'YES'),(False,'NO'))), initial=True, label='I did the same as to work, but in reverse.')
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'I did the same as to work, but in reverse.'
+    walkride_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
+                                                  label=label)
 
 class NormalIdenticalToWalkrideForm(forms.Form):
-    normal_same_as_walkride = forms.BooleanField(widget=forms.RadioSelect(choices=((True,'YES'),(False,'NO'))), initial=True, label='My normal commute is exactly like my walk ride day commute.')
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'My normal commute is exactly like my walk ride day commute.'
+    normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True, 
+                                                 label=label)
+
