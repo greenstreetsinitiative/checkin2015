@@ -33,6 +33,7 @@ class CommuterForm(ModelForm):
       self.fields['team'].label = "Sub-team"
       self.fields['team'].help_text = "If your company has participating sub-teams you must choose a sub-team."
       self.fields['work_address'].help_text = "Or, if you are not employed, other destination"
+      self.fields['home_address'].help_text = "If you do not wish to share your exact address, you may enter the closest intersection."
 
       # add CSS classes for bootstrap
       self.fields['name'].widget.attrs['class'] = 'form-control'
