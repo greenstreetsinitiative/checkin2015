@@ -92,12 +92,21 @@
 <div class="row stats" style="padding: 15px 0px;">
 
   <div class="col-sm-3">
+  {% if selected_month == 'all' %}
+    <h4>Average Participation To Date</h4>
+    <ol class="lbrank">
+    {% for key, value in ranks.percent_avg_participation %}
+      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
+    {% endfor %}
+    </ol>
+  {% else %}
     <h4>Staff Participation</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_participation %}
       <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:2 }}%</span></a></li>
     {% endfor %}
     </ol>
+  {% endif %}
   </div>
   <div class="col-sm-3">
     <h4>Green Commutes</h4>

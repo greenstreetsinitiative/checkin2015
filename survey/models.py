@@ -44,6 +44,10 @@ class Employer(models.Model):
 
     def percent_participation(self):
         """Calculates and returns the percentage of employees participating"""
+        return Commutersurvey.objects.filter(employer=self).count() / self.nr_employees
+
+    def average_percent_participation(self):
+        """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.filter(
             wr_day__year='2015', open_checkin__lte=date.today()).count()
         return Commutersurvey.objects.filter(employer=self).count() / \
@@ -99,9 +103,15 @@ class Team(models.Model):
         return unicode(self.name)
 
     def percent_participation(self):
-        """percent of team participating in wrday"""
-        return Commutersurvey.objects.filter(team=self).distinct('email').\
-            count() / self.nr_members
+        """Calculates and returns the percentage of team employees participating"""
+        return Commutersurvey.objects.filter(team=self).count() / self.nr_members
+
+    def average_percent_participation(self):
+        """Calculates and returns the percentage of team employees participating"""
+        elapsed_months = Month.objects.filter(
+            wr_day__year='2015', open_checkin__lte=date.today()).count()
+        return Commutersurvey.objects.filter(team=self).count() / \
+            (self.nr_members * elapsed_months)
 
     def percent_already_green(self):
         """percent of commute already 'green' """
