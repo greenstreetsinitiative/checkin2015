@@ -32,25 +32,29 @@ def calculate_rankings(company_dict):
         ranks['percent_healthy_switches'].append([key, company_dict[key]['healthy_switch']])
 
     top_avg_participation = sorted(company_dict.keys(), key=lambda x: company_dict[x]['avg_participation'], reverse=True)[:10]
-    for key in top_hs:
+    for key in top_avg_participation:
         ranks['percent_avg_participation'].append([key, company_dict[key]['avg_participation']])
 
     return ranks
 
 
-def calculate_metrics(company):
-    percent_participants = 100*company.percent_participation()
-    percent_already_green = 100*company.percent_already_green()
-    percent_green_switch = 100*company.percent_green_switch()
-    percent_healthy_switch = 100*company.percent_healthy_switch()
+def calculate_metrics(company, selected_month):
+
+    months_dict = { 'all': 'all', 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
+    shortmonth = months_dict[selected_month]
+
+    percent_participants = 100*company.percent_participation(shortmonth)
+    percent_already_green = 100*company.percent_already_green(shortmonth)
+    percent_green_switch = 100*company.percent_green_switch(shortmonth)
+    percent_healthy_switch = 100*company.percent_healthy_switch(shortmonth)
     percent_participants_average = 100*company.average_percent_participation()
 
     return {
-        'participants': percent_participants,
-        'already_green': percent_already_green,
-        'green_switch': percent_green_switch,
-        'healthy_switch': percent_healthy_switch,
-        'avg_participation': percent_participants_average
+        'participants': round(percent_participants,1),
+        'already_green': round(percent_already_green,1),
+        'green_switch': round(percent_green_switch,1),
+        'healthy_switch': round(percent_healthy_switch,1),
+        'avg_participation': round(percent_participants_average,1)
         }
 
 def latest_leaderboard(request, size='all', parentid=None, selected_month='all'):
@@ -101,7 +105,7 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
     )
 
     for company in survey_data:
-        d[str(company.name)] = calculate_metrics(company)
+        d[str(company.name)] = calculate_metrics(company, selected_month)
 
     ranks = calculate_rankings(d)
 
