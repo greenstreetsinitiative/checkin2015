@@ -1,19 +1,21 @@
 from __future__ import division
 from django.db import models
 from django.db.models import Sum
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator
+# unused import: MinValueValidator
 import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
-# Create your models here.
 
-# Walk/Ride Day Months
+
+
 class Month(models.Model):
+    """Walk/Ride Day Months"""
     wr_day = models.DateField('W/R Day Date', null=True)
     open_checkin = models.DateField(null=True)
     close_checkin = models.DateField(null=True)
 
-    class Meta:
+    class Meta(object):
         ordering = ['wr_day']
 
     def __unicode__(self):
@@ -27,22 +29,30 @@ class Month(models.Model):
     def month(self):
         return self.wr_day.strftime(u'%B %Y'.encode('utf-8')).decode('utf-8')
 
+
 class Employer(models.Model):
+    """Represents a participating employer"""
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)
     active2015 = models.BooleanField("2015 Challenge", default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['name']
 
     def __unicode__(self):
         return unicode(self.name)
 
     def percent_participation(self):
-        elapsed_months = Month.objects.filter(wr_day__year='2015', open_checkin__lte=date.today()).count()
-        return Commutersurvey.objects.filter(employer=self).count() / (self.nr_employees * elapsed_months)
+        """Calculates and returns the percentage of employees participating"""
+        elapsed_months = Month.objects.filter(
+            wr_day__year='2015', open_checkin__lte=date.today()).count()
+        return Commutersurvey.objects.filter(employer=self).count() / \
+            (self.nr_employees * elapsed_months)
 
     def percent_already_green(self):
+        """Calculates and returns the percentage of employees who
+        already have a green commute
+        """
         surveys = Commutersurvey.objects.filter(employer=self)
         already_green = surveys.filter(already_green=True).count()
         if surveys.count() > 0:
@@ -52,8 +62,11 @@ class Employer(models.Model):
         return percent
 
     def percent_green_switch(self):
+        """
+        Calculates and returns the % of employees who made a green switch
+        """
         surveys = Commutersurvey.objects.filter(employer=self)
-        green_switch = surveys.filter(change_type__in=['g','p']).count()
+        green_switch = surveys.filter(change_type__in=['g', 'p']).count()
         if surveys.count() > 0:
             percent = green_switch / surveys.count()
         else:
@@ -61,30 +74,37 @@ class Employer(models.Model):
         return percent
 
     def percent_healthy_switch(self):
+        """
+        Calculates and returns the % of employees who made a healthy switch
+        """
         surveys = Commutersurvey.objects.filter(employer=self)
-        healthy_switch = surveys.filter(change_type__in=['h','p']).count()
+        healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
         if surveys.count() > 0:
             percent = healthy_switch / surveys.count()
         else:
             percent = 0.0
         return percent
 
-# Teams
+
 class Team(models.Model):
+    """Teams"""
     name = models.CharField("Team", max_length=150)
     parent = models.ForeignKey('Employer')
     nr_members = models.PositiveSmallIntegerField(default=1)
 
-    class Meta:
+    class Meta(object):
         ordering = ['parent__name', 'name']
 
     def __unicode__(self):
         return unicode(self.name)
 
     def percent_participation(self):
-        return Commutersurvey.objects.filter(team=self).distinct('email').count() / self.nr_members
+        """percent of team participating in wrday"""
+        return Commutersurvey.objects.filter(team=self).distinct('email').\
+            count() / self.nr_members
 
     def percent_already_green(self):
+        """percent of commute already 'green' """
         surveys = Commutersurvey.objects.filter(team=self)
         already_green = surveys.filter(already_green=True).count()
         if surveys.count() > 0:
@@ -94,8 +114,9 @@ class Team(models.Model):
         return percent
 
     def percent_green_switch(self):
+        """change in 'greenness' of commute due to switch"""
         surveys = Commutersurvey.objects.filter(team=self)
-        green_switch = surveys.filter(change_type__in=['g','p']).count()
+        green_switch = surveys.filter(change_type__in=['g', 'p']).count()
         if surveys.count() > 0:
             percent = green_switch / surveys.count()
         else:
@@ -103,16 +124,18 @@ class Team(models.Model):
         return percent
 
     def percent_healthy_switch(self):
+        """change in healthiness of commute due to switch"""
         surveys = Commutersurvey.objects.filter(team=self)
-        healthy_switch = surveys.filter(change_type__in=['h','p']).count()
+        healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
         if surveys.count() > 0:
             percent = healthy_switch / surveys.count()
         else:
             percent = 0.0
         return percent
 
-# Checkins
+
 class Commutersurvey(models.Model):
+    """Represents an individual (I think individual) checkin"""
     name = models.CharField("Full name", max_length=100, blank=True, null=True)
     wr_day_month = models.ForeignKey('Month')
     home_address = models.CharField("Home address", max_length=300)
@@ -130,12 +153,12 @@ class Commutersurvey(models.Model):
         blank=True
     )
     comments = models.TextField(null=True, blank=True)
-    share = models.BooleanField("Please don't share my identifying information with my employer", default=False)
+    share = models.BooleanField(
+        "Please don't share my identifying information with my employer",
+        default=False)
     contact = models.BooleanField("Contact me", default=False)
     volunteer = models.BooleanField('Available to volunteer', default=False)
-
     created = models.DateTimeField(auto_now_add=True)
-
     # calculated changes between normal day and walk/ride day
     CHANGE_CHOICES = (
         ('p', 'Positive change'),
@@ -146,12 +169,15 @@ class Commutersurvey(models.Model):
 
     carbon_change = models.FloatField(blank=True, null=True, default=0.0)
     calorie_change = models.FloatField(blank=True, null=True, default=0.0)
-    change_type = models.CharField(max_length=1, null=True, blank=True, choices=CHANGE_CHOICES)
+    change_type = models.CharField(max_length=1, null=True, blank=True,
+                                   choices=CHANGE_CHOICES)
 
     # walk/ride day information that will be calculated
     already_green = models.BooleanField(default=False) # if normal day was green
-    carbon_savings = models.FloatField(blank=True, null=True, default=0.0) # assuming normal day is driving
-    calories_total = models.FloatField(blank=True, null=True, default=0.0) # calories burned on w/r day
+    #carbon savings assumes a normal day is driving
+    carbon_savings = models.FloatField(blank=True, null=True, default=0.0)
+    # calories burned on w/r day
+    calories_total = models.FloatField(blank=True, null=True, default=0.0)
 
     class Meta:
         unique_together = ("email", "wr_day_month")
@@ -160,10 +186,15 @@ class Commutersurvey(models.Model):
         return unicode(self.id)
 
     def calculate_difference(self):
-        legs = self.leg_set.only('carbon','calories','day').all()
-
-        difference = {'carbon': 0.000, 'calories': 0.000 }
-
+        """
+        Calculates the difference in terms of calories burned and
+            carbon emmitted between the commute of this check-in and that
+            of an average (driving) commute.
+        Returns results as a dict, with 'carbon' and 'calories' keyed to
+            their changes
+        """
+        legs = self.leg_set.only('carbon', 'calories', 'day').all()
+        difference = {'carbon': 0.000, 'calories': 0.000}
         for leg in legs:
             if leg.day == 'w':
                 difference["carbon"] += leg.carbon
@@ -171,10 +202,13 @@ class Commutersurvey(models.Model):
             elif leg.day == 'n':
                 difference["carbon"] -= leg.carbon
                 difference["calories"] -= leg.calories
-
         return difference
 
     def change_analysis(self):
+        """
+        Determines if the change is healthy, green, both or neither.
+        Returns results as a single-letter string.
+        """
         if self.carbon_change < 0:
             if self.calorie_change > 0:
                 return 'p' # positive change!
@@ -187,15 +221,14 @@ class Commutersurvey(models.Model):
                 return 'n' # no change
 
     def check_green(self):
-        # if any leg on a normal day commute is green
-        return self.leg_set.filter(day='n',mode__green=True).exists()
+        """returns true if any leg on a normal day commute is green."""
+        return self.leg_set.filter(day='n', mode__green=True).exists()
 
     def carbon_saved(self):
+        """returns the total carbon saved from all legs in kg"""
         normal_car_carbon = 0.0
         wr_day_carbon = 0.0
-
-        legs = self.leg_set.only('carbon','day').all()
-
+        legs = self.leg_set.only('carbon', 'day').all()
         for leg in legs:
             if leg.day == 'n':
                 car_speed = Mode.objects.get(name="Driving alone").speed
@@ -204,19 +237,19 @@ class Commutersurvey(models.Model):
                 normal_car_carbon += carbon
             elif leg.day == 'w':
                 wr_day_carbon += leg.carbon
-
         carbon_saved = wr_day_carbon - normal_car_carbon
-
         return carbon_saved
 
     def calories_totalled(self):
+        """Returns the total amount of calories burned due to wrday"""
         wr_day_calories = 0.0
-        wr_day_calories = self.leg_set.only('calories').filter(day='w').aggregate(Sum('calories'))['calories__sum']
+        wr_day_calories = self.leg_set.only('calories').filter(
+            day='w').aggregate(Sum('calories'))['calories__sum']
         return wr_day_calories
 
-    # overwrite the save method so we can calculate all the data!
+
     def save(self, *args, **kwargs):
-        # if there's an existing checkin for this month/email, delete that one and replace it with this checkin
+        """if there's an existing checkin for this month/email, delete that one and replace it with this checkin"""
         existing_checkin = Commutersurvey.objects.filter(wr_day_month=self.wr_day_month, email=self.email)
         if self.id:
             # if this instance has already been saved we need to filter out this instance from our results.
@@ -224,6 +257,7 @@ class Commutersurvey(models.Model):
         if existing_checkin.exists():
             existing_checkin.delete()
 
+        """overwrites the save method in order to calculate all the data!"""
         changes = self.calculate_difference()
         self.carbon_change = changes["carbon"]
         self.calorie_change = changes["calories"]
@@ -233,8 +267,9 @@ class Commutersurvey(models.Model):
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
 
-# Information on different modes of transportation
+
 class Mode(models.Model):
+    """Information on different modes of transportation"""
     name = models.CharField("Mode", max_length=35)
     met = models.FloatField(blank=True, null=True)
     carb = models.FloatField(blank=True, null=True)
@@ -244,21 +279,23 @@ class Mode(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-# Part of a commute
-class Leg(models.Model):
 
+class Leg(models.Model):
+    """representation for part of a commute"""
+    #FIXME: these look like they want to be enums
+    # right now they look like bad C code
     LEG_DIRECTIONS = (
         ('tw', 'to work'),
         ('fw', 'from work'),
     )
-
     LEG_DAYS = (
         ('w', 'Walk/Ride Day'),
         ('n', 'Normal day'),
     )
 
     mode = models.ForeignKey('Mode')
-    duration = models.PositiveSmallIntegerField(default=5, validators=[MaxValueValidator(1440)]) # ensures legs are shorter than a day
+    duration = models.PositiveSmallIntegerField(
+        default=5, validators=[MaxValueValidator(1440)]) #ensures legs < a day
     direction = models.CharField(max_length=2, choices=LEG_DIRECTIONS)
     day = models.CharField(max_length=1, choices=LEG_DAYS)
     checkin = models.ForeignKey('Commutersurvey')
@@ -266,36 +303,31 @@ class Leg(models.Model):
     calories = models.FloatField(default=0.0)
 
     def calc_metrics(self):
+        """Calculate the carbon output and calories burned for this leg"""
         calories = 0.0
         carbon = 0.0
-
         if self.mode:
             kcal = float(self.mode.met) # kcal/(kg*hour) from this mode
-
             if kcal > 0.0:
-                # amount of calories (kcal) burned by this leg using average American weight of 81 kg based on a duration in minutes
+                #kcal burned by leg using average weight of 81 kg,
+                #based on duration in minutes
                 calories = kcal * (self.duration/60) * 81
-
-            coo = float(self.mode.carb) # grams carbon dioxide per passenger-mile on this mode
-
+            #grams carbon dioxide per passenger-mile on this mode
+            coo = float(self.mode.carb)
             if coo > 0.0:
-
-                s = float(self.mode.speed) # average speed of this mode in mph
-
-                # amount of carbon in kilograms expended by this leg based on a duration in minutes
+                s = float(self.mode.speed) # average speed in mph
+                #kilograms carbon expended in leg based on duration in minutes
                 carbon = (coo/1000) * s * (self.duration/60)
-
-        return {'carbon': carbon, 'calories': calories }
+        return {'carbon': carbon, 'calories': calories}
 
     def save(self, *args, **kwargs):
-        # save carbon change
+        """save carbon change"""
         metrics = self.calc_metrics()
         self.carbon = metrics['carbon']
         self.calories = metrics['calories']
         super(Leg, self).save(*args, **kwargs)
-
-        self.checkin.save() # resave the related survey (recalculates carbon and calories)
-
+        #resave the related survey (recalculates carbon and calories)
+        self.checkin.save()
     def __unicode__(self):
         return unicode(self.mode)
 
