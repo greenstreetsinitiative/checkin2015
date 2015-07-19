@@ -105,7 +105,7 @@ class LegForm1(ModelForm):
     def __init__(self, *args, **kwargs):
         super(LegForm1, self).__init__(*args, **kwargs)
 
-        self.fields['mode'].label = "How you traveled"
+        self.fields['mode'].label = "How you typically travel"
         self.fields['duration'].label = "Time in minutes"
 
         self.fields['mode'].widget.attrs['class'] = 'form-control'
@@ -117,7 +117,7 @@ class LegForm1(ModelForm):
         self.fields['duration'].error_messages['max_value'] = (
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
-            'Please tell us how you traveled.')
+            'Please tell us how you typically travel.')
         self.fields['mode'].required = False
         self.fields['duration'].required = False
 
@@ -130,7 +130,7 @@ class LegForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super(LegForm2, self).__init__(*args, **kwargs)
 
-        self.fields['mode'].label = "How you traveled"
+        self.fields['mode'].label = "How you typically travel"
         self.fields['duration'].label = "Time in minutes"
 
         self.fields['mode'].widget.attrs['class'] = 'form-control'
@@ -142,7 +142,7 @@ class LegForm2(ModelForm):
         self.fields['duration'].error_messages['max_value'] = (
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
-            'Please tell us how you traveled.')
+            'Please tell us how you typically travel.')
         self.fields['mode'].required = False
         self.fields['duration'].required = False
 
@@ -155,7 +155,7 @@ class LegForm3(ModelForm):
     def __init__(self, *args, **kwargs):
         super(LegForm3, self).__init__(*args, **kwargs)
 
-        self.fields['mode'].label = "How you traveled"
+        self.fields['mode'].label = "How you did, or will, travel"
         self.fields['duration'].label = "Time in minutes"
 
         self.fields['mode'].widget.attrs['class'] = 'form-control'
@@ -167,7 +167,7 @@ class LegForm3(ModelForm):
         self.fields['duration'].error_messages['max_value'] = (
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
-            'Please tell us how you traveled.')
+            'Please tell us how you did, or will, travel.')
 
 class LegForm4(ModelForm):
 
@@ -178,7 +178,7 @@ class LegForm4(ModelForm):
     def __init__(self, *args, **kwargs):
         super(LegForm4, self).__init__(*args, **kwargs)
 
-        self.fields['mode'].label = "How you traveled"
+        self.fields['mode'].label = "How you did, or will, travel"
         self.fields['duration'].label = "Time in minutes"
 
         self.fields['mode'].widget.attrs['class'] = 'form-control'
@@ -190,7 +190,7 @@ class LegForm4(ModelForm):
         self.fields['duration'].error_messages['max_value'] = (
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
-            'Please tell us how you traveled.')
+            'Please tell us how you did, or will, travel.')
         self.fields['mode'].required = False
         self.fields['duration'].required = False
 
@@ -205,13 +205,13 @@ MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
 
 class NormalFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'I did the same as to work, but in reverse.'
+    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
     normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
                                                 label=label)
 
 class WalkRideFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'I did the same as to work, but in reverse.'
+    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
     walkride_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
                                                   label=label)
 
@@ -220,4 +220,3 @@ class NormalIdenticalToWalkrideForm(forms.Form):
     label = 'My normal commute is exactly like my walk ride day commute.'
     normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
                                                  label=label)
-
