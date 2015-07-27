@@ -27,7 +27,7 @@ $(function() {
     // check if legs are filled
     empty_legs = $('input[name$="duration"]:visible, select[name$="mode"]:visible').filter(function(el){ return $(this).val() === ""; });
     // check if other required fields are filled
-    empty_required_fields = $('input[name="email"], input[name="home_address"], input[name="work_address"], select[name="employer"], select[name="team"]:visible').filter(function(el){ return $(this).val() === ""; });
+    empty_required_fields = $('input[name="email"], input[name="home_address"], input[name="work_address"], select[name="employer"]').filter(function(el){ return $(this).val() === ""; });
 
     if (empty_legs.length > 0) {
       $('#validation2').text('Please make sure all parts of all segments on the screen are filled out.').show();
