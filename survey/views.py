@@ -146,9 +146,6 @@ def simple_checkin(request):
                       'WRFW_formset': leg_formset_WRFW
                   })
 
-
-
-
 def add_checkin(request):
 
     try:
