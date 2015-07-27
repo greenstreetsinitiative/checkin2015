@@ -20,7 +20,7 @@ $(function() {
   $('button[type="submit"]').prop('disabled', true);
 
   // enable the submit button only when stuff is filled in!
-  stuff = 'input[name="email"], input[name="home_address"], input[name="work_address"], select[name="employer"], input[name$="duration"]:visible, select[name$="mode"]:visible';
+  stuff = 'input[name="email"], input[name="home_address"], input[name="work_address"], select[name="employer"], select[name="team"]:visible, input[name$="duration"]:visible, select[name$="mode"]:visible';
 
   $('form').on('change', stuff, function(){
     $('#confirmation').hide();
