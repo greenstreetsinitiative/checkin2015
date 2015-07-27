@@ -16,9 +16,6 @@ urlpatterns = patterns('',
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^checkin/complete/$', TemplateView.as_view(template_name='survey/thanks.html'), name='complete'),
 
-    # Simple checkin page
-    url(r'^simple-checkin/$', 'survey.views.simple_checkin', name='simplecommuterform'),
-
     # Leaderboard
     url(r'^leaderboard/$', 'leaderboard.views.latest_leaderboard', name="all"),
     url(r'^leaderboard/(?P<size>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="all"),

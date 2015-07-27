@@ -87,6 +87,14 @@ class ExtraCommuterForm(ModelForm):
         self.fields['share'].widget.attrs['class'] = 'form-control'
         self.fields['comments'].widget.attrs['class'] = 'form-control'
 
+class RequiredFormSet(BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super(RequiredFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+            form.error_class = AlertErrorList
+
 #FIXME: LegForms 1 2 3 and 4 should all be a single class
 class LegForm1(ModelForm):
 
@@ -194,75 +202,6 @@ MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
                                           extra=1, max_num=10, can_delete=True)
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
                                           extra=1, max_num=10, can_delete=True)
-
-""" For the simple checkin with extra legs initialized and required fields"""
-
-# Change to only require at least one set, not all 3
-class RequiredFormSet(BaseInlineFormSet):
-
-    def __init__(self, *args, **kwargs):
-        super(RequiredFormSet, self).__init__(*args, **kwargs)
-        self.forms[0].empty_permitted = False
-        for form in self.forms:
-            form.error_class = AlertErrorList
-
-class SimpleLegForm(ModelForm):
-
-    class Meta:
-        model = Leg
-        fields = ['mode', 'duration', 'day', 'direction']
-
-    def __init__(self, *args, **kwargs):
-        super(SimpleLegForm, self).__init__(*args, **kwargs)
-
-        self.fields['mode'].label = "How you did, or will, travel"
-        self.fields['duration'].label = "Time in minutes"
-
-        self.fields['mode'].widget.attrs['class'] = 'form-control'
-        self.fields['duration'].widget.attrs['class'] = 'form-control'
-        self.fields['day'].widget = HiddenInput()
-        self.fields['direction'].widget = HiddenInput()
-        self.fields['duration'].error_messages['max_value'] = (
-            'Did you really travel a whole day?')
-        self.fields['mode'].error_messages['required'] = (
-            'Please tell us how you did, or will, travel.')
-
-class WRTWSimpleForm(SimpleLegForm):
-    def __init__(self, *args, **kwargs):
-        super(WRTWSimpleForm, self).__init__(*args, **kwargs)
-
-        self.fields['day'].initial = 'w'
-        self.fields['direction'].initial = 'tw'
-
-class WRFWSimpleForm(SimpleLegForm):
-    def __init__(self, *args, **kwargs):
-        super(WRFWSimpleForm, self).__init__(*args, **kwargs)
-
-        self.fields['day'].initial = 'w'
-        self.fields['direction'].initial = 'fw'
-
-class NormalTWSimpleForm(SimpleLegForm):
-    def __init__(self, *args, **kwargs):
-        super(NormalTWSimpleForm, self).__init__(*args, **kwargs)
-
-        self.fields['day'].initial = 'n'
-        self.fields['direction'].initial = 'tw'
-
-class NormalFWSimpleForm(SimpleLegForm):
-    def __init__(self, *args, **kwargs):
-        super(NormalFWSimpleForm, self).__init__(*args, **kwargs)
-
-        self.fields['day'].initial = 'n'
-        self.fields['direction'].initial = 'fw'
-
-MakeLegs_WRTW_Simple = inlineformset_factory(Commutersurvey, Leg, form=WRTWSimpleForm,
-                                        extra=3, can_delete=False, formset=RequiredFormSet)
-MakeLegs_WRFW_Simple = inlineformset_factory(Commutersurvey, Leg, form=WRFWSimpleForm,
-                                        extra=3, can_delete=False, formset=RequiredFormSet)
-MakeLegs_NormalTW_Simple = inlineformset_factory(Commutersurvey, Leg, form=NormalTWSimpleForm,
-                                        extra=3, can_delete=False, formset=RequiredFormSet)
-MakeLegs_NormalFW_Simple = inlineformset_factory(Commutersurvey, Leg, form=NormalFWSimpleForm,
-                                        extra=3, can_delete=False, formset=RequiredFormSet)
 
 class NormalFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
