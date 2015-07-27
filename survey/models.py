@@ -198,7 +198,7 @@ class Commutersurvey(models.Model):
         Team,
         chained_field="employer",
         chained_model_field="parent",
-        show_all=True,
+        show_all=False,
         auto_choose=True,
         null=True,
         blank=True
