@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{company.name}} Statistics{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <center><h1>Walk/Ride Day 2015 <br><strong>{{company.name}}</strong></h1>
+    </div>
+</div>
+
+<div class="row" style="padding: 15px 0px;">
+
+<h2>Month by Month</h2>
+
+{% for key, months in data.items %}
+
+<h3>{{ key }}</h3>
+
+  {%  for month in months %}
+
+  <strong>{{ month.0 }}</strong>: {{ month.1 }}<br>
+
+  {% endfor %}
+
+{% endfor %}
+
+
+</div>
+{% endblock %}
+
+

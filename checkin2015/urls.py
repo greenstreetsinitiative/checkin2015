@@ -27,6 +27,9 @@ urlpatterns = patterns('',
     url(r'^leaderboard/all/subteams/(?P<parentid>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams_months"),
     url(r'^leaderboard/(?P<size>[\w\.-]*)/subteams/(?P<parentid>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$', 'leaderboard.views.latest_leaderboard', name="subteams_months_sized"),
 
+    # individual company pages
+    url(r'^companies/(?P<employerid>[\w\.-]*)/$', 'leaderboard.views.company', name="company"),
+
     # Admin
     url(r'^admin/', include(admin.site.urls)),
 

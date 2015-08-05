@@ -50,12 +50,52 @@ def calculate_metrics(company, selected_month):
     percent_participants_average = 100*company.average_percent_participation()
 
     return {
-        'participants': round(percent_participants,1),
-        'already_green': round(percent_already_green,1),
-        'green_switch': round(percent_green_switch,1),
-        'healthy_switch': round(percent_healthy_switch,1),
-        'avg_participation': round(percent_participants_average,1)
+        'participants': round(percent_participants,2),
+        'already_green': round(percent_already_green,2),
+        'green_switch': round(percent_green_switch,2),
+        'healthy_switch': round(percent_healthy_switch,2),
+        'avg_participation': round(percent_participants_average,2)
         }
+
+def company(request, employerid):
+    context = RequestContext(request)
+    company = Employer.objects.get(id=employerid)
+
+    '''
+    Build dictionary storing results for all stats for all months
+    '''
+    months = ['all','april','may','june','july','august','september','october']
+
+    data = {
+        'participants': [],
+        'already_green': [],
+        'green_switch': [],
+        'healthy_switch': [],
+        'avg_participation': []
+        }
+
+    for month in months:
+        metrics = calculate_metrics(company, month)
+        data['participants'].append(
+            (month, metrics['participants'])
+            )
+        data['already_green'].append(
+            (month, metrics['already_green'])
+            )
+        data['green_switch'].append(
+            (month, metrics['green_switch'])
+            )
+        data['healthy_switch'].append(
+            (month, metrics['healthy_switch'])
+            )
+        data['avg_participation'].append(
+            (month, metrics['avg_participation'])
+            )
+
+    return render_to_response('company.html',
+        {   'company': company,
+            'data': data
+        }, context)
 
 def latest_leaderboard(request, size='all', parentid=None, selected_month='all'):
     # Obtain the context from the HTTP request.
