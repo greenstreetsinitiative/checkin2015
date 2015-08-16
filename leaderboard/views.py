@@ -64,7 +64,8 @@ def company(request, employerid):
     '''
     Build dictionary storing results for all stats for all months
     '''
-    months = ['all','april','may','june','july','august','september','october']
+    past_months = Month.objects.filter(open_checkin__lte=date.today(), open_checkin__gt=('2015-03-31')).count()
+    months = ['all','april','may','june','july','august','september','october'][0:past_months+1]
 
     data = {
         'participants': [],
