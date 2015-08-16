@@ -64,7 +64,7 @@ def calculate_metrics(company, selected_month):
         'total_calories': total_calories
         }
 
-def company(request, employerid=None):
+def company(request, employerid=None, teamid=None):
     context = RequestContext(request)
 
     if not employerid:
@@ -73,8 +73,10 @@ def company(request, employerid=None):
         return render_to_response('pick_company.html', { 'companies': companies, 'teams': teams }, context)
 
     else:
-        # BUT WHAT IF IT IS A TEAM
-        company = Employer.objects.get(id=employerid)
+        if teamid:
+            company = Team.objects.get(id=teamid)
+        else:
+            company = Employer.objects.get(id=employerid)
 
         """
         Build dictionary storing results for all stats for all months

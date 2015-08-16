@@ -149,6 +149,13 @@ class Team(models.Model):
         surveys = get_surveys_by_team(self, shortmonth)
         return surveys.aggregate(Sum('calories_total')).values()[0]
 
+    def average_percent_participation(self):
+        """Calculates and returns the percentage of employees participating"""
+        elapsed_months = Month.objects.filter(
+            wr_day__year='2015', open_checkin__lte=date.today()).count()
+        return Commutersurvey.objects.filter(team=self).count() / \
+            (self.nr_members * elapsed_months)
+
     def percent_participation(self, shortmonth):
         """Calculates and returns the percentage of team employees participating"""
         surveys = get_surveys_by_team(self, shortmonth)

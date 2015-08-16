@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}Company Statistics{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <center><h1>Walk/Ride Day 2015 <br><strong>Choose a company or team </strong></h1>
+    </div>
+</div>
+
+<div class="row" style="padding: 15px 0px;">
+
+<h2>Participating Companies</h2>
+
+<ul>
+{% for company in companies %}
+  <li><a href="{% url 'leaderboard.views.company' employerid=company.id %}">{{ company.name }}</a></li>
+{% endfor %}
+</ul>
+
+<h2>Participating Teams</h2>
+
+<ul>
+{% for team in teams %}
+  <li><a href="{% url 'leaderboard.views.company' employerid=team.parent.id teamid=team.id %}">{{ team.name }}</a></li>
+{% endfor %}
+</ul>
+
+</div>
+{% endblock %}
+
+
