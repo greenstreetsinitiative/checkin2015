@@ -69,8 +69,7 @@ def company(request, employerid=None, teamid=None):
 
     if not employerid:
         companies = Employer.objects.exclude(id__in=[32,33,34,38,39,40]).filter(active2015=True)
-        teams = Team.objects.filter(parent_id__in=companies)
-        return render_to_response('pick_company.html', { 'companies': companies, 'teams': teams }, context)
+        return render_to_response('pick_company.html', { 'companies': companies }, context)
 
     else:
         if teamid:
