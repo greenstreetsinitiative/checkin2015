@@ -75,7 +75,7 @@ class Employer(models.Model):
     def percent_participation(self, shortmonth):
         """Calculates and returns the percentage of employees participating"""
         surveys = get_surveys_by_employer(self, shortmonth)
-        return surveys.count() / self.nr_employees
+        return surveys.values('email').distinct().count() / self.nr_employees
 
     def average_percent_participation(self):
         """Calculates and returns the percentage of employees participating"""
@@ -159,7 +159,7 @@ class Team(models.Model):
     def percent_participation(self, shortmonth):
         """Calculates and returns the percentage of team employees participating"""
         surveys = get_surveys_by_team(self, shortmonth)
-        return surveys.count() / self.nr_members
+        return surveys.values('email').distinct().count() / self.nr_members
 
     def percent_already_green(self, shortmonth):
         """percent of commute already 'green' """
