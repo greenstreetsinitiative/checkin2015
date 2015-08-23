@@ -78,7 +78,8 @@ INSTALLED_APPS = (
     'survey',
     'leaderboard',
     'retail',
-    'smart_selects' # for the subteams dropdown functionality
+    'smart_selects', # for the subteams dropdown functionality
+    'django.contrib.humanize'
 )
 
 MIDDLEWARE_CLASSES = (

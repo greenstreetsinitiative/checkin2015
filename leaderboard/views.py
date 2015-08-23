@@ -81,7 +81,7 @@ def company(request, employerid=None, teamid=None):
         Build dictionary storing results for all stats for all months
         """
         past_months = Month.objects.filter(open_checkin__lte=date.today(), open_checkin__gt=('2015-03-31')).count()
-        months = ['all','april','may','june','july','august','september','october'][0:past_months+1]
+        months = ['april','may','june','july','august','september','october'][0:past_months+1]
 
         # Show detailed info about each firm: total check-ins, total CO2, Total Calories, monthly changes, new check-ins.
         data = {
@@ -92,8 +92,25 @@ def company(request, employerid=None, teamid=None):
             'percent_already_green': [],
             'percent_green_switch': [],
             'percent_healthy_switch': [],
-            'percent_avg_participation': []
             }
+
+        allmetrics = calculate_metrics(company, 'all')
+        overall = [
+            ('Number of check-ins',
+                allmetrics['num_checkins']),
+            ('Estimated total CO2 saved by not driving on Walk/Ride Day',
+                allmetrics['total_C02']),
+            ('Estimated total calories burned on Walk/Ride Day',
+                allmetrics['total_calories']),
+            ('Percent of team participating',
+                '{0}%'.format(allmetrics['participants'])),
+            ('Percent of check-ins involving a green commute on a normal day',
+                '{0}%'.format(allmetrics['already_green'])),
+            ('Percent of check-ins where commutes went greener for Walk/Ride Day',
+                '{0}%'.format(allmetrics['green_switch'])),
+            ('Percent of check-ins where commutes went healthier for Walk/Ride Day',
+                '{0}%'.format(allmetrics['healthy_switch']))
+            ]
 
         for month in months:
             metrics = calculate_metrics(company, month)
@@ -118,13 +135,11 @@ def company(request, employerid=None, teamid=None):
             data['percent_healthy_switch'].append(
                 (month, metrics['healthy_switch'])
                 )
-            data['percent_avg_participation'].append(
-                (month, metrics['avg_participation'])
-                )
 
         return render_to_response('company.html',
             {   'company': company,
-                'data': data
+                'data': data,
+                'overall': overall
             }, context)
 
 def latest_leaderboard(request, size='all', parentid=None, selected_month='all'):

@@ -1,6 +1,25 @@
 body {
   font-family: 'Martel Sans', Helvetica, Arial, sans-serif;
 }
+
+.tab-pane {
+  padding: 2em;
+}
+
+.overall {
+  background-color: #BBE9FC;
+}
+
+.overall .panel p {
+  font-size: 28px;
+  text-align: right;
+}
+
+.overall .panel h4 {
+  font-size: 14px;
+  padding: 0;
+}
+
 #id_normal_same_as_walkride, #id_walkride_same_as_reverse, #id_normal_same_as_reverse {
    list-style-type: none;
 }

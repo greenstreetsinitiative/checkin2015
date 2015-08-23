@@ -10,9 +10,10 @@
 
 {% block body %}
 
+{% load humanize %}
 
 <div class="row clearfix">
-    <div class="col-md-12 column">
+    <div class="col-sm-12 column">
         <center>
           <h1>Walk/Ride Day 2015 <br><strong>{{company.name}}</strong></h1>
           <p>{{company.nr_employees}} employees eligible to participate</p>
@@ -21,20 +22,66 @@
 </div>
 
 <div class="row" style="padding: 15px 0px;">
-
-<h2>Month by Month</h2>
-
-{% for key, months in data.items %}
-
-<h3>{{ key }}</h3>
-
-  {%  for month in months %}
-
-  <strong>{{ month.0 }}</strong>: {{ month.1 }}<br>
-
+<div class="col-sm-4 column overall">
+  <h2>Overall</h2>
+  {% for fact in overall %}
+    <div class="panel">
+    {% if fact.1 < 100 %}
+      <p>{{fact.1 | floatformat:0 | intcomma}}</p>
+      <h4>{{fact.0}}</h4>
+    {% else %}
+      <p>{{fact.1 | intcomma}}</p>
+      <h4>{{fact.0}}</h4>
+    {% endif %}
+    </div>
   {% endfor %}
 
-{% endfor %}
+</div>
+<div class="col-sm-8 column">
+  <h2>By the month</h2>
+  <div>
+
+    <!-- tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="pill">Home</a></li>
+      <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="pill">Profile</a></li>
+      <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="pill">Messages</a></li>
+    </ul>
+
+    <!-- data -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="home">
+
+        <h2>Month by Month</h2>
+
+        {% for key, months in data.items %}
+
+        <h3>{{ key }}</h3>
+
+          {%  for month in months %}
+
+          <strong>{{ month.0 }}</strong>: {{ month.1 }}<br>
+
+          {% endfor %}
+
+        {% endfor %}
+
+      </div>
+      <div role="tabpanel" class="tab-pane" id="profile">
+        2
+      </div>
+      <div role="tabpanel" class="tab-pane" id="messages">
+        3
+      </div>
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
 
 
 </div>
