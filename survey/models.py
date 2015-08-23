@@ -65,12 +65,12 @@ class Employer(models.Model):
     def total_C02(self, shortmonth):
         """Calculates and returns total amount of carbon dioxide saved on WR Day (assuming driving on Normal day)"""
         surveys = get_surveys_by_employer(self, shortmonth)
-        return surveys.aggregate(Sum('carbon_savings')).values()[0]
+        return surveys.aggregate(Sum('carbon_savings')).values()[0] or 0
 
     def total_calories(self, shortmonth):
         """Calculates and returns total calories burned on WR Day"""
         surveys = get_surveys_by_employer(self, shortmonth)
-        return surveys.aggregate(Sum('calories_total')).values()[0]
+        return surveys.aggregate(Sum('calories_total')).values()[0] or 0
 
     def percent_participation(self, shortmonth):
         """Calculates and returns the percentage of employees participating"""

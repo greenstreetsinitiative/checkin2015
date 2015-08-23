@@ -80,20 +80,8 @@ def company(request, employerid=None, teamid=None):
         """
         Build dictionary storing results for all stats for all months
         """
-        past_months = Month.objects.filter(open_checkin__lte=date.today(), open_checkin__gt=('2015-03-31')).count()
-        months = ['april','may','june','july','august','september','october'][0:past_months+1]
 
         # Show detailed info about each firm: total check-ins, total CO2, Total Calories, monthly changes, new check-ins.
-        data = {
-            'num_checkins': [],
-            'total_C02': [],
-            'total_calories': [],
-            'percent_participants': [],
-            'percent_already_green': [],
-            'percent_green_switch': [],
-            'percent_healthy_switch': [],
-            }
-
         allmetrics = calculate_metrics(company, 'all')
         overall = [
             ('Number of check-ins',
@@ -112,33 +100,60 @@ def company(request, employerid=None, teamid=None):
                 '{0}%'.format(allmetrics['healthy_switch']))
             ]
 
-        for month in months:
+        data = [
+            ('Impacts',
+                'Everyone\'s check-in makes an impact on our world and ourselves!',
+                (
+                    ('Estimated total kg CO2 saved by not driving on Walk/Ride Day', []),
+                    ('Estimated total calories burned on Walk/Ride Day', [])
+                ) ),
+            ('Commutes',
+                'Walk/Ride Day can change our commuting habits.',
+                (
+                    ('Percent of check-ins involving a green commute on a normal day', []),
+                    ('Percent of check-ins where commutes went greener for Walk/Ride Day', []),
+                    ('Percent of check-ins where commutes went healthier for Walk/Ride Day', [])
+                ) ),
+            ('Participation',
+                '',
+                (
+                    ('Number of check-ins', []),
+                    ('Percent of team participating', [])
+                ) )
+        ]
+
+        past_months = Month.objects.filter(open_checkin__lte=date.today(), open_checkin__gt=('2015-03-31')).count()
+        months = ['april','may','june','july','august','september','october'][0:past_months]
+
+        for month in reversed(months):
             metrics = calculate_metrics(company, month)
-            data['num_checkins'].append(
-                (month, metrics['num_checkins'])
-                )
-            data['total_C02'].append(
+            data[0][2][0][1].append(
                 (month, metrics['total_C02'])
                 )
-            data['total_calories'].append(
+            data[0][2][1][1].append(
                 (month, metrics['total_calories'])
                 )
-            data['percent_participants'].append(
-                (month, metrics['participants'])
-                )
-            data['percent_already_green'].append(
+            data[1][2][0][1].append(
                 (month, metrics['already_green'])
                 )
-            data['percent_green_switch'].append(
+            data[1][2][1][1].append(
                 (month, metrics['green_switch'])
                 )
-            data['percent_healthy_switch'].append(
+            data[1][2][2][1].append(
                 (month, metrics['healthy_switch'])
+                )
+            data[2][2][0][1].append(
+                (month, metrics['num_checkins'])
+                )
+            data[2][2][1][1].append(
+                (month, metrics['participants'])
                 )
 
         return render_to_response('company.html',
             {   'company': company,
-                'data': data,
+                'impacts': data[0],
+                'commutes': data[1],
+                'participation': data[2],
                 'overall': overall
             }, context)
 

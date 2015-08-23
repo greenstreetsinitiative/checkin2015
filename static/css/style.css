@@ -2,6 +2,13 @@ body {
   font-family: 'Martel Sans', Helvetica, Arial, sans-serif;
 }
 
+.plot-label {
+  color: black;
+  border: none !important;
+  display: block;
+  padding: 5px;
+}
+
 .tab-pane {
   padding: 2em;
 }
