@@ -100,7 +100,7 @@
                   <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.2 | default:"0" | intcomma }}</span></li>
                 {% endfor %}
               {% else %}
-                {%  for month in participation.2.0.1 %}
+                {% for month in participation.2.0.1 %}
                   <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" | intcomma }}</span></li>
                 {% endfor %}
               {% endif %}
