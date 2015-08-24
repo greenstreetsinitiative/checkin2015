@@ -31,8 +31,8 @@
   <h2>Overall</h2>
   {% for fact in overall %}
     <div class="panel">
-    {% if fact.1 < 1 %}
-      <p>{{fact.1 | absolutely | floatformat:1 | intcomma}}</p>
+    {% if fact.1 < 100 %}
+      <p>{{fact.1 | absolutely | floatformat:0 | intcomma}}</p>
       <h4>{{fact.0}}</h4>
     {% else %}
       <p>{{fact.1 | intcomma}}</p>
@@ -57,17 +57,19 @@
       <div role="tabpanel" class="tab-pane active" id="impacts">
         {# <h2>{{ impacts.0 }}</h2> #}
         {# <p>{{ impacts.1 }}</p> #}
+        <p>By changing your commute, you can generate less CO2 and burn more calories for a healthier world and a healthier you. You might burn 170 calories in 15 minutes of running <a href="http://calorielab.com/burned/?mo=se&gr=12&ti=running&q=&wt=150&un=lb&kg=68">(source)</a>. Saving 38.2 kilograms of CO2 is like replacing an incandescent light bulb with a compact fluorescent bulb
+         <a href="http://www.epa.gov/cleanenergy/energy-resources/refs.html">(source)</a> - how many does your company replace? </p>
         {% for datapoint in impacts.2 %}
           <h3>{{datapoint.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
                 {% if datapoint.2 %}
                   {%  for month in datapoint.2 %}
-                    <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.2 | absolutely | floatformat:0 | default:"0" | intcomma }}</span></li>
+                    <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.2 | absolutely | floatformat:0 | default:"0" | intcomma }}</span></li>
                   {% endfor %}
                 {% else %}
                   {%  for month in datapoint.1 %}
-                    <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | absolutely | floatformat:0 | default:"0" | intcomma }}</span></li>
+                    <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | absolutely | floatformat:0 | default:"0" | intcomma }}</span></li>
                   {% endfor %}
                 {% endif %}
               </ul>
@@ -76,13 +78,13 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="commutes">
         {# <h2>{{ commutes.0 }}</h2> #}
-        {# <p>{{ commutes.1 }}</p> #}
+        <p>{{ commutes.1 }}</p>
         {% for datapoint in commutes.2 %}
           <h3>{{datapoint.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in datapoint.1 %}
-                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" }}%</span></li>
+                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | default:"0" }}%</span></li>
                 {% endfor %}
               </ul>
           </div>
@@ -90,18 +92,18 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="participation">
         {# <h2>{{ participation.0 }}</h2> #}
-        {# <p>{{ participation.1 }}</p> #}
+        <p>{{ participation.1 }}</p>
 
           <h3>{{participation.2.0.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
               {% if participation.2.0.2 %}
                 {%  for month in participation.2.0.2 %}
-                  <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.2 | default:"0" | intcomma }}</span></li>
+                  <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.2 | default:"0" | intcomma }}</span></li>
                 {% endfor %}
               {% else %}
                 {% for month in participation.2.0.1 %}
-                  <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" | intcomma }}</span></li>
+                  <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | default:"0" | intcomma }}</span></li>
                 {% endfor %}
               {% endif %}
               </ul>
@@ -111,7 +113,7 @@
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in participation.2.1.1 %}
-                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" }}%</span></li>
+                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | default:"0" }}%</span></li>
                 {% endfor %}
               </ul>
           </div>

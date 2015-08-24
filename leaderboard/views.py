@@ -87,9 +87,9 @@ def company(request, employerid=None, teamid=None):
             ('Number of check-ins',
                 allmetrics['num_checkins']),
             ('Estimated total CO2 saved by not driving on Walk/Ride Day',
-                allmetrics['total_C02']),
+                round(allmetrics['total_C02'],0)),
             ('Estimated total calories burned on Walk/Ride Day',
-                allmetrics['total_calories']),
+                round(allmetrics['total_calories'],0)),
             ('Percent of team participating',
                 '{0}%'.format(allmetrics['participants'])),
             ('Percent of check-ins involving a green commute on a normal day',
@@ -102,13 +102,13 @@ def company(request, employerid=None, teamid=None):
 
         data = [
             ('Impacts',
-                'Everyone\'s check-in makes an impact on our world and ourselves!',
+                'Everyone\'s check-in makes an impact on our world and ourselves! 430 kgs <a href="http://www.epa.gov/cleanenergy/energy-resources/refs.html">barrel of oil</a>',
                 (
                     ('Estimated total kg CO2 saved by not driving on Walk/Ride Day', [], []),
                     ('Estimated total calories burned on Walk/Ride Day', [], [])
                 ) ),
             ('Commutes',
-                'Walk/Ride Day can change our commuting habits.',
+                'Walk/Ride Day can change our commuting habits. Green commutes emit less carbon dioxide than typical car commutes, and can involve carpooling, walking, biking, running, and many forms of public transportation. Healthier commutes burn more calories, so break out the tennis shoes and get walking!',
                 (
                     ('Percent of check-ins involving a green commute on a normal day', []),
                     ('Percent of check-ins where commutes went greener for Walk/Ride Day', []),

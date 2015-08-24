@@ -2,6 +2,15 @@ body {
   font-family: 'Martel Sans', Helvetica, Arial, sans-serif;
 }
 
+.bar-chart [data-cp-size] {
+  background-color: #8BC6EE !important;
+}
+
+a[data-toggle="pill"] {
+  font-size: 18px;
+  font-weight: bold;
+}
+
 .plot-label {
   color: black;
   border: none !important;
