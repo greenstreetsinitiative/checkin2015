@@ -104,8 +104,8 @@ def company(request, employerid=None, teamid=None):
             ('Impacts',
                 'Everyone\'s check-in makes an impact on our world and ourselves!',
                 (
-                    ('Estimated total kg CO2 saved by not driving on Walk/Ride Day', []),
-                    ('Estimated total calories burned on Walk/Ride Day', [])
+                    ('Estimated total kg CO2 saved by not driving on Walk/Ride Day', [], []),
+                    ('Estimated total calories burned on Walk/Ride Day', [], [])
                 ) ),
             ('Commutes',
                 'Walk/Ride Day can change our commuting habits.',
@@ -117,7 +117,7 @@ def company(request, employerid=None, teamid=None):
             ('Participation',
                 '',
                 (
-                    ('Number of check-ins', []),
+                    ('Number of check-ins', [], []),
                     ('Percent of team participating', [])
                 ) )
         ]
@@ -148,6 +148,17 @@ def company(request, employerid=None, teamid=None):
             data[2][2][1][1].append(
                 (month, metrics['participants'])
                 )
+
+        # bonus numbers! if largest number exceeds 600, map to a different scale
+
+        for blob in [data[0][2][0], data[0][2][1], data[2][2][1]]:
+            values = [y for x,y in blob[1]]
+            if max(abs(i) for i in values) > 600:
+                m = max(abs(i) for i in values)
+                adjusted = map(lambda x: (x/m * 600), values)
+                months = [x for x,y in blob[1]]
+                for i in xrange(len(months)):
+                    blob[2].append((months[i],adjusted[i],values[i]))
 
         return render_to_response('company.html',
             {   'company': company,

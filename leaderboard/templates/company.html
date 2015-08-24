@@ -43,11 +43,10 @@
 
 </div>
 <div class="col-sm-8 column">
-  <h2>By the month</h2>
   <div>
 
     <!-- tabs -->
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-pills" role="tablist">
       <li role="presentation" class="active"><a href="#impacts" aria-controls="impacts" role="tab" data-toggle="pill">Impacts</a></li>
       <li role="presentation"><a href="#commutes" aria-controls="commutes" role="tab" data-toggle="pill">Commutes</a></li>
       <li role="presentation"><a href="#participation" aria-controls="participation" role="tab" data-toggle="pill">Participation</a></li>
@@ -56,24 +55,30 @@
     <!-- data -->
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="impacts">
-        <h2>{{ impacts.0 }}</h2>
-        <p>{{ impacts.1 }}</p>
+        {# <h2>{{ impacts.0 }}</h2> #}
+        {# <p>{{ impacts.1 }}</p> #}
         {% for datapoint in impacts.2 %}
-          <h4>{{datapoint.0}}</h4>
+          <h3>{{datapoint.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
-                {%  for month in datapoint.1 %}
-                  <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | absolutely | floatformat:0 | default:"0" }}</span></li>
-                {% endfor %}
+                {% if datapoint.2 %}
+                  {%  for month in datapoint.2 %}
+                    <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.2 | absolutely | floatformat:0 | default:"0" | intcomma }}</span></li>
+                  {% endfor %}
+                {% else %}
+                  {%  for month in datapoint.1 %}
+                    <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | absolutely | floatformat:0 | default:"0" | intcomma }}</span></li>
+                  {% endfor %}
+                {% endif %}
               </ul>
           </div>
         {% endfor %}
       </div>
       <div role="tabpanel" class="tab-pane" id="commutes">
-        <h2>{{ commutes.0 }}</h2>
-        <p>{{ commutes.1 }}</p>
+        {# <h2>{{ commutes.0 }}</h2> #}
+        {# <p>{{ commutes.1 }}</p> #}
         {% for datapoint in commutes.2 %}
-          <h4>{{datapoint.0}}</h4>
+          <h3>{{datapoint.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in datapoint.1 %}
@@ -84,19 +89,25 @@
         {% endfor %}
       </div>
       <div role="tabpanel" class="tab-pane" id="participation">
-        <h2>{{ participation.0 }}</h2>
-        <p>{{ participation.1 }}</p>
+        {# <h2>{{ participation.0 }}</h2> #}
+        {# <p>{{ participation.1 }}</p> #}
 
-          <h4>{{participation.2.0.0}}</h4>
+          <h3>{{participation.2.0.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
-                {%  for month in participation.2.0.1 %}
-                  <li style="width: {{ month.1 | floatformat:0 | default:"0" | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" }}</span></li>
+              {% if participation.2.0.2 %}
+                {%  for month in participation.2.0.2 %}
+                  <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.2 | default:"0" | intcomma }}</span></li>
                 {% endfor %}
+              {% else %}
+                {%  for month in participation.2.0.1 %}
+                  <li style="width: {{ month.1 | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" | intcomma }}</span></li>
+                {% endfor %}
+              {% endif %}
               </ul>
           </div>
 
-          <h4>{{participation.2.1.0}}</h4>
+          <h3>{{participation.2.1.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in participation.2.1.1 %}
