@@ -17,7 +17,11 @@
     <div class="col-sm-12 column">
         <center>
           <h1>Walk/Ride Day 2015 <br><strong>{{company.name}}</strong></h1>
+          {% if company.nr_members %}
+          <p>{{company.nr_members | intcomma}} team members eligible to participate</p>
+          {% elif company.nr_employees %}
           <p>{{company.nr_employees | intcomma}} employees eligible to participate</p>
+          {% endif %}
         </center>
     </div>
 </div>
@@ -27,7 +31,7 @@
   <h2>Overall</h2>
   {% for fact in overall %}
     <div class="panel">
-    {% if fact.1 < 100 %}
+    {% if fact.1 < 1 %}
       <p>{{fact.1 | absolutely | floatformat:1 | intcomma}}</p>
       <h4>{{fact.0}}</h4>
     {% else %}
@@ -52,42 +56,42 @@
     <!-- data -->
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="impacts">
-        <h3>{{ impacts.0 }}</h3>
+        <h2>{{ impacts.0 }}</h2>
         <p>{{ impacts.1 }}</p>
         {% for datapoint in impacts.2 %}
           <h4>{{datapoint.0}}</h4>
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in datapoint.1 %}
-                  <li style="width: {{ month.1 | absolutely | floatformat:0 }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | absolutely |floatformat:0 }}</span></li>
+                  <li style="width: {{ month.1 | absolutely | floatformat:0 | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | absolutely | floatformat:0 | default:"0" }}</span></li>
                 {% endfor %}
               </ul>
           </div>
         {% endfor %}
       </div>
       <div role="tabpanel" class="tab-pane" id="commutes">
-        <h3>{{ commutes.0 }}</h3>
+        <h2>{{ commutes.0 }}</h2>
         <p>{{ commutes.1 }}</p>
         {% for datapoint in commutes.2 %}
           <h4>{{datapoint.0}}</h4>
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in datapoint.1 %}
-                  <li data-cp-size="{{ month.1 | floatformat:0 }}"><span class="plot-label">{{ month.0 }}<br>{{ month.1 }}%</span></li>
+                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" }}%</span></li>
                 {% endfor %}
               </ul>
           </div>
         {% endfor %}
       </div>
       <div role="tabpanel" class="tab-pane" id="participation">
-        <h3>{{ participation.0 }}</h3>
+        <h2>{{ participation.0 }}</h2>
         <p>{{ participation.1 }}</p>
 
           <h4>{{participation.2.0.0}}</h4>
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in participation.2.0.1 %}
-                  <li style="width: {{ month.1 | floatformat:0 }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 }}</span></li>
+                  <li style="width: {{ month.1 | floatformat:0 | default:"0" | default:"0" }}px; background: orange !important;" data-cp-size="raw"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" }}</span></li>
                 {% endfor %}
               </ul>
           </div>
@@ -96,7 +100,7 @@
           <div class="bar-chart">
               <ul class="plot-container">
                 {%  for month in participation.2.1.1 %}
-                  <li data-cp-size="{{ month.1 | floatformat:0 }}"><span class="plot-label">{{ month.0 }}<br>{{ month.1 }}%</span></li>
+                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0 }}<br>{{ month.1 | default:"0" }}%</span></li>
                 {% endfor %}
               </ul>
           </div>
