@@ -48,8 +48,7 @@ def calculate_metrics(company, selected_month):
     percent_green_switch = 100*company.percent_green_switch(shortmonth)
     percent_healthy_switch = 100*company.percent_healthy_switch(shortmonth)
     percent_participants_average = 100*company.average_percent_participation()
-
-    num_checkins = company.num_checkins(shortmonth)
+    count_checkins = company.count_checkins(shortmonth)
     total_C02 = company.total_C02(shortmonth)
     total_calories = company.total_calories(shortmonth)
 
@@ -59,7 +58,7 @@ def calculate_metrics(company, selected_month):
         'green_switch': round(percent_green_switch,2),
         'healthy_switch': round(percent_healthy_switch,2),
         'avg_participation': round(percent_participants_average,2),
-        'num_checkins': num_checkins,
+        'num_checkins': count_checkins,
         'total_C02': total_C02,
         'total_calories': total_calories
         }

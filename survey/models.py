@@ -57,10 +57,10 @@ class Employer(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-    def num_checkins(self, shortmonth):
+    def count_checkins(self, shortmonth):
         """Calculates and returns number of employees participating"""
         surveys = get_surveys_by_employer(self, shortmonth)
-        return surveys.count()
+        return surveys.count() or 0
 
     def total_C02(self, shortmonth):
         """Calculates and returns total amount of carbon dioxide saved on WR Day (assuming driving on Normal day)"""
@@ -134,7 +134,7 @@ class Team(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-    def num_checkins(self, shortmonth):
+    def count_checkins(self, shortmonth):
         """Calculates and returns number of employees participating"""
         surveys = get_surveys_by_team(self, shortmonth)
         return surveys.count()
