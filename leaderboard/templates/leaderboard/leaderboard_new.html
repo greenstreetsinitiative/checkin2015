@@ -28,6 +28,7 @@
 {% block body %}
 
 {% load absolutely %}
+{% load humanize %}
 
 <div class="row clearfix">
     <div class="col-md-12 column">
@@ -77,15 +78,15 @@
   <center>{% if parent %}<h3>{{ parent.name }}</h3>{% endif %}</center>
   <div class="col-sm-4">
     <p class="lead">Total Check-Ins</p>
-    <p class="total">{{ totals.total_checkins|floatformat:0|default:"0"}}</p>
+    <p class="total">{{ totals.total_checkins|floatformat:0|default:"0"|intcomma}}</p>
   </div>
   <div class="col-sm-4">
     <p class="lead">Total CO<sub>2</sub> Saved</p>
-    <p class="total">{{ totals.total_carbon|absolutely|floatformat:0|default:"0" }} kg</p>
+    <p class="total">{{ totals.total_carbon|absolutely|floatformat:0|default:"0"|intcomma }} kg</p>
   </div>
   <div class="col-sm-4">
     <p class="lead">Total Calories Burned</p>
-    <p class="total">{{ totals.total_calories|floatformat:0|default:"0"}} kcal</p>
+    <p class="total">{{ totals.total_calories|floatformat:0|default:"0"|intcomma}} kcal</p>
   </div>
 </div>
 
@@ -96,14 +97,14 @@
     <h4>Average Participation To Date</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_avg_participation %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
+      <li class="clearfix"><a class="list-group-item company" href="{% url 'leaderboard.views.company' employerid=key.1.0 teamid=key.1.1 %}">{{ key.0 }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
     {% endfor %}
     </ol>
   {% else %}
     <h4>Staff Participation</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_participation %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
+      <li class="clearfix"><a class="list-group-item company" href="{% url 'leaderboard.views.company' employerid=key.1.0 teamid=key.1.1 %}">{{ key.0 }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
     {% endfor %}
     </ol>
   {% endif %}
@@ -112,7 +113,7 @@
     <h4>Green Commutes</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_green_commuters %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
+      <li class="clearfix"><a class="list-group-item company" href="{% url 'leaderboard.views.company' employerid=key.1.0 teamid=key.1.1 %}">{{ key.0 }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
     {% endfor %}
     </ol>
   </div>
@@ -120,7 +121,7 @@
     <h4>Greener Switches</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_green_switches %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
+      <li class="clearfix"><a class="list-group-item company" href="{% url 'leaderboard.views.company' employerid=key.1.0 teamid=key.1.1 %}">{{ key.0}}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
     {% endfor %}
     </ol>
   </div>
@@ -128,9 +129,15 @@
     <h4>Healthier Switches</h4>
     <ol class="lbrank">
     {% for key, value in ranks.percent_healthy_switches %}
-      <li class="clearfix"><a class="list-group-item company" href="#">{{ key }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
+      <li class="clearfix"><a class="list-group-item company" href="{% url 'leaderboard.views.company' employerid=key.1.0 teamid=key.1.1 %}">{{ key.0 }}<span class="badge">{{ value|floatformat:1 }}%</span></a></li>
     {% endfor %}
     </ol>
+  </div>
+
+  <div class="col-sm-8 col-sm-offset-2">
+    <center>
+      <div class="panel">Looking for data on a team you don't see here? <br><a href="{% url 'leaderboard.views.company' %}">Click to see all participating organizations</a>!</div>
+    </center>
   </div>
 
 

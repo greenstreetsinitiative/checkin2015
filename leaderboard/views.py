@@ -215,7 +215,12 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
     )
 
     for company in survey_data:
-        d[str(company.name)] = calculate_metrics(company, selected_month)
+        # links is company id, then optionally team id
+        if hasattr(company, 'parent'): # then this is a team
+            links = (company.parent.id, company.id)
+        else:
+            links = (company.id,)
+        d[(str(company.name), links)] = calculate_metrics(company, selected_month)
 
     ranks = calculate_rankings(d)
 

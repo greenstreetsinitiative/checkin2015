@@ -509,8 +509,7 @@ h3.leaderboard {
 }
 
 a.company {
-  color: #CF7019;
-  color: rgb(207, 112, 25);
+  color: green;
 }
 
 span.highlight {
