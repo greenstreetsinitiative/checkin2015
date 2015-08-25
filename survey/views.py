@@ -142,7 +142,7 @@ def add_checkin(request):
                 message_html = (
                     '<p>Dear {name},</p><p>Thank you for checking'
                     ' in your Walk/Ride Day commute! This email confirms your'
-                    'participation in {survey_date}\'s Walk/Ride Day! Feel '
+                    ' participation in {survey_date}\'s Walk/Ride Day! Feel '
                     'free to show it to our <a href="http://checkin'
                     '-greenstreets.rhcloud.com/retail" style="color:'
                     '#2ba6cb;text-decoration: none;">Retail Partners</a> '
@@ -167,7 +167,7 @@ def add_checkin(request):
                 message_plain = (
                     'Dear Supporter, Thank you for checking in '
                     'your Walk/Ride Day commute! This email confirms your'
-                    'participation in ' + commutersurvey.wr_day_month.month +
+                    ' participation in ' + commutersurvey.wr_day_month.month +
                     '\'s Walk/Ride Day! Feel free to show it to our Retail'
                     ' Partners to take advantage of their offers of freebies,'
                     ' discounts, and other goodies! Thank you for being'
