@@ -44,6 +44,9 @@ class CommuterForm(ModelForm):
         self.fields['team'].help_text = (
             "If your company has participating "
             "sub-teams you must choose a sub-team.")
+        self.fields['home_address'].help_text = (
+            "We do not give your address to other parties. "
+            "You may enter an approximate location if you wish.")
         self.fields['work_address'].help_text = (
             "Or, if you are not "
             "employed, other destination")
