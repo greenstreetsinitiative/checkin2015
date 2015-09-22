@@ -1,0 +1,55 @@
+from survey.models import Sector, Employer
+
+## add the sectors
+
+Sector.objects.create(name='Biotech and Banking', short='bb')
+Sector.objects.create(name='Hospital and University', short='hu')
+Sector.objects.create(name='Public and Municipal', short='pm')
+Sector.objects.create(name='Technology, Energy, and Media', short='tm')
+Sector.objects.create(name='Sm Technology Co\'s', short='st')
+Sector.objects.create(name='Architecture and Engineering', short='ae')
+Sector.objects.create(name='Legal, Retail, and Development/Education', short='ld')
+
+## assign the companies to the sectors
+
+## biotech
+sector = Sector.objects.get(short='bb')
+companies = ['State Street Corporation','Takeda Pharmaceuticals International','Syros Pharmaceuticals','Biogen']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)
+
+## hosp and uni
+sector = Sector.objects.get(short='hu')
+companies = ['Cambridge Health Alliance','Dana-Farber Cancer Institute ','Boston Children\'s Hospital','Lesley University','Boston University']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)
+
+## public
+sector = Sector.objects.get(short='pm')
+companies = ['MA Department of Public Health','City of Cambridge','Town of Belmont','MassDEP','National Park Service - Boston','Volpe Center']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)
+
+## tech
+sector = Sector.objects.get(short='tm')
+companies = ['Velir','Intuit','Akamai Technologies, Inc.','EnerNOC','Next Step Living','WGBH Education Foundation']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)
+
+## small tech
+sector = Sector.objects.get(short='st')
+companies = ['NMR Group, Inc.','Analytics Operations Engineering','Tech Networks of Boston']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)
+
+## arch
+sector = Sector.objects.get(short='ae')
+companies = ['Finegold Alexander + Associates Inc','Fennick | McCredie Architecture','HMFH Architects, Inc.','Tsoi/Kobus & Assoc','Nitsch Engineering']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)
+
+## legal
+sector = Sector.objects.get(short='ld')
+companies = ['EcoLogic Development Fund','Cambridge Education','Sandulli Grace','Ruberto, Israel & Weiner PC','ACIS Educational Tours','Pemberton Farms Marketplace']
+selected = Employer.objects.filter(name__in=companies)
+selected.update(sector=sector)

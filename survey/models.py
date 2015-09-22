@@ -44,12 +44,20 @@ class Month(models.Model):
     def month(self):
         return self.wr_day.strftime(u'%B %Y'.encode('utf-8')).decode('utf-8')
 
+class Sector(models.Model):
+    """Competing employers are grouped into sectors"""
+    name = models.CharField("Sector name", max_length=200)
+    short = models.CharField("Sector key", max_length=2)
+
+    def __unicode__(self):
+        return unicode(self.name)
 
 class Employer(models.Model):
     """Represents a participating employer"""
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)
     active2015 = models.BooleanField("2015 Challenge", default=False)
+    sector = models.ForeignKey('Sector', null=True, blank=True)
 
     class Meta(object):
         ordering = ['name']
@@ -388,4 +396,3 @@ class Leg(models.Model):
         self.checkin.save()
     def __unicode__(self):
         return unicode(self.mode)
-

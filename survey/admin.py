@@ -9,7 +9,7 @@ from django.db.models import Sum, Count
 
 from django.forms import ModelForm
 
-from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team
+from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector
 
 # disable deletion of records
 admin.site.disable_action('delete_selected')
@@ -45,8 +45,8 @@ export_as_csv.short_description = "Export selected rows as csv file"
 class EmployerAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display_links = ['id']
-    list_display = ['id', 'name', 'active2015', 'nr_employees']
-    list_editable = ['name', 'nr_employees', 'active2015']
+    list_display = ['id', 'name', 'sector', 'active2015', 'nr_employees']
+    list_editable = ['name', 'sector', 'nr_employees', 'active2015']
     actions = [export_as_csv]
 
 class CommutersurveyAdmin(admin.ModelAdmin):
@@ -81,6 +81,10 @@ class ModeAdmin(admin.ModelAdmin):
     list_editable = ['name', 'met', 'carb', 'speed', 'green']
     actions = [export_as_csv]
 
+class SectorAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    list_editable = ['name']
+    actions = [export_as_csv]
 
 admin.site.register(Commutersurvey, CommutersurveyAdmin)
 admin.site.register(Employer, EmployerAdmin)
@@ -88,3 +92,4 @@ admin.site.register(Month, MonthAdmin)
 admin.site.register(Leg, LegAdmin)
 admin.site.register(Mode, ModeAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Sector, SectorAdmin)
