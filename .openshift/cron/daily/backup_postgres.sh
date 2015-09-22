@@ -12,5 +12,5 @@ FILENAME="$OPENSHIFT_DATA_DIR/$OPENSHIFT_APP_NAME_fixtures_$NOW.json"
 # workaround: pulling django fixtures, slower, but works
 source $OPENSHIFT_PYTHON_DIR/virtenv/bin/activate
 cd $OPENSHIFT_REPO_DIR
-python manage.py dumpdata > $FILENAME
+python manage.py dumpdata --natural --exclude=contenttype --exclude=auth.Permission > $FILENAME
 gzip $FILENAME
