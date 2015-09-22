@@ -1,6 +1,6 @@
 from __future__ import division
 from django.shortcuts import render
-from survey.models import Commutersurvey, Employer, Leg, Month, Team, Mode
+from survey.models import Commutersurvey, Employer, Leg, Month, Team, Mode, Sector
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 # from django.db.models import Sum,Count
@@ -167,7 +167,7 @@ def company(request, employerid=None, teamid=None):
                 'overall': overall
             }, context)
 
-def latest_leaderboard(request, size='all', parentid=None, selected_month='all'):
+def latest_leaderboard(request, sector='all', size='all', parentid=None, selected_month='all'):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
@@ -194,6 +194,14 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
             companies = companies.filter(nr_employees__gt=300,nr_employees__lte=2000)
         elif size == 'largest':
             companies = companies.filter(nr_employees__gt=2000)
+
+        # Filtering the results by sector
+        if sector != 'all':
+            selected_sector = Sector.objects.get(short=sector).name
+            companies = companies.filter(sector__short=sector)
+        else:
+            selected_sector = ''
+            selected_sector_name = 'All Sectors'
 
         survey_data = companies
 
@@ -224,6 +232,15 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
 
     ranks = calculate_rankings(d)
 
+    sectors_dict = dict(Sector.objects.values_list('short','name'))
+    months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
+    sizes_dict = {
+      'small': 'Small (fewer than 50)',
+      'medium': 'Medium (51 to 300)',
+      'large': 'Large (301 to 2000)',
+      'largest': 'Largest (2001+ employees)'
+    }
+
     return render_to_response('leaderboard/leaderboard_new.html',
         {
             'ranks': ranks,
@@ -232,5 +249,9 @@ def latest_leaderboard(request, size='all', parentid=None, selected_month='all')
             'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct(),
             'size': size,
             'selected_month': selected_month,
-            'parent': parent
+            'parent': parent,
+            'selected_sector': sector,
+            'sizes_list': sizes_dict,
+            'months_list': months_arr,
+            'sectors_list': sectors_dict
         }, context)

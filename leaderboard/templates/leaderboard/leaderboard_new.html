@@ -32,46 +32,57 @@
 
 <div class="row clearfix">
     <div class="col-md-12 column">
-        <center><h1>Walk/Ride Day 2015 <br>Corporate Challenge Leaderboard</h1>
+        <center><h1>Walk/Ride Day 2015 <br>Corporate Challenge Leaderboard<br>{% now "SHORT_DATETIME_FORMAT" %}</h1>
     </div>
 </div>
 
-<center><h3>{% now "SHORT_DATETIME_FORMAT" %}</h3></center>
+<div style="padding: 15px 0px;">
 
-<div class="row" style="padding: 15px 0px;">
-  <center>
-  <div>
-  <a class="lb-button {% if '/all/' in request.get_full_path %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='all' selected_month=selected_month %}">All companies</a>
-  <a class="lb-button {% if '/small/' in request.get_full_path %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='small' selected_month=selected_month %}">Small (less than 50)</a>
-  <a class="lb-button {% if '/medium/' in request.get_full_path %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='medium' selected_month=selected_month %}">Medium (51 to 300)</a>
-  <a class="lb-button {% if '/large/' in request.get_full_path %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='large' selected_month=selected_month %}">Large (301 to 2000)</a>
-  <a class="lb-button {% if '/largest/' in request.get_full_path %}alt{% endif %}" href="{% url 'leaderboard.views.latest_leaderboard' size='largest' selected_month=selected_month %}">Largest (2001+ employees)</a>
+  <div><strong>By Sector:</strong>
+    <a class="lb-button {% if selected_sector == 'all' %}alt{% endif %}"
+        href="{% url 'leaderboard.views.latest_leaderboard' size=size sector='all' selected_month=selected_month %}">
+      All Sectors</a>
+    {% for key, value in sectors_list.items %}
+        <a class="lb-button {% if selected_sector == key %}alt{% endif %}"
+            href="{% url 'leaderboard.views.latest_leaderboard' size=size sector=key selected_month=selected_month %}">
+            {{ value }}</a>
+    {% endfor %}
   </div>
 
-  <select id="team_parent" name="team_parent">
-    <option>Looking for a subteam?
-    </option>
-
-  {% for employer in employersWithSubteams %}
-     <option value="{% url 'leaderboard.views.latest_leaderboard' size='all' selected_month='all' parentid=employer.id %}"
-         {% if employer.name == parent.name %}selected="selected"{% endif %}>
-         {{employer.name}}
-     </option>
-  {% endfor %}
-  </select>
-
-  <div>
-  <a class="lb-button-month {% if '/all/' in request.get_full_path and not parent %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='all' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='all' %} {% endif %}">All months</a>
-  <a class="lb-button-month {% if '/april/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='april' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='april' %} {% endif %}">Apr</a>
-  <a class="lb-button-month {% if '/may/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='may' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='may' %} {% endif %}">May</a>
-  <a class="lb-button-month {% if '/june/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='june' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='june' %} {% endif %}">Jun</a>
-  <a class="lb-button-month {% if '/july/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='july' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='july' %} {% endif %}">Jul</a>
-  <a class="lb-button-month {% if '/august/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='august' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='august' %} {% endif %}">Aug</a>
-  <a class="lb-button-month {% if '/september/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='september' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='september' %} {% endif %}">Sep</a>
-  <a class="lb-button-month {% if '/october/' in request.get_full_path %}alt{% endif %}" href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' parentid=parent.id size=size selected_month='october' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' size=size selected_month='october' %} {% endif %}">Oct</a>
+  <div><strong>By Size:</strong>
+    <a class="lb-button {% if size == 'all' %}alt{% endif %}"
+        href="{% url 'leaderboard.views.latest_leaderboard' size='all' sector=selected_sector selected_month=selected_month %}">
+        All Sizes</a>
+    {% for key, value in sizes_list.items %}
+        <a class="lb-button {% if size == key %}alt{% endif %}"
+            href="{% url 'leaderboard.views.latest_leaderboard' size=key sector=selected_sector selected_month=selected_month %}">
+            {{ value }}</a>
+    {% endfor %}
   </div>
 
-  </center>
+  <div><strong>By Month:</strong>
+    <a class="lb-button-month {% if selected_month == 'all' %}alt{% endif %}"
+      href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector parentid=parent.id size=size selected_month='all' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month='all' %} {% endif %}">
+      All Months</a>
+    {% for month in months_list %}
+        <a class="lb-button-month {% if selected_month == month %}alt{% endif %}"
+        href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector parentid=parent.id size=size selected_month=month %} {% else %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month=month %} {% endif %}">{{ month}}</a>
+    {% endfor %}
+  </div>
+
+  <div><strong>By Sub-Team:</strong>
+    <select id="team_parent" name="team_parent">
+      <option>Looking for a subteam?
+      </option>
+    {% for employer in employersWithSubteams %}
+       <option value="{% url 'leaderboard.views.latest_leaderboard' sector='all' size='all' selected_month=selected_month parentid=employer.id %}"
+           {% if employer.name == parent.name %}selected="selected"{% endif %}>
+           {{employer.name}}
+       </option>
+    {% endfor %}
+    </select>
+  </div>
+
 </div>
 
 <div class="row totals">
@@ -144,5 +155,3 @@
 
 </div>
 {% endblock %}
-
-
