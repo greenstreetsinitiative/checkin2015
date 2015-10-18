@@ -4,23 +4,30 @@
 
 {% block title %}Leaderboard{% endblock %}
 
+{% block style %}
+<link rel="stylesheet" href="{% static 'libs/chosen/chosen.min.css' %}">
+{% endblock %}
 {% block javascript %}
+<script src="{% static 'libs/chosen/chosen.jquery.min.js' %}" type="text/javascript"></script>
 <script type="text/javascript">
-  // bind change event to select
-  $('#team_parent').bind('change', function () {
-      var url = $(this).val(); // get selected value
-      if (url) { // require a URL
-          window.location = url; // redirect
-      }
-      return false;
-   });
 
-  //select right one initially
-  var parent = '{{ parent.name }}';
-  if (parent != '') {
-    $("#team_parent option:contains("+parent+")").attr('selected', 'selected');
+  function goToPage (event) {
+    var url = $(this).val(); // get selected value
+    if (url) { // require a URL
+        window.location = url; // redirect
+    }
+    event.preventDefault();
+    return false;
   }
 
+  // bind change events to selects
+  $('#team_parent').bind('change', goToPage);
+  $('#checkin_month').bind('change', goToPage);
+  $('#company_size').bind('change', goToPage);
+  $('#sector_selection').bind('change', goToPage);
+
+  // initialize dropdowns
+  $('.lb-filter').chosen({ disable_search: true, width: "200px" });
 
 </script>
 {% endblock %}
@@ -38,41 +45,66 @@
 
 <div style="padding: 15px 0px;">
 
-  <div><strong>By Sector:</strong>
-    <a class="lb-button {% if selected_sector == 'all' %}alt{% endif %}"
-        href="{% url 'leaderboard.views.latest_leaderboard' size=size sector='all' selected_month=selected_month %}">
-      All Sectors</a>
+<div class="lb-filter-container"><p><strong>By Month:</strong></p>
+  <select id="checkin_month" name="checkin_month" class="lb-filter">
+    {% if parent %}
+     <option value="{% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month='all' parentid=parent.id %}"
+        {% if selected_month == 'all' %}selected="selected"{% endif %}>
+    {% else %}
+     <option value="{% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month='all' %}"
+        {% if selected_month == 'all' %}selected="selected"{% endif %}>
+    {% endif %}
+        All Months
+    </option>
+  {% for month in months_list  %}
+    {% if parent %}
+     <option value="{% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month=month parentid=parent.id %}"
+        {% if selected_month == month %}selected="selected"{% endif %}>
+    {% else %}
+     <option value="{% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month=month %}"
+        {% if selected_month == month %}selected="selected"{% endif %}>
+    {% endif %}
+         {{ month|capfirst }}
+     </option>
+  {% endfor %}
+  </select>
+</div>
+
+<div class="lb-filter-container"><p><strong>By Company Size:</strong></p>
+  <select id="company_size" name="company_size" class="lb-filter">
+     <option value="{% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size='all' selected_month=selected_month %}"
+        {% if size == 'all' %}selected="selected"{% endif %}>
+        All Sizes
+    </option>
+  {% for item in sizes_list %}
+     <option value="{% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=item.0 selected_month=selected_month %}"
+        {% if size == item.0 %}selected="selected"{% endif %}>
+         {{ item.1 }}
+     </option>
+  {% endfor %}
+  </select>
+</div>
+
+
+  <div class="lb-filter-container"><p><strong>By Company Sector:</strong></p>
+    <select id="sector_selection" name="sector_selection" class="lb-filter">
+       <option value="{% url 'leaderboard.views.latest_leaderboard' sector='all' size=size selected_month=selected_month %}"
+          {% if selected_sector == 'all' %}selected="selected"{% endif %}>
+          All Sectors
+      </option>
     {% for key, value in sectors_list.items %}
-        <a class="lb-button {% if selected_sector == key %}alt{% endif %}"
-            href="{% url 'leaderboard.views.latest_leaderboard' size=size sector=key selected_month=selected_month %}">
-            {{ value }}</a>
+       <option value="{% url 'leaderboard.views.latest_leaderboard' sector=key size=size selected_month=selected_month %}"
+          {% if selected_sector == key %}selected="selected"{% endif %}>
+           {{ value }}
+       </option>
     {% endfor %}
+    </select>
   </div>
 
-  <div><strong>By Size:</strong>
-    <a class="lb-button {% if size == 'all' %}alt{% endif %}"
-        href="{% url 'leaderboard.views.latest_leaderboard' size='all' sector=selected_sector selected_month=selected_month %}">
-        All Sizes</a>
-    {% for key, value in sizes_list.items %}
-        <a class="lb-button {% if size == key %}alt{% endif %}"
-            href="{% url 'leaderboard.views.latest_leaderboard' size=key sector=selected_sector selected_month=selected_month %}">
-            {{ value }}</a>
-    {% endfor %}
-  </div>
-
-  <div><strong>By Month:</strong>
-    <a class="lb-button-month {% if selected_month == 'all' %}alt{% endif %}"
-      href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector parentid=parent.id size=size selected_month='all' %} {% else %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month='all' %} {% endif %}">
-      All Months</a>
-    {% for month in months_list %}
-        <a class="lb-button-month {% if selected_month == month %}alt{% endif %}"
-        href="{% if parent %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector parentid=parent.id size=size selected_month=month %} {% else %} {% url 'leaderboard.views.latest_leaderboard' sector=selected_sector size=size selected_month=month %} {% endif %}">{{ month}}</a>
-    {% endfor %}
-  </div>
-
-  <div><strong>By Sub-Team:</strong>
-    <select id="team_parent" name="team_parent">
-      <option>Looking for a subteam?
+  <div class="lb-filter-container"><p><strong>Looking for a Sub-Team?</strong></p>
+    <select id="team_parent" name="team_parent" class="lb-filter">
+      <option value="{% url 'leaderboard.views.latest_leaderboard' sector='all' size='all' selected_month=selected_month %}">
+          Select a Sub-Team
       </option>
     {% for employer in employersWithSubteams %}
        <option value="{% url 'leaderboard.views.latest_leaderboard' sector='all' size='all' selected_month=selected_month parentid=employer.id %}"
@@ -84,6 +116,12 @@
   </div>
 
 </div>
+
+<!-- <div class="row">
+  <div class="col-sm-12 selections">
+ <p>Month: {{ selected_month }}. Sector: {{ selected_sector }}. Size: {{ size }}.</p>
+</div>
+</div> -->
 
 <div class="row totals">
   <center>{% if parent %}<h3>{{ parent.name }}</h3>{% endif %}</center>

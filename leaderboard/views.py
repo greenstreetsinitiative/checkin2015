@@ -234,12 +234,12 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
 
     sectors_dict = dict(Sector.objects.values_list('short','name'))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
-    sizes_dict = {
-      'small': 'Small (fewer than 50)',
-      'medium': 'Medium (51 to 300)',
-      'large': 'Large (301 to 2000)',
-      'largest': 'Largest (2001+ employees)'
-    }
+    sizes_arr = [
+      ('small', 'Small (fewer than 50)'),
+      ('medium', 'Medium (51 to 300)'),
+      ('large', 'Large (301 to 2000)'),
+      ('largest', 'Largest (2001+ employees)')
+    ]
 
     return render_to_response('leaderboard/leaderboard_new.html',
         {
@@ -251,7 +251,7 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
             'selected_month': selected_month,
             'parent': parent,
             'selected_sector': sector,
-            'sizes_list': sizes_dict,
+            'sizes_list': sizes_arr,
             'months_list': months_arr,
             'sectors_list': sectors_dict
         }, context)
