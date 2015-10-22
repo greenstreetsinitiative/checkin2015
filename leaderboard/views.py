@@ -246,7 +246,7 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
             'ranks': ranks,
             'totals': totals,
             'request': request,
-            'employersWithSubteams': Employer.objects.filter(team__isnull=False).distinct(),
+            'employersWithSubteams': Employer.objects.filter(active2015=True, team__isnull=False).distinct(),
             'size': size,
             'selected_month': selected_month,
             'parent': parent,
