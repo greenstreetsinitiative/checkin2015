@@ -52,13 +52,14 @@ class EmployerAdmin(admin.ModelAdmin):
 class CommutersurveyAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,
-            {'fields': ['wr_day_month', 'name', 'email', 'employer', 'share', 'comments', ]}),
+            {'fields': ['wr_day_month', 'name', 'email', 'employer', 'team', 'share', 'comments' ]}),
         ('Commute',
             {'fields': ['home_address', 'work_address']})
     ]
-    list_display = ('id', 'wr_day_month', 'email', 'name', 'share', 'employer', 'home_address', 'work_address', 'carbon_change', 'calorie_change' )
-    list_filter = ['wr_day_month', 'employer', 'share', 'volunteer']
-    search_fields = ['name', 'email', 'employer__name']
+    list_display = ('id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change' )
+    list_editable = ('employer', 'team')
+    list_filter = ['wr_day_month', 'employer', 'team', 'share', 'volunteer']
+    search_fields = ['name', 'email', 'employer__name', 'team__name']
     actions = [export_as_csv]
 
 class LegAdmin(admin.ModelAdmin):
