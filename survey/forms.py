@@ -121,8 +121,6 @@ class LegForm1(ModelForm):
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
             'Please tell us how you typically travel.')
-        self.fields['mode'].required = False
-        self.fields['duration'].required = False
 
 class LegForm2(ModelForm):
 
@@ -146,8 +144,6 @@ class LegForm2(ModelForm):
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
             'Please tell us how you typically travel.')
-        self.fields['mode'].required = False
-        self.fields['duration'].required = False
 
 class LegForm3(ModelForm):
 
@@ -194,8 +190,6 @@ class LegForm4(ModelForm):
             'Did you really travel a whole day?')
         self.fields['mode'].error_messages['required'] = (
             'Please tell us how you did, or will, travel.')
-        self.fields['mode'].required = False
-        self.fields['duration'].required = False
 
 
 MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm3, extra=1, max_num=10, can_delete=True)
@@ -205,21 +199,3 @@ MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
                                           extra=1, max_num=10, can_delete=True)
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
                                           extra=1, max_num=10, can_delete=True)
-
-class NormalFromWorkSameAsAboveForm(forms.Form):
-    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
-    normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
-                                                label=label)
-
-class WalkRideFromWorkSameAsAboveForm(forms.Form):
-    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
-    walkride_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
-                                                  label=label)
-
-class NormalIdenticalToWalkrideForm(forms.Form):
-    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'My normal commute is exactly like my walk ride day commute.'
-    normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
-                                                 label=label)
