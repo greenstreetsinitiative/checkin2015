@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 
@@ -95,14 +96,15 @@ class event(models.Model):
         return self.street + ', ' + self.city + ', MA ' + self.zipcode
 
     def event_day(self):
-        print dir(self.date.date)
         day = self.date.date()
         return '{0}/{1}/{2}'.format(day.month, day.day, day.year)
 
     def event_time(self):
-        print dir(self.date.time)
         time = self.date.time()
         return '{0}:{1}'.format(time.hour, time.minute)
+
+    def is_active(self):
+        return self.date >= datetime.now()
 
     def __unicode__(self):
         return u'%s' % (self.name)
