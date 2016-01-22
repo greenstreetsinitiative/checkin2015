@@ -35,13 +35,13 @@ export_as_csv.short_description = "Export selected retailers as csv file"
 def approve_selected(modeladmin, request, queryset):
     queryset.update(approved=True)
 
-approve_selected.short_description = "Approve selected retailers."
+approve_selected.short_description = "Approve selected"
 
 
 def disapprove_selected(modeladmin, request, queryset):
     queryset.update(approved=False)
 
-disapprove_selected.short_description = "Disapprove selected retailers."
+disapprove_selected.short_description = "Disapprove selected"
 
 
 # Register your models here.
