@@ -67,7 +67,7 @@ admin.site.register(partner, partnerAdmin)
 class eventAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Event Information', {'fields': ['name', 'phone', 'website',
-                                          'info', 'date']}),
+                                          'description', 'date']}),
         ('Address', {'fields': ['street', 'city', 'zipcode']}),
         ('Coordinates', {'fields': ['latitude', 'longitude']}),
         ('Contact Information', {'fields': ['contact_name', 'contact_phone',

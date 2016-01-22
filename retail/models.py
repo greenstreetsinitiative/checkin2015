@@ -58,7 +58,7 @@ class event(models.Model):
     name = models.TextField()
     phone = models.CharField(max_length=32, null=True, blank=True)
     website = models.CharField(max_length=2048, null=True, blank=True)
-    info = models.TextField()
+    description = models.TextField()
     date = models.DateTimeField(null=True)
 
     # location
