@@ -69,15 +69,15 @@ class eventAdmin(admin.ModelAdmin):
         ('Event Information', {'fields': ['name', 'phone', 'website',
                                           'info', 'date']}),
         ('Address', {'fields': ['street', 'city', 'zipcode']}),
-        ('Coordinates (optional)', {'fields': ['latitude', 'longitude']}),
+        ('Coordinates', {'fields': ['latitude', 'longitude']}),
         ('Contact Information', {'fields': ['contact_name', 'contact_phone',
                                             'contact_email']}),
-        ('Other', {'fields': ['category', 'notes']}),
+        ('Other', {'fields': ['notes']}),
         (None, {'fields': ['approved']})
     ]
 
-    list_display = ('name', 'eventDay', 'eventTime',
-                    'address', 'contact_name', 'contactPhoneNumber',
+    list_display = ('name', 'event_day', 'event_time',
+                    'address', 'contact_name', 'contact_phone_number',
                     'contact_email', 'notes', 'approved')
     list_filter = ['approved', 'city']
     search_fields = ['name']

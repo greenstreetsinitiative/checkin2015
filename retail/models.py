@@ -70,8 +70,8 @@ class event(models.Model):
 
     # Contact information
     contact_name = models.TextField(null=True, blank=True)
-    contact_phone = models.TextField(null=True, blank=True)
-    contact_email = models.TextField(null=True, blank=True)
+    contact_phone = models.TextField(max_length=32, null=True, blank=True)
+    contact_email = models.TextField(max_length=2048, null=True, blank=True)
 
     notes = models.TextField(null=True, blank=True)
     approved = models.BooleanField(default=False)
@@ -80,7 +80,7 @@ class event(models.Model):
         return '({0}) {1}-{2}'.format(self.phone[0:3], self.phone[3:6],
                                       self.phone[6:])
 
-    def contactPhoneNumber(self):
+    def contact_phone_number(self):
         if (self.contact_phone):
             if len(self.contact_phone) == 10:
                 return '({0}) {1}-{2}'.format(self.contact_phone[0:3],
@@ -94,12 +94,14 @@ class event(models.Model):
     def address(self):
         return self.street + ', ' + self.city + ', MA ' + self.zipcode
 
-    def eventDay(self):
-        day = self.date.date
+    def event_day(self):
+        print dir(self.date.date)
+        day = self.date.date()
         return '{0}/{1}/{2}'.format(day.month, day.day, day.year)
 
-    def eventTime(self):
-        time = self.date.time
+    def event_time(self):
+        print dir(self.date.time)
+        time = self.date.time()
         return '{0}:{1}'.format(time.hour, time.minute)
 
     def __unicode__(self):
