@@ -94,11 +94,11 @@ class event(models.Model):
     def address(self):
         return self.street + ', ' + self.city + ', MA ' + self.zipcode
 
-    def day(self):
+    def eventDay(self):
         day = self.date.date
         return '{0}/{1}/{2}'.format(day.month, day.day, day.year)
 
-    def time(self):
+    def eventTime(self):
         time = self.date.time
         return '{0}:{1}'.format(time.hour, time.minute)
 

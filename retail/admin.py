@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from retail.models import partner
+from retail.models import partner, event
 
 import csv
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+
 
 def export_as_csv(modeladmin, request, queryset):
     if not request.user.is_staff:
@@ -30,10 +31,12 @@ def export_as_csv(modeladmin, request, queryset):
 
 export_as_csv.short_description = "Export selected retailers as csv file"
 
+
 def approve_selected(modeladmin, request, queryset):
     queryset.update(approved=True)
 
 approve_selected.short_description = "Approve selected retailers."
+
 
 def disapprove_selected(modeladmin, request, queryset):
     queryset.update(approved=False)
@@ -59,3 +62,27 @@ class partnerAdmin(admin.ModelAdmin):
   actions = ['delete_selected', export_as_csv, approve_selected, disapprove_selected]
 
 admin.site.register(partner, partnerAdmin)
+
+
+class eventAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Event Information', {'fields': ['name', 'phone', 'website',
+                                          'info', 'date']}),
+        ('Address', {'fields': ['street', 'city', 'zipcode']}),
+        ('Coordinates (optional)', {'fields': ['latitude', 'longitude']}),
+        ('Contact Information', {'fields': ['contact_name', 'contact_phone',
+                                            'contact_email']}),
+        ('Other', {'fields': ['category', 'notes']}),
+        (None, {'fields': ['approved']})
+    ]
+
+    list_display = ('name', 'eventDay', 'eventTime',
+                    'address', 'contact_name', 'contactPhoneNumber',
+                    'contact_email', 'notes', 'approved')
+    list_filter = ['approved', 'city']
+    search_fields = ['name']
+    list_per_page = 200
+    actions = ['delete_selected', export_as_csv,
+               approve_selected, disapprove_selected]
+
+admin.site.register(event, eventAdmin)
