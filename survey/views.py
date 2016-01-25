@@ -49,10 +49,25 @@ def add_checkin(request):
             commutersurvey.wr_day_month = wr_day
             commutersurvey.email = commute_form.cleaned_data['email']
             commutersurvey.employer = commute_form.cleaned_data['employer']
-            commutersurvey.team = commute_form.cleaned_data['team']
+            if 'team' in commute_form.cleaned_data:
+                commutersurvey.team = commute_form.cleaned_data['team']
+
+            # write form responses to cookie
+            for attr in ['name', 'email', 'home_address', 'work_address']:
+                # TODO: include employer and team
+                if attr in commute_form.cleaned_data:
+                    request.session[attr] = commute_form.cleaned_data[attr]
+
             extra_commute_form.is_valid() # creates cleaned_data
-            commutersurvey.share = extra_commute_form.cleaned_data['share']
+            if 'share' in extra_commute_form.cleaned_data:
+                commutersurvey.share = extra_commute_form.cleaned_data['share']
             commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+
+            # write form responses to cookie
+            for attr in ['share', 'comments', 'volunteer']:
+                if attr in extra_commute_form.cleaned_data:
+                    request.session[attr] = extra_commute_form.cleaned_data[attr]
+
             leg_formset_NormalTW = MakeLegs_NormalTW(request.POST, instance=commutersurvey, prefix='ntw')
             leg_formset_NormalFW = MakeLegs_NormalFW(request.POST, instance=commutersurvey, prefix='nfw')
             leg_formset_WRTW = MakeLegs_WRTW(request.POST, instance=commutersurvey, prefix='wtw')
@@ -122,9 +137,22 @@ def add_checkin(request):
                         })
 
     else:
-        # initialize empty forms for everything
-        commute_form = CommuterForm()
-        extra_commute_form = ExtraCommuterForm()
+        # initialize forms with cookies
+        initial_commute = {}
+        initial_extra_commute = {}
+
+        for attr in ['name', 'email', 'home_address', 'work_address']:
+            if attr in request.session:
+                initial_commute[attr] = request.session.get(attr)
+
+        for attr in ['share', 'comments', 'volunteer']:
+            if attr in request.session:
+                initial_extra_commute[attr] = request.session.get(attr)
+
+        commute_form = CommuterForm(initial=initial_commute)
+        extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute)
+
+        # TODO: use request session to instantiate the formsets with initial=[{},{},{}...] for each formset
 
         leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(), prefix='ntw')
         leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(), prefix='nfw')

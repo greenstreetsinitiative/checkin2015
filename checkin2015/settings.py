@@ -128,6 +128,9 @@ TEMPLATE_DIRS = (
 
 WSGI_APPLICATION = 'checkin2015.wsgi.application'
 
+# Sessions!
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 60*60*24*31*7 # length of the challenge in seconds?
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
