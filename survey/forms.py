@@ -90,6 +90,7 @@ class ExtraCommuterForm(ModelForm):
         model = Commutersurvey
         fields = ['comments', 'volunteer']
 
+        # TODO: Take into account day and not just month
         if not datetime.now().month < 4 or datetime.now().month > 10:
             fields = ['share'] + fields
 
