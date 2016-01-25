@@ -83,13 +83,19 @@
           <h3>{{datapoint.0}}</h3>
           <div class="bar-chart">
               <ul class="plot-container">
-                {%  for month in datapoint.1 %}
-                  <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | default:"0" }}%</span></li>
-                {% endfor %}
+                {% if datapoint.1|length = 1 %}
+                  {# we're showing april only here #}
+                  <p><span style="font-size: 2em;">{{ datapoint.1.0.1 |floatformat:0}}%</span> in April 2015</p>
+                {% else %}
+                  {%  for month in datapoint.1 %}
+                    <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | default:"0" }}%</span></li>
+                  {% endfor %}
+                {% endif %}
               </ul>
           </div>
         {% endfor %}
       </div>
+
       <div role="tabpanel" class="tab-pane" id="participation">
         {# <h2>{{ participation.0 }}</h2> #}
         <p>{{ participation.1 }}</p>
@@ -132,5 +138,3 @@
 
 </div>
 {% endblock %}
-
-

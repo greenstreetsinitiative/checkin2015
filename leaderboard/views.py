@@ -53,11 +53,11 @@ def calculate_metrics(company, selected_month):
     total_calories = company.total_calories(shortmonth)
 
     return {
-        'participants': round(percent_participants,2),
-        'already_green': round(percent_already_green,2),
-        'green_switch': round(percent_green_switch,2),
-        'healthy_switch': round(percent_healthy_switch,2),
-        'avg_participation': round(percent_participants_average,2),
+        'participants': min(round(percent_participants,2), 100),
+        'already_green': min(round(percent_already_green,2), 100),
+        'green_switch': min(round(percent_green_switch,2), 100),
+        'healthy_switch': min(round(percent_healthy_switch,2), 100),
+        'avg_participation': min(round(percent_participants_average,2), 100),
         'num_checkins': count_checkins,
         'total_C02': total_C02,
         'total_calories': total_calories
@@ -85,27 +85,29 @@ def company(request, employerid=None, teamid=None):
         overall = [
             ('Number of check-ins',
                 allmetrics['num_checkins']),
-            ('Estimated total CO2 saved by not driving on Walk/Ride Day',
+            ('Estimated total CO2 (kg) saved by not driving on Walk/Ride Day',
                 round(allmetrics['total_C02'],0)),
-            ('Estimated total calories burned on Walk/Ride Day',
+            ('Estimated total calories (kcal) burned during normal commutes',
                 round(allmetrics['total_calories'],0)),
             ('Percent of team participating',
                 '{0}%'.format(allmetrics['participants'])),
             ('Percent of check-ins involving a green commute on a normal day',
                 '{0}%'.format(allmetrics['already_green'])),
-            ('Percent of check-ins where commutes went greener for Walk/Ride Day',
-                '{0}%'.format(allmetrics['green_switch'])),
-            ('Percent of check-ins where commutes went healthier for Walk/Ride Day',
-                '{0}%'.format(allmetrics['healthy_switch']))
+            ('Percent of check-ins where commutes went greener for Walk/Ride Day (April 2015)',
+                '{0}%'.format(calculate_metrics(company, 'april')['green_switch'])),
+            ('Percent of check-ins where commutes went healthier for Walk/Ride Day (April 2015)',
+                '{0}%'.format(calculate_metrics(company, 'april')['healthy_switch']))
             ]
 
         data = [
+            # 0
             ('Impacts',
                 'Everyone\'s check-in makes an impact on our world and ourselves! 430 kgs <a href="http://www.epa.gov/cleanenergy/energy-resources/refs.html">barrel of oil</a>',
                 (
-                    ('Estimated total kg CO2 saved by not driving on Walk/Ride Day', [], []),
-                    ('Estimated total calories burned on Walk/Ride Day', [], [])
+                    ('Estimated total CO2 (kg) saved by not driving on Walk/Ride Day', [], []),
+                    ('Estimated total calories (kcal) burned during normal commutes', [], [])
                 ) ),
+            # 1
             ('Commutes',
                 'Walk/Ride Day can change our commuting habits. Green commutes emit less carbon dioxide than typical car commutes, and can involve carpooling, walking, biking, running, and many forms of public transportation. Healthier commutes burn more calories, so break out the tennis shoes and get walking!',
                 (
@@ -113,6 +115,7 @@ def company(request, employerid=None, teamid=None):
                     ('Percent of check-ins where commutes went greener for Walk/Ride Day', []),
                     ('Percent of check-ins where commutes went healthier for Walk/Ride Day', [])
                 ) ),
+            # 2
             ('Participation',
                 '',
                 (
@@ -121,7 +124,7 @@ def company(request, employerid=None, teamid=None):
                 ) )
         ]
 
-        past_months = Month.objects.filter(open_checkin__lte=date.today(), open_checkin__gt=('2015-03-31')).count()
+        past_months = Month.objects.filter(open_checkin__lte=('2015-11-01'), open_checkin__gt=('2015-03-31')).count()
         months = ['april','may','june','july','august','september','october'][0:past_months]
 
         for month in reversed(months):
@@ -135,18 +138,26 @@ def company(request, employerid=None, teamid=None):
             data[1][2][0][1].append(
                 (month, metrics['already_green'])
                 )
-            data[1][2][1][1].append(
-                (month, metrics['green_switch'])
-                )
-            data[1][2][2][1].append(
-                (month, metrics['healthy_switch'])
-                )
+            # data[1][2][1][1].append(
+            #     (month, metrics['green_switch'])
+            #     )
+            # data[1][2][2][1].append(
+            #     (month, metrics['healthy_switch'])
+            #     )
             data[2][2][0][1].append(
                 (month, metrics['num_checkins'])
                 )
             data[2][2][1][1].append(
                 (month, metrics['participants'])
                 )
+
+        # april only!
+        data[1][2][1][1].append(
+            ('april', metrics['green_switch'])
+            )
+        data[1][2][2][1].append(
+            ('april', metrics['healthy_switch'])
+            )
 
         # bonus numbers! if largest number exceeds 600, map to a different scale
 
