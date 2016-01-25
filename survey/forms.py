@@ -8,6 +8,8 @@ from django.forms.models import BaseInlineFormSet
 from django.forms.util import ErrorList
 from django.forms.widgets import HiddenInput
 
+from datetime import datetime
+
 
 class AlertErrorList(ErrorList):
     """define custom formatting for the leg errors"""
@@ -26,24 +28,36 @@ class CommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
         fields = ['name', 'email', 'home_address', 'work_address',
-                  'employer', 'team']
+                  'employer']
+        if not datetime.now().month < 4 or datetime.now().month > 10:
+            fields.append('team')
 
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
 
-        self.fields['employer'].queryset = Employer.objects.filter(
-            active2015=True)
-        self.fields['team'].queryset = Team.objects.filter(
-            parent__active2015=True)
+        if datetime.now().month < 4 or datetime.now().month > 10:
+            # it's not a challenge!
+            self.fields['employer'].queryset = Employer.objects.filter(
+                nochallenge=True)
+            self.fields['employer'].help_text = (
+                "Use 'Not employed', 'Self',"
+                " or 'Student' as appropriate")
+            self.fields['employer'].label = "Occupation"
+        else:
+            # we're in a challenge
+            self.fields['employer'].queryset = Employer.objects.filter(
+                active2016=True)
+            self.fields['team'].queryset = Team.objects.filter(
+                parent__active2016=True)
+            self.fields['employer'].help_text = (
+                "Use 'Not employed', 'Self',"
+                " 'Student', or 'Other employer not involved in this year's"
+                " Corporate Challenge' as appropriate")
+            self.fields['team'].label = "Sub-team"
+            self.fields['team'].help_text = (
+                "If your company has participating "
+                "sub-teams you must choose a sub-team.")
 
-        self.fields['employer'].help_text = (
-            "Use 'Not employed', 'Self',"
-            " 'Student', or 'Other employer not involved in this year's"
-            " Corporate Challenge' as appropriate")
-        self.fields['team'].label = "Sub-team"
-        self.fields['team'].help_text = (
-            "If your company has participating "
-            "sub-teams you must choose a sub-team.")
         self.fields['home_address'].help_text = (
             "We do not give your address to other parties. "
             "You may enter an approximate location if you wish.")
@@ -57,8 +71,7 @@ class CommuterForm(ModelForm):
         self.fields['home_address'].widget.attrs['class'] = 'form-control'
         self.fields['work_address'].widget.attrs['class'] = 'form-control'
         self.fields['employer'].widget.attrs['class'] = 'form-control'
-        self.fields['team'].widget.attrs['class'] = 'form-control'
-        self.fields['team'].required = False
+
         self.fields['home_address'].error_messages['required'] = (
             'Please enter a home address.')
         self.fields['work_address'].error_messages['required'] = (
@@ -68,16 +81,24 @@ class CommuterForm(ModelForm):
         self.fields['email'].error_messages['required'] = (
             'Please enter an email address.')
 
+        if 'team' in self.fields:
+            self.fields['team'].widget.attrs['class'] = 'form-control'
+            self.fields['team'].required = False
+
 class ExtraCommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
-        fields = ['share', 'comments', 'volunteer']
+        fields = ['comments', 'volunteer']
+
+        if not datetime.now().month < 4 or datetime.now().month > 10:
+            fields = ['share'] + fields
 
     def __init__(self, *args, **kwargs):
         super(ExtraCommuterForm, self).__init__(*args, **kwargs)
 
-        self.fields['share'].label = (
-            "Please don't share my identifying information with my employer")
+        if 'share' in self.fields:
+            self.fields['share'].label = (
+                "Please don't share my identifying information with my employer")
         self.fields['comments'].label = "Add a comment"
         self.fields['volunteer'].label = (
             "Please contact me with information on ways to help or volunteer"
@@ -87,7 +108,8 @@ class ExtraCommuterForm(ModelForm):
         self.fields['comments'].widget.attrs['rows'] = 2
 
         # add CSS classes for bootstrap
-        self.fields['share'].widget.attrs['class'] = 'form-control'
+        if 'share' in self.fields:
+            self.fields['share'].widget.attrs['class'] = 'form-control'
         self.fields['comments'].widget.attrs['class'] = 'form-control'
 
 class RequiredFormSet(BaseInlineFormSet):

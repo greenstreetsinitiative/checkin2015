@@ -57,6 +57,8 @@ class Employer(models.Model):
     name = models.CharField("Organization name", max_length=200)
     nr_employees = models.PositiveIntegerField(default=1)
     active2015 = models.BooleanField("2015 Challenge", default=False)
+    active2016 = models.BooleanField("2016 Challenge", default=False)
+    nochallenge = models.BooleanField("Not In Challenge", default=False)
     sector = models.ForeignKey('Sector', null=True, blank=True)
 
     class Meta(object):
