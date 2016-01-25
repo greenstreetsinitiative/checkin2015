@@ -12,7 +12,7 @@ def get_surveys_by_employer(employer, chosenmonth):
         month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=chosenmonth)
         surveys = Commutersurvey.objects.filter(wr_day_month=month_model, employer=employer)
     else:
-        surveys = Commutersurvey.objects.filter(employer=employer)
+        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year='2015', employer=employer)
     return surveys
 
 def get_surveys_by_team(team, chosenmonth):
@@ -20,7 +20,7 @@ def get_surveys_by_team(team, chosenmonth):
         month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=chosenmonth)
         surveys = Commutersurvey.objects.filter(wr_day_month=month_model, team=team)
     else:
-        surveys = Commutersurvey.objects.filter(team=team)
+        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year='2015', team=team)
     return surveys
 
 
