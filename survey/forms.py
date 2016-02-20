@@ -42,7 +42,7 @@ class CommuterForm(ModelForm):
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
                 " or 'Student' as appropriate")
-            self.fields['employer'].label = "Occupation"
+            self.fields['employer'].label = "Employer"
         else:
             # we're in a challenge
             self.fields['employer'].queryset = Employer.objects.filter(
