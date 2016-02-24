@@ -68,13 +68,14 @@ export MANDRILL_API_KEY="V62ndycapG44sI-x9EcG1A"
 
 ## Setup the virtual environment
 
-1. Become a normal user: `su <username>` (replace <username> with your normal development user)
+1. Become a normal user: `su <username>` (replace `<username>` with your normal development user)
     If you don't have a normal user in your VM yet, make one: `adduser guest`
 1. `git clone <URL of this repository>`
 1. `cd <this repository>`
 1. `source /etc/bash_completion`
 1. `mkvirtualenv greenstreets`
 1. Setup the environment variables in the postactivate script:
+
     ```
     echo >>~/.virtualenvs/greenstreets/bin/postactivate <<EOF
     export SECRET_KEY="abcdef"
@@ -89,6 +90,7 @@ export MANDRILL_API_KEY="V62ndycapG44sI-x9EcG1A"
     export MAPQUEST_API_KEY=""
     EOF
     ```
+
 1. `workon greenstreets`
 
 ## Run it
