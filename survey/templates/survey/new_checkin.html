@@ -23,7 +23,7 @@
   <center>
     <h1>Walk/Ride Day Check-In</h1>
     <h2>{{ wr_day }}</h2>
-    <p class="lead">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the Challenge. You may opt out of sharing your information with your employer below.</p>
+    <p class="lead">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="http://gogreenstreets.org/2016-walkride-day-corporate-challenge">Corporate Challenge</a> (from April through October). You may opt out of sharing your information with your employer below.</p>
     <div class="panel panel-danger browser"><p class="text-danger"><strong>We strongly recommend</strong> using an up-to-date Internet browser such as Internet Explorer 8 or later, <a href="http://www.google.com/chrome/">Google Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a> if you have trouble checking in with multiple commute segments. As another alternative, you may also use your smartphone to check in!</p></div>
   </center>
 </div>
@@ -69,13 +69,14 @@
       <p class="commuteexamples"><strong>For illustrative purposes only.</strong> These routes are automatically generated from the locations typed above.</p>
     </div>
     <hr class="green-big">
-    <p class="center">Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). Note: Feel free to check in an anticipated commute. After you submit your check-in, you are allowed to go back and make changes. The system will only record your most recent submission.</p>
-
+    
     <div class="row wr-day">
       <div class="headingthing">
-        <h2>Your Walk/Ride Day<strong>*</strong> commute</h2>
-        <p><strong>*</strong>If you don't work on Fridays or for another reason, you may substitute another day to detail as your "Walk/Ride Day" commute.</p>
-      </div>
+        <h2>Your Walk/Ride Day* commute</h2>
+        Please enter all segments (legs) of your commute and the approximate duration of each segment. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). Feel free to check in early, before your actual commute. You can go back and make changes; the system will record only your most recent submission. 
+        <br>
+        *If you don't work on Fridays or for another reason, you may substitute another day to detail as your "Walk/Ride Day" commute.
+        </div>
       <div class="col-sm-6">
         <div class="to-work">
         <center>
@@ -95,10 +96,12 @@
         </div>
       </div>
 
+     
       <div class="col-sm-6">
       <div class="from-work">
         <center>
         <h4>FROM Work TO Home</h4><hr class="green"></center>
+         
         {{ wrday_copy }}
 
         <div class="legs-wrapper">
@@ -117,8 +120,9 @@
 
     <div class="row normal-day">
       <div class="headingthing">
-        <h2>Your normal commute</h2>
-      </div>
+        <h2>Your normal day commute</h2>
+        Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.
+        </div>
 
       <div class="col-sm-6 normal-legs">
         <div class="to-work">
