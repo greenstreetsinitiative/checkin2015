@@ -322,7 +322,7 @@ class Commutersurvey(models.Model):
         self.calorie_change = changes["calories"]
         self.change_type = self.change_analysis()
         self.already_green = self.check_green()
-        self.carbon_savings = self.carbon_saved()
+        self.carbon_savings = round(self.carbon_saved(),2)
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
 
@@ -373,7 +373,8 @@ class Leg(models.Model):
                 calories = kcal * (self.duration/60) * 81
             #grams carbon dioxide per passenger-mile on this mode
             coo = float(self.mode.carb)
-            if coo > 0.0:
+            #grn = self.mode.green
+            if coo > 0.0: #and grn<>'f'
                 s = float(self.mode.speed) # average speed in mph
                 #kilograms carbon expended in leg based on duration in minutes
                 carbon = (coo/1000) * s * (self.duration/60)

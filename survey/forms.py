@@ -41,7 +41,7 @@ class CommuterForm(ModelForm):
                 nochallenge=True)
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
-                " or 'Student' as appropriate")
+                " 'Student' or 'Other employer' as appropriate")
             self.fields['employer'].label = "Employer"
         else:
             # we're in a challenge
@@ -51,7 +51,7 @@ class CommuterForm(ModelForm):
                 parent__active2016=True)
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
-                " 'Student', or 'Other employer not involved in this year's"
+                " 'Student', or 'Other employer not in the"
                 " Corporate Challenge' as appropriate")
             self.fields['team'].label = "Sub-team"
             self.fields['team'].help_text = (
@@ -90,6 +90,8 @@ class ExtraCommuterForm(ModelForm):
         model = Commutersurvey
         fields = ['comments', 'volunteer']
 
+
+
         # TODO: Take into account day and not just month
         if not datetime.now().month < 4 or datetime.now().month > 10:
             fields = ['share'] + fields
@@ -105,13 +107,15 @@ class ExtraCommuterForm(ModelForm):
             "Please contact me with information on ways to help or volunteer"
             " with Green Streets Initiative")
         self.fields['comments'].widget.attrs['placeholder'] = (
-            "We'd love to hear from you!")
-        self.fields['comments'].widget.attrs['rows'] = 2
+            "Employers may now register for the 2016 Walk/Ride Day Corporate Challenge. Registration deadline is April 14. If you would like us to invite your employer please leave us a note here in the comments section with the name of your employer!")
+        self.fields['comments'].widget.attrs['rows'] = 4
 
         # add CSS classes for bootstrap
         if 'share' in self.fields:
             self.fields['share'].widget.attrs['class'] = 'form-control'
         self.fields['comments'].widget.attrs['class'] = 'form-control'
+
+
 
 class RequiredFormSet(BaseInlineFormSet):
 
@@ -222,3 +226,23 @@ MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
                                           extra=1, max_num=10, can_delete=True)
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
                                           extra=1, max_num=10, can_delete=True)
+
+
+class NormalFromWorkSameAsAboveForm(forms.Form):
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
+    normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
+                                                label=label)
+
+class WalkRideFromWorkSameAsAboveForm(forms.Form):
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
+    walkride_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
+                                                  label=label)
+
+class NormalIdenticalToWalkrideForm(forms.Form):
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'My normal commute is exactly like my walk ride day commute.'
+    normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
+                                                 label=label)
+
