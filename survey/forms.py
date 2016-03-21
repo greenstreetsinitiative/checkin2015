@@ -59,11 +59,11 @@ class CommuterForm(ModelForm):
                 "sub-teams you must choose a sub-team.")
 
         self.fields['home_address'].help_text = (
-            "We do not give your address to other parties. "
-            "You may enter an approximate location if you wish.")
+        	"We do not give your address to other parties. "
+        	"You may enter an approximate location if you wish.")
         self.fields['work_address'].help_text = (
-            "Or, if you are not "
-            "employed, other destination")
+        	"Or, if you are not "
+        	"employed, other destination")
 
         # add CSS classes for bootstrap
         self.fields['name'].widget.attrs['class'] = 'form-control'
@@ -73,7 +73,7 @@ class CommuterForm(ModelForm):
         self.fields['employer'].widget.attrs['class'] = 'form-control'
 
         self.fields['home_address'].error_messages['required'] = (
-            'Please enter a home address.')
+           'Please enter a home address.')
         self.fields['work_address'].error_messages['required'] = (
             'Please enter an address.')
         self.fields['employer'].error_messages['required'] = (
@@ -82,15 +82,13 @@ class CommuterForm(ModelForm):
             'Please enter an email address.')
 
         if 'team' in self.fields:
-            self.fields['team'].widget.attrs['class'] = 'form-control'
-            self.fields['team'].required = False
+        	self.fields['team'].widget.attrs['class'] = 'form-control'
+        	self.fields['team'].required = False
 
 class ExtraCommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
         fields = ['comments', 'volunteer']
-
-
 
         # TODO: Take into account day and not just month
         if not datetime.now().month < 4 or datetime.now().month > 10:
@@ -114,8 +112,6 @@ class ExtraCommuterForm(ModelForm):
         if 'share' in self.fields:
             self.fields['share'].widget.attrs['class'] = 'form-control'
         self.fields['comments'].widget.attrs['class'] = 'form-control'
-
-
 
 class RequiredFormSet(BaseInlineFormSet):
 
@@ -226,4 +222,23 @@ MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
                                           extra=1, max_num=10, can_delete=True)
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
                                           extra=1, max_num=10, can_delete=True)
+
+class NormalFromWorkSameAsAboveForm(forms.Form):
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
+    normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
+                                                label=label)
+
+class WalkRideFromWorkSameAsAboveForm(forms.Form):
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
+    walkride_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
+                                                  label=label)
+
+class NormalIdenticalToWalkrideForm(forms.Form):
+    widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
+    label = 'My normal commute is exactly like my walk ride day commute.'
+    normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
+                                                 label=label)
+
 

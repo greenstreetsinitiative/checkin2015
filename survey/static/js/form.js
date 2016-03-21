@@ -44,7 +44,45 @@ $(function() {
 
   // don't let people delete that first leg!! trick by making the link invisible!
   $('.legs-wrapper .leggedrow:first-of-type .delete-row:first-of-type').css('visibility','hidden')
+ 
+  // hide extra leg stuff at first
+  $('.wr-day .from-work .legs-wrapper').hide();
+  $('.normal-legs').hide();
+  $('.normal-day .from-work .legs-wrapper').hide();
 
+  function clearLegData(selector) {
+    var $legs = $(selector).find('.leggedrow'); //legs
+    var $durations = $legs.find('input[name$="duration"]'); //durations
+    var $modes = $legs.find('select[name$="mode"]'); //modes
+    $durations.val('');
+    $modes.val('').trigger('change');
+    $legs.find('.delete-row').each(function(){
+      if ($(this).css("visibility") != "hidden") { $(this).trigger('click'); } //deletes extra blank legs
+    });
+  }
+
+  // handles options for if walkride day's commute FROM work is same as TO work
+  $('#id_walkride_same_as_reverse input:radio').change(function() {
+    $('.wr-day .from-work .legs-wrapper').toggle({ start: function() {
+      if ($(this).is(':visible')) { clearLegData($(this)); }}
+    });
+  });
+
+  // handles options for if the normal commute happens to be the same as the walk-ride day commute
+  $('#id_normal_same_as_walkride input:radio').change(function() {
+    $('.normal-legs').toggle({ start: function() {
+      if ($(this).is(':visible')) { clearLegData($(this)); }}
+    });
+  });
+
+  // handles options for if normal day's commute FROM work is same as TO work
+  $('#id_normal_same_as_reverse input:radio').change(function() {
+    $('.normal-day .from-work .legs-wrapper').toggle({ start: function() {
+      if ($(this).is(':visible')) { clearLegData($(this)); }}
+    });
+  });
+
+   
   // do all this stuff for geocoding
   var geocoder = new google.maps.Geocoder();
   var position1, position2, marker1, marker2;

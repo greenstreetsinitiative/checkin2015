@@ -101,7 +101,6 @@
       <div class="from-work">
         <center>
         <h4>FROM Work TO Home</h4><hr class="green"></center>
-         
         {{ wrday_copy }}
 
         <div class="legs-wrapper">
@@ -123,7 +122,7 @@
         <h2>Your normal day commute</h2>
         Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.
         </div>
-
+      {{ commute_copy }}        
       <div class="col-sm-6 normal-legs">
         <div class="to-work">
 
@@ -147,7 +146,8 @@
       <div class="from-work">
         <center>
         <h4>FROM Work TO Home</h4><hr class="green"></center>
-
+        {{ normal_copy }}
+        
         <div class="legs-wrapper">
         {% for form in NormalFW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
