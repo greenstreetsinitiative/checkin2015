@@ -11,6 +11,7 @@ from django.db.models import Count
 from datetime import date, datetime
 import datetime
 
+
 def calculate_rankings(company_dict):
     ranks = {}
     ranks['percent_green_commuters'], ranks['percent_participation'], ranks['percent_green_switches'], ranks['percent_healthy_switches'], ranks['percent_avg_participation'] = [],[],[],[],[]
