@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ON_OPENSHIFT = False
-if os.environ.has_key('OPENSHIFT_REPO_DIR'):
+if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
 
 # Private settings
@@ -56,14 +56,14 @@ if ON_OPENSHIFT:
     if DEBUG:
         print('WARNING: The DEBUG environment is set to True.')
 else:
-     DEBUG = True
+    DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
 if DEBUG:
-     ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = []
 else:
-     ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -78,7 +78,7 @@ INSTALLED_APPS = (
     'survey',
     'leaderboard',
     'retail',
-    'smart_selects', # for the subteams dropdown functionality
+    'smart_selects',  # for the subteams dropdown functionality
     'django.contrib.humanize'
 )
 
@@ -130,7 +130,7 @@ WSGI_APPLICATION = 'checkin2015.wsgi.application'
 
 # Sessions!
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 60*60*24*31*7 # length of the challenge in seconds?
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 31 * 7  # length of the challenge in seconds?
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
