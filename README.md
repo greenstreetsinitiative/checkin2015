@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/greenstreetsinitiative/checkin2015.svg?branch=master)](https://travis-ci.org/greenstreetsinitiative/checkin2015)
+
 # OS X Setup
 
 ## Install all the things
