@@ -1,0 +1,10 @@
+[run]
+data_file = .coverage
+omit =
+    checkin2015/settings*
+    *wsgi.py
+    *migrations*
+    *admin.py
+    *static*
+    *templates*
+

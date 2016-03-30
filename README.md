@@ -103,6 +103,13 @@ export MANDRILL_API_KEY="V62ndycapG44sI-x9EcG1A"
 1. `python manage.py runserver 0.0.0.0:8000`
 1. Navigate to the IP address of your VM in your web browser, port 8000.
 
+## Run tests
+
+1. `pip install -r requirements.txt`
+1. `pip install -r test-requirements.txt`
+1. `python manage.py test --settings=checkin2015.dev`
+
+
 # Bonus: Export data to CSV
 
 ```

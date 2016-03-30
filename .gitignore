@@ -1,3 +1,7 @@
 .DS_Store
 *.pyc
 *.idea
+
+# test artifacts
+.coverage
+test/*.db
