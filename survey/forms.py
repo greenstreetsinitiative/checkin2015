@@ -114,7 +114,6 @@ class ExtraCommuterForm(ModelForm):
         self.fields['comments'].widget.attrs['class'] = 'form-control'
 
 class RequiredFormSet(BaseInlineFormSet):
-
     def __init__(self, *args, **kwargs):
         super(RequiredFormSet, self).__init__(*args, **kwargs)
         for form in self.forms:
@@ -215,13 +214,13 @@ class LegForm4(ModelForm):
             'Please tell us how you did, or will, travel.')
 
 
-MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm3, extra=1, max_num=10, can_delete=True)
+MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm3, extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
 MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm4,
-                                      extra=1, max_num=10, can_delete=True)
+                                      extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
 MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=LegForm1,
-                                          extra=1, max_num=10, can_delete=True)
+                                          extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
 MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=LegForm2,
-                                          extra=1, max_num=10, can_delete=True)
+                                          extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
 
 class NormalFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))

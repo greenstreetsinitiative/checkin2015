@@ -34,17 +34,6 @@ def add_checkin(request):
     except Month.DoesNotExist:
         return redirect('/')
 
-    leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(),
-                                             prefix='ntw')
-    leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(),
-                                             prefix='nfw')
-    leg_formset_WRTW = MakeLegs_WRTW(instance=Commutersurvey(), prefix='wtw')
-    leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
-
-    normal_copy = NormalFromWorkSameAsAboveForm()
-    wrday_copy = WalkRideFromWorkSameAsAboveForm()
-    commute_copy = NormalIdenticalToWalkrideForm()
-
     if request.method == 'POST':
         # send the filled out forms in!
         # if the forms turn out to be not valid, they will still retain
@@ -56,6 +45,18 @@ def add_checkin(request):
         wrday_copy = WalkRideFromWorkSameAsAboveForm(request.POST)
         commute_copy = NormalIdenticalToWalkrideForm(request.POST)
 
+        # Set these all at once here, simply based on user input.
+        # If we re-render the form this ensures at least all the
+        # leg forms have data from request.POST, regardless of scenario.
+        leg_formset_WRTW = MakeLegs_WRTW(
+            request.POST, instance=Commutersurvey(), prefix='wtw')
+        leg_formset_WRFW = MakeLegs_WRFW(
+            request.POST, instance=Commutersurvey(), prefix='wfw')
+        leg_formset_NormalTW = MakeLegs_NormalTW(
+            request.POST, instance=Commutersurvey(), prefix='ntw')
+        leg_formset_NormalFW = MakeLegs_NormalFW(
+            request.POST, instance=Commutersurvey(), prefix='nfw')
+
 	# if the main form is correct
         if commute_form.is_valid():
             commutersurvey = commute_form.save(commit=False)
@@ -65,16 +66,19 @@ def add_checkin(request):
             if 'team' in commute_form.cleaned_data:
                 commutersurvey.team = commute_form.cleaned_data['team']
 
+            extra_commute_form.is_valid() # creates cleaned_data
+            if 'share' in extra_commute_form.cleaned_data:
+                commutersurvey.share = extra_commute_form.cleaned_data['share']
+            commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+
             # write form responses to cookie
             for attr in ['name', 'email', 'home_address', 'work_address']:
                 # TODO: include employer and team
                 if attr in commute_form.cleaned_data:
                     request.session[attr] = commute_form.cleaned_data[attr]
-
-            extra_commute_form.is_valid() # creates cleaned_data
-            if 'share' in extra_commute_form.cleaned_data:
-                commutersurvey.share = extra_commute_form.cleaned_data['share']
-            commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+            for attr in ['share', 'comments', 'volunteer']:
+                if attr in extra_commute_form.cleaned_data:
+                    request.session[attr] = extra_commute_form.cleaned_data[attr]
 
             #################
             # SAVE THE LEGS #
@@ -238,10 +242,6 @@ def add_checkin(request):
                         leg_formset_NormalFW = MakeLegs_NormalFW(
                         	request.POST, instance=commutersurvey, prefix='nfw')
 
-            # write form responses to cookie
-            for attr in ['share', 'comments', 'volunteer']:
-                if attr in extra_commute_form.cleaned_data:
-                    request.session[attr] = extra_commute_form.cleaned_data[attr]
 
             # finally! we're good to go.
             if (leg_formset_WRTW.is_valid() and
