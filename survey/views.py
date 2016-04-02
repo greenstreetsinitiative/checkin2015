@@ -52,6 +52,10 @@ def add_checkin(request):
         commute_form = CommuterForm(request.POST)
         extra_commute_form = ExtraCommuterForm(request.POST)
 
+        normal_copy = NormalFromWorkSameAsAboveForm(request.POST)
+        wrday_copy = WalkRideFromWorkSameAsAboveForm(request.POST)
+        commute_copy = NormalIdenticalToWalkrideForm(request.POST)
+
 	# if the main form is correct
         if commute_form.is_valid():
             commutersurvey = commute_form.save(commit=False)

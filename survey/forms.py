@@ -227,18 +227,16 @@ class NormalFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
     label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
     normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
-                                                label=label)
+                                                label=label, required=False)
 
 class WalkRideFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
     label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
     walkride_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
-                                                  label=label)
+                                                  label=label, required=False)
 
 class NormalIdenticalToWalkrideForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
     label = 'My normal commute is exactly like my walk ride day commute.'
     normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
-                                                 label=label)
-
-
+                                                 label=label, required=False)
