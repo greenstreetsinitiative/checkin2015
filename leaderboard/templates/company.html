@@ -16,7 +16,7 @@
 <div class="row clearfix">
     <div class="col-sm-12 column">
         <center>
-          <h1>Walk/Ride Day 2015 <br><strong>{{company.name}}</strong></h1>
+          <h1>Walk/Ride Day {{ year }} <br><strong>{{company.name}}</strong></h1>
           {% if company.nr_members %}
           <p>{{company.nr_members | intcomma}} team members eligible to participate</p>
           {% elif company.nr_employees %}
@@ -85,7 +85,7 @@
               <ul class="plot-container">
                 {% if datapoint.1|length = 1 %}
                   {# we're showing april only here #}
-                  <p><span style="font-size: 2em;">{{ datapoint.1.0.1 |floatformat:0}}%</span> in April 2015</p>
+                  <p><span style="font-size: 2em;">{{ datapoint.1.0.1 |floatformat:0}}%</span> in April</p>
                 {% else %}
                   {%  for month in datapoint.1 %}
                     <li data-cp-size="{{ month.1 | floatformat:0 | default:"0" }}"><span class="plot-label">{{ month.0|capfirst }}<br>{{ month.1 | default:"0" }}%</span></li>

@@ -17,41 +17,37 @@ urlpatterns = patterns(
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^checkin/complete/$', TemplateView.as_view(template_name='survey/thanks.html'), name='complete'),
 
-    # Leaderboard
-    url(r'^leaderboard/$',
+    # Leaderboard by year
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all"),
 
 
-    url(r'^leaderboard/all/subteams/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/all/subteams/$',
         'leaderboard.views.latest_leaderboard', name="subteams_all"),
-    url(r'^leaderboard/all/all/subteams/(?P<parentid>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/all/all/subteams/(?P<parentid>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="subteams"),
-    url(r'^leaderboard/(?P<sector>[\w\.-]*)/(?P<size>[\w\.-]*)/subteams/(?P<parentid>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<sector>[\w\.-]*)/(?P<size>[\w\.-]*)/subteams/(?P<parentid>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="subteams_months"),
 
 
-    url(r'^leaderboard/(?P<selected_month>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all_sizes_all_months"),
-    url(r'^leaderboard/(?P<size>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<size>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all_sizes_all_months"),
-    url(r'^leaderboard/(?P<size>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<size>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all"),
 
-    url(r'^leaderboard/(?P<sector>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<sector>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all"),
-    url(r'^leaderboard/(?P<sector>[\w\.-]*)/(?P<size>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<sector>[\w\.-]*)/(?P<size>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all"),
-    url(r'^leaderboard/(?P<sector>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
+    url(r'^leaderboard/(?P<year>[\w\.-]*)/(?P<sector>[\w\.-]*)/(?P<selected_month>[\w\.-]*)/$',
         'leaderboard.views.latest_leaderboard', name="all"),
 
-
-
-
-
-    # individual company pages
-    url(r'^companies/$', 'leaderboard.views.company', name="allcompany"),
-    url(r'^companies/(?P<employerid>[\w\.-]*)/$', 'leaderboard.views.company', name="companies"),
-    url(r'^companies/(?P<employerid>[\w\.-]*)/(?P<teamid>[\w\.-]*)/$', 'leaderboard.views.company', name="teams"),
+    # individual company pages by year
+    url(r'^companies/(?P<year>[\w\.-]*)/$', 'leaderboard.views.company', name="allcompany"),
+    url(r'^companies/(?P<year>[\w\.-]*)/(?P<employerid>[\w\.-]*)/$', 'leaderboard.views.company', name="companies"),
+    url(r'^companies/(?P<year>[\w\.-]*)/(?P<employerid>[\w\.-]*)/(?P<teamid>[\w\.-]*)/$', 'leaderboard.views.company', name="teams"),
 
     # Admin
     url(r'^admin/', include(admin.site.urls)),

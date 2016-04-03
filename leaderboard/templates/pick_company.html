@@ -13,7 +13,7 @@
 
 <div class="row clearfix">
     <div class="col-md-12 column">
-        <center><h1>Walk/Ride Day 2015 <br>Corporate Challenge<br><strong>All participating companies and sub-teams</strong></h1>
+        <center><h1>Walk/Ride Day {{ year }} <br>Corporate Challenge<br><strong>All participating companies and sub-teams</strong></h1>
     </div>
 </div>
 
@@ -27,11 +27,11 @@
     {{ company.name }}
     <ul>
       {% for team in company.team_set.all %}
-        <li><a href="{% url 'leaderboard.views.company' employerid=company.id teamid=team.id %}">{{ team.name }}</a></li>
+        <li><a href="{% url 'leaderboard.views.company' year=year employerid=company.id teamid=team.id %}">{{ team.name }}</a></li>
       {% endfor %}
     </ul>
     {% else %}
-      <a href="{% url 'leaderboard.views.company' employerid=company.id %}">{{ company.name }}</a>
+      <a href="{% url 'leaderboard.views.company' year=year employerid=company.id %}">{{ company.name }}</a>
     {% endif %}
   </li>
 {% endfor %}
@@ -39,5 +39,3 @@
 </div>
 </div>
 {% endblock %}
-
-
