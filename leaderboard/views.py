@@ -39,19 +39,19 @@ def calculate_rankings(company_dict):
     return ranks
 
 
-def calculate_metrics(company, selected_month):
+def calculate_metrics(company, selected_month, year):
 
     months_dict = { 'all': 'all', 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
     shortmonth = months_dict[selected_month]
 
-    percent_participants = 100*company.percent_participation(shortmonth)
-    percent_already_green = 100*company.percent_already_green(shortmonth)
-    percent_green_switch = 100*company.percent_green_switch(shortmonth)
-    percent_healthy_switch = 100*company.percent_healthy_switch(shortmonth)
-    percent_participants_average = 100*company.average_percent_participation()
-    count_checkins = company.count_checkins(shortmonth)
-    total_C02 = company.total_C02(shortmonth)
-    total_calories = company.total_calories(shortmonth)
+    percent_participants = 100*company.percent_participation(shortmonth, year)
+    percent_already_green = 100*company.percent_already_green(shortmonth, year)
+    percent_green_switch = 100*company.percent_green_switch(shortmonth, year)
+    percent_healthy_switch = 100*company.percent_healthy_switch(shortmonth, year)
+    percent_participants_average = 100*company.average_percent_participation(year)
+    count_checkins = company.count_checkins(shortmonth, year)
+    total_C02 = company.total_C02(shortmonth, year)
+    total_calories = company.total_calories(shortmonth, year)
 
     return {
         'participants': min(round(percent_participants,2), 100),
@@ -64,11 +64,14 @@ def calculate_metrics(company, selected_month):
         'total_calories': total_calories
         }
 
-def company(request, employerid=None, teamid=None):
+def company(request, year='2016', employerid=None, teamid=None):
     context = RequestContext(request)
 
+    # use the year to set filtering
+    activeFilter = "active{0}".format(year)
+
     if not employerid:
-        companies = Employer.objects.exclude(id__in=[32,33,34,38,39,40]).filter(active2015=True)
+        companies = Employer.objects.exclude(id__in=[32,33,34,38,39,40]).filter(**{activeFilter: True})
         return render_to_response('pick_company.html', { 'companies': companies }, context)
 
     else:
@@ -82,7 +85,7 @@ def company(request, employerid=None, teamid=None):
         """
 
         # Show detailed info about each firm: total check-ins, total CO2, Total Calories, monthly changes, new check-ins.
-        allmetrics = calculate_metrics(company, 'all')
+        allmetrics = calculate_metrics(company, 'all', year)
         overall = [
             ('Number of check-ins',
                 allmetrics['num_checkins']),
@@ -93,12 +96,19 @@ def company(request, employerid=None, teamid=None):
             ('Percent of team participating',
                 '{0}%'.format(allmetrics['participants'])),
             ('Percent of check-ins involving a green commute on a normal day',
-                '{0}%'.format(allmetrics['already_green'])),
-            ('Percent of check-ins where commutes went greener for Walk/Ride Day (April 2015)',
-                '{0}%'.format(calculate_metrics(company, 'april')['green_switch'])),
-            ('Percent of check-ins where commutes went healthier for Walk/Ride Day (April 2015)',
-                '{0}%'.format(calculate_metrics(company, 'april')['healthy_switch']))
+                '{0}%'.format(allmetrics['already_green']))
             ]
+
+        if year == '2015':
+            overall.extend([('Percent of check-ins where commutes went greener for Walk/Ride Day (April 2015)',
+                    '{0}%'.format(calculate_metrics(company, 'april', '2015')['green_switch'])),
+                ('Percent of check-ins where commutes went healthier for Walk/Ride Day (April 2015)',
+                    '{0}%'.format(calculate_metrics(company, 'april', '2015')['healthy_switch']))])
+        elif year == '2016':
+            overall.extend([('Percent of check-ins where commutes went greener for Walk/Ride Day',
+                    '{0}%'.format(allmetrics['green_switch'])),
+                ('Percent of check-ins where commutes went healthier for Walk/Ride Day',
+                    '{0}%'.format(allmetrics['healthy_switch']))])
 
         data = [
             # 0
@@ -125,11 +135,11 @@ def company(request, employerid=None, teamid=None):
                 ) )
         ]
 
-        past_months = Month.objects.filter(open_checkin__lte=('2015-11-01'), open_checkin__gt=('2015-03-31')).count()
+        past_months = datetime.datetime.now().month - 3 # subtract 3 because jan/feb/mar are not in challenge
         months = ['april','may','june','july','august','september','october'][0:past_months]
 
         for month in reversed(months):
-            metrics = calculate_metrics(company, month)
+            metrics = calculate_metrics(company, month, year)
             data[0][2][0][1].append(
                 (month, metrics['total_C02'])
                 )
@@ -139,26 +149,27 @@ def company(request, employerid=None, teamid=None):
             data[1][2][0][1].append(
                 (month, metrics['already_green'])
                 )
-            # data[1][2][1][1].append(
-            #     (month, metrics['green_switch'])
-            #     )
-            # data[1][2][2][1].append(
-            #     (month, metrics['healthy_switch'])
-            #     )
             data[2][2][0][1].append(
                 (month, metrics['num_checkins'])
                 )
             data[2][2][1][1].append(
                 (month, metrics['participants'])
                 )
-
-        # april only!
-        data[1][2][1][1].append(
-            ('april', metrics['green_switch'])
-            )
-        data[1][2][2][1].append(
-            ('april', metrics['healthy_switch'])
-            )
+            if year == '2015':
+                # april only!
+                data[1][2][1][1].append(
+                    ('april', calculate_metrics(company, 'april', '2015')['green_switch'])
+                    )
+                data[1][2][2][1].append(
+                    ('april', calculate_metrics(company, 'april', '2015')['healthy_switch'])
+                    )
+            elif year == '2016':
+                data[1][2][1][1].append(
+                    (month, metrics['green_switch'])
+                    )
+                data[1][2][2][1].append(
+                    (month, metrics['healthy_switch'])
+                    )
 
         # bonus numbers! if largest number exceeds 600, map to a different scale
 
@@ -172,14 +183,15 @@ def company(request, employerid=None, teamid=None):
                     blob[2].append((months[i],adjusted[i],values[i]))
 
         return render_to_response('company.html',
-            {   'company': company,
+        {       'year': year,
+                'company': company,
                 'impacts': data[0],
                 'commutes': data[1],
                 'participation': data[2],
                 'overall': overall
             }, context)
 
-def latest_leaderboard(request, sector='all', size='all', parentid=None, selected_month='all'):
+def latest_leaderboard(request, year='2016', sector='all', size='all', parentid=None, selected_month='all'):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
@@ -187,15 +199,18 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
 
     parent = None
 
+    # use the year to set filtering on Employer, Commutersurvey, etc.
+    activeFilter = "active{0}".format(year)
+
     if parentid: # this is a bunch of subteams
-        parent = Employer.objects.get(id=parentid)
+        parent = Employer.objects.filter(**{activeFilter: True}).get(id=parentid)
 
         teams = Team.objects.only('id','name').filter(parent_id=parentid)
 
         survey_data = teams
 
     else: # this is a bunch of companies
-        companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(active2015=True)
+        companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(**{activeFilter: True})
 
         # Filtering the results by size
         if size == 'small':
@@ -220,8 +235,11 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
     if selected_month != 'all':
         months_dict = { 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
         shortmonth = months_dict[selected_month]
-        month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=shortmonth)
+        month_model = Month.objects.filter(wr_day__year=year, wr_day__month=shortmonth)
         survey_data = survey_data.filter(commutersurvey__wr_day_month=month_model)
+    else:
+        month_models = Month.objects.filter(wr_day__year=year)
+        survey_data = survey_data.filter(commutersurvey__wr_day_month=month_models)
 
     survey_data = survey_data.annotate(
         saved_carbon=Sum('commutersurvey__carbon_savings'),
@@ -240,7 +258,7 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
             links = (company.parent.id, company.id)
         else:
             links = (company.id,)
-        d[(str(company.name), links)] = calculate_metrics(company, selected_month)
+        d[(str(company.name), links)] = calculate_metrics(company, selected_month, year)
 
     ranks = calculate_rankings(d)
 
@@ -255,10 +273,11 @@ def latest_leaderboard(request, sector='all', size='all', parentid=None, selecte
 
     return render_to_response('leaderboard/leaderboard_new.html',
         {
+            'year': year,
             'ranks': ranks,
             'totals': totals,
             'request': request,
-            'employersWithSubteams': Employer.objects.filter(active2015=True, team__isnull=False).distinct(),
+            'employersWithSubteams': Employer.objects.filter(**{activeFilter: True}).filter(team__isnull=False).distinct(),
             'size': size,
             'selected_month': selected_month,
             'parent': parent,

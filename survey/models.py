@@ -7,20 +7,20 @@ import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
 
-def get_surveys_by_employer(employer, chosenmonth):
+def get_surveys_by_employer(employer, chosenmonth, year):
     if chosenmonth != 'all':
-        month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=chosenmonth)
+        month_model = Month.objects.filter(wr_day__year=year, wr_day__month=chosenmonth)
         surveys = Commutersurvey.objects.filter(wr_day_month=month_model, employer=employer)
     else:
-        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year='2015', employer=employer)
+        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year=year, employer=employer)
     return surveys
 
-def get_surveys_by_team(team, chosenmonth):
+def get_surveys_by_team(team, chosenmonth, year):
     if chosenmonth != 'all':
-        month_model = Month.objects.filter(wr_day__year='2015', wr_day__month=chosenmonth)
+        month_model = Month.objects.filter(wr_day__year=year, wr_day__month=chosenmonth)
         surveys = Commutersurvey.objects.filter(wr_day_month=month_model, team=team)
     else:
-        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year='2015', team=team)
+        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year=year, team=team)
     return surveys
 
 
@@ -67,38 +67,38 @@ class Employer(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-    def count_checkins(self, shortmonth):
+    def count_checkins(self, shortmonth, year):
         """Calculates and returns number of employees participating"""
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         return surveys.count() or 0
 
-    def total_C02(self, shortmonth):
+    def total_C02(self, shortmonth, year):
         """Calculates and returns total amount of carbon dioxide saved on WR Day (assuming driving on Normal day)"""
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         return surveys.aggregate(Sum('carbon_savings')).values()[0] or 0
 
-    def total_calories(self, shortmonth):
+    def total_calories(self, shortmonth, year):
         """Calculates and returns total calories burned on WR Day"""
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         return surveys.aggregate(Sum('calories_total')).values()[0] or 0
 
-    def percent_participation(self, shortmonth):
+    def percent_participation(self, shortmonth, year):
         """Calculates and returns the percentage of employees participating"""
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         return surveys.values('email').distinct().count() / self.nr_employees
 
-    def average_percent_participation(self):
+    def average_percent_participation(self, year):
         """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.filter(
-            wr_day__year='2015', open_checkin__lte=date.today()).count()
+            wr_day__year=year, open_checkin__lte=date.today()).count()
         return Commutersurvey.objects.filter(employer=self).count() / \
             (self.nr_employees * elapsed_months)
 
-    def percent_already_green(self, shortmonth):
+    def percent_already_green(self, shortmonth, year):
         """Calculates and returns the percentage of employees who
         already have a green commute
         """
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         already_green = surveys.filter(already_green=True).count()
 
         if surveys.count() > 0:
@@ -107,11 +107,11 @@ class Employer(models.Model):
             percent = 0.0
         return percent
 
-    def percent_green_switch(self, shortmonth):
+    def percent_green_switch(self, shortmonth, year):
         """
         Calculates and returns the % of employees who made a green switch
         """
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         green_switch = surveys.filter(change_type__in=['g', 'p']).count()
         if surveys.count() > 0:
             percent = green_switch / surveys.count()
@@ -119,11 +119,11 @@ class Employer(models.Model):
             percent = 0.0
         return percent
 
-    def percent_healthy_switch(self, shortmonth):
+    def percent_healthy_switch(self, shortmonth, year):
         """
         Calculates and returns the % of employees who made a healthy switch
         """
-        surveys = get_surveys_by_employer(self, shortmonth)
+        surveys = get_surveys_by_employer(self, shortmonth, year)
         healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
         if surveys.count() > 0:
             percent = healthy_switch / surveys.count()
@@ -144,36 +144,36 @@ class Team(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-    def count_checkins(self, shortmonth):
+    def count_checkins(self, shortmonth, year):
         """Calculates and returns number of employees participating"""
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         return surveys.count()
 
-    def total_C02(self, shortmonth):
+    def total_C02(self, shortmonth, year):
         """Calculates and returns total amount of carbon dioxide saved on WR Day (assuming driving on Normal day)"""
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         return surveys.aggregate(Sum('carbon_savings')).values()[0] or 0
 
-    def total_calories(self, shortmonth):
+    def total_calories(self, shortmonth, year):
         """Calculates and returns total calories burned on WR Day"""
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         return surveys.aggregate(Sum('calories_total')).values()[0] or 0
 
-    def average_percent_participation(self):
+    def average_percent_participation(self, year):
         """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.filter(
-            wr_day__year='2015', open_checkin__lte=date.today()).count()
+            wr_day__year=year, open_checkin__lte=date.today()).count()
         return Commutersurvey.objects.filter(team=self).count() / \
             (self.nr_members * elapsed_months)
 
-    def percent_participation(self, shortmonth):
+    def percent_participation(self, shortmonth, year):
         """Calculates and returns the percentage of team employees participating"""
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         return surveys.values('email').distinct().count() / self.nr_members
 
-    def percent_already_green(self, shortmonth):
+    def percent_already_green(self, shortmonth, year):
         """percent of commute already 'green' """
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         already_green = surveys.filter(already_green=True).count()
         if surveys.count() > 0:
             percent = already_green / surveys.count()
@@ -181,9 +181,9 @@ class Team(models.Model):
             percent = 0.0
         return percent
 
-    def percent_green_switch(self, shortmonth):
+    def percent_green_switch(self, shortmonth, year):
         """change in 'greenness' of commute due to switch"""
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         green_switch = surveys.filter(change_type__in=['g', 'p']).count()
         if surveys.count() > 0:
             percent = green_switch / surveys.count()
@@ -191,9 +191,9 @@ class Team(models.Model):
             percent = 0.0
         return percent
 
-    def percent_healthy_switch(self, shortmonth):
+    def percent_healthy_switch(self, shortmonth, year):
         """change in healthiness of commute due to switch"""
-        surveys = get_surveys_by_team(self, shortmonth)
+        surveys = get_surveys_by_team(self, shortmonth, year)
         healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
         if surveys.count() > 0:
             percent = healthy_switch / surveys.count()
