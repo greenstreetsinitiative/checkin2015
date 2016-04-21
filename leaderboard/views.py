@@ -64,10 +64,11 @@ def calculate_metrics(company, selected_month, year):
         'total_calories': total_calories
         }
 
-def company(request, year='2016', employerid=None, teamid=None):
+def company(request, year=2016, employerid=None, teamid=None):
     context = RequestContext(request)
 
     # use the year to set filtering
+
     activeFilter = "active{0}".format(year)
 
     if not employerid:
@@ -99,12 +100,12 @@ def company(request, year='2016', employerid=None, teamid=None):
                 '{0}%'.format(allmetrics['already_green']))
             ]
 
-        if year == '2015':
+        if year == 2015:
             overall.extend([('Percent of check-ins where commutes went greener for Walk/Ride Day (April 2015)',
                     '{0}%'.format(calculate_metrics(company, 'april', '2015')['green_switch'])),
                 ('Percent of check-ins where commutes went healthier for Walk/Ride Day (April 2015)',
                     '{0}%'.format(calculate_metrics(company, 'april', '2015')['healthy_switch']))])
-        elif year == '2016':
+        elif year == 2016:
             overall.extend([('Percent of check-ins where commutes went greener for Walk/Ride Day',
                     '{0}%'.format(allmetrics['green_switch'])),
                 ('Percent of check-ins where commutes went healthier for Walk/Ride Day',
@@ -191,7 +192,7 @@ def company(request, year='2016', employerid=None, teamid=None):
                 'overall': overall
             }, context)
 
-def latest_leaderboard(request, year='2016', sector='all', size='all', parentid=None, selected_month='all'):
+def latest_leaderboard(request, year=2016, sector='all', size='all', parentid=None, selected_month='all'):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
@@ -238,7 +239,7 @@ def latest_leaderboard(request, year='2016', sector='all', size='all', parentid=
         month_model = Month.objects.filter(wr_day__year=year, wr_day__month=shortmonth)
         survey_data = survey_data.filter(commutersurvey__wr_day_month=month_model)
     else:
-        month_models = Month.objects.filter(wr_day__year=year)
+        month_models = Month.objects.filter(wr_day__year=year).exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12')
         survey_data = survey_data.filter(commutersurvey__wr_day_month=month_models)
 
     survey_data = survey_data.annotate(
