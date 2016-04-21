@@ -45,11 +45,6 @@ $(function() {
   // don't let people delete that first leg!! trick by making the link invisible!
   $('.legs-wrapper .leggedrow:first-of-type .delete-row:first-of-type').css('visibility','hidden')
 
-  // hide extra leg stuff at first
-  $('.wr-day .from-work .legs-wrapper').hide();
-  $('.normal-legs').hide();
-  $('.normal-day .from-work .legs-wrapper').hide();
-
   function clearLegData(selector) {
     var $legs = $(selector).find('.leggedrow'); //legs
     var $durations = $legs.find('input[name$="duration"]'); //durations
@@ -63,35 +58,32 @@ $(function() {
 
   // handles toggling of extra sections
   var setToggling = function (selector, shouldOpen) {
-    $(selector).toggle(function() {
-      // if shouldOpen is true, then the section opens
-      // if shouldOpen is false, then the section hides
-      if (!shouldOpen) {
-        // clear any filled in data on hiding
-        clearLegData($(selector));
-      }
-      return shouldOpen;
-    });
+    if (!shouldOpen) {
+      clearLegData($(selector));
+      $(selector).hide();
+    } else {
+      $(selector).show();
+    }
   }
 
   // handles options for if walkride day's commute FROM work is same as TO work
   $('[name="walkride_same_as_reverse"]')
     .on('change', function() {
-      var shouldOpen = $(this).val() == "False"; // true if this is answered NO
+      var shouldOpen = $('[name="walkride_same_as_reverse"]:checked').val() == "False"; // true if this is answered NO
       setToggling('.wr-day .from-work .legs-wrapper', shouldOpen);
     });
 
   // handles options for if the normal commute happens to be the same as the walk-ride day commute
   $('[name="normal_same_as_walkride"]')
     .on('change', function() {
-      var shouldOpen = $(this).val() == "False"; // true if this is answered NO
+      var shouldOpen = $('[name="normal_same_as_walkride"]:checked').val() == "False"; // true if this is answered NO
       setToggling('.normal-legs', shouldOpen);
     });
 
   // handles options for if normal day's commute FROM work is same as TO work
   $('[name="normal_same_as_reverse"]')
     .on('change', function() {
-      var shouldOpen = $(this).val() == "False"; // true if this is answered NO
+      var shouldOpen = $('[name="normal_same_as_reverse"]:checked').val() == "False"; // true if this is answered NO
       setToggling('.normal-day .from-work .legs-wrapper', shouldOpen);
     });
 
