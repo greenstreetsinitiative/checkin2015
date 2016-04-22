@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.db.models import Q
 from aggregate_if import Count, Sum
 from django.db.models import Count
+from django.shortcuts import redirect
 
 from datetime import date, datetime
 import datetime
@@ -195,6 +196,9 @@ def company(request, year=2016, employerid=None, teamid=None):
 def latest_leaderboard(request, year=2016, sector='all', size='all', parentid=None, selected_month='all'):
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
+
+    if year is None:
+        return redirect('2016/')
 
     d = {}
 
