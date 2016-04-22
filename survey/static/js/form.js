@@ -45,6 +45,54 @@ $(function() {
   // don't let people delete that first leg!! trick by making the link invisible!
   $('.legs-wrapper .leggedrow:first-of-type .delete-row:first-of-type').css('visibility','hidden')
 
+  function clearLegData(selector) {
+    var $legs = $(selector).find('.leggedrow'); //legs
+    var $durations = $legs.find('input[name$="duration"]'); //durations
+    var $modes = $legs.find('select[name$="mode"]'); //modes
+    $durations.val('');
+    $modes.val('').trigger('change');
+    $legs.find('.delete-row').each(function(){
+      if ($(this).css("visibility") != "hidden") { $(this).trigger('click'); } //deletes extra blank legs
+    });
+  }
+
+  // handles toggling of extra sections
+  var setToggling = function (selector, shouldOpen) {
+    if (!shouldOpen) {
+      clearLegData($(selector));
+      $(selector).hide();
+    } else {
+      $(selector).show();
+    }
+  }
+
+  // handles options for if walkride day's commute FROM work is same as TO work
+  $('[name="walkride_same_as_reverse"]')
+    .on('change', function() {
+      var shouldOpen = $('[name="walkride_same_as_reverse"]:checked').val() == "False"; // true if this is answered NO
+      setToggling('.wr-day .from-work .legs-wrapper', shouldOpen);
+    });
+
+  // handles options for if the normal commute happens to be the same as the walk-ride day commute
+  $('[name="normal_same_as_walkride"]')
+    .on('change', function() {
+      var shouldOpen = $('[name="normal_same_as_walkride"]:checked').val() == "False"; // true if this is answered NO
+      setToggling('.normal-legs', shouldOpen);
+    });
+
+  // handles options for if normal day's commute FROM work is same as TO work
+  $('[name="normal_same_as_reverse"]')
+    .on('change', function() {
+      var shouldOpen = $('[name="normal_same_as_reverse"]:checked').val() == "False"; // true if this is answered NO
+      setToggling('.normal-day .from-work .legs-wrapper', shouldOpen);
+    });
+
+  // initial on load
+  $('[name="walkride_same_as_reverse"]').trigger('change');
+  $('[name="normal_same_as_walkride"]').trigger('change');
+  $('[name="normal_same_as_reverse"]').trigger('change');
+
+
   // do all this stuff for geocoding
   var geocoder = new google.maps.Geocoder();
   var position1, position2, marker1, marker2;
