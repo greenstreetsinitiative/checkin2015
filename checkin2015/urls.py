@@ -18,7 +18,7 @@ urlpatterns = patterns(
     url(r'^checkin/complete/$', TemplateView.as_view(template_name='survey/thanks.html'), name='complete'),
 
     # Leaderboard by year
-    url(r'^leaderboard/(?P<year>[0-9]{4})/$',
+    url(r'^leaderboard/((?P<year>[0-9]{4})/)?$',
         'leaderboard.views.latest_leaderboard', name="all"),
 
 
