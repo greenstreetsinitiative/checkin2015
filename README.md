@@ -63,7 +63,7 @@ tables with some dummy default values.
 1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (0, 'Biking', 6.8, 0, 11, TRUE);"`
 1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (1, 'Driving alone', 0, 518, 39.3, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
-1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
+1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (1, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
 
 # Debian 8 GNU/Linux Setup
 
@@ -128,7 +128,7 @@ tables with some dummy default values.
 1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (0, 'Biking', 6.8, 0, 11, TRUE);"`
 1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (1, 'Driving alone', 0, 518, 39.3, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
-1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
+1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (1, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
 1. `exit`
 
 # Bonus: Export data to CSV
