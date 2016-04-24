@@ -49,8 +49,21 @@ export MANDRILL_API_KEY="V62ndycapG44sI-x9EcG1A"
 
 1. `pip install -r requirements.txt` 
 2. `python manage.py migrate`
-3.  If you have data, `python manage.py loaddata data.json`
+1. If you have data...
+   * then run: `python manage.py loaddata data.json`
+   * else, see the next section *Populate the database with dummy data*
 4. `python manage.py runserver`
+
+## Populate the database with dummy data
+
+The survey app needs some modes and employers defined in the database in order
+to work properly.  The following steps will populate the appropriate database
+tables with some dummy default values.
+
+1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (0, 'Biking', 6.8, 0, 11, TRUE);"`
+1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (1, 'Driving alone', 0, 518, 39.3, FALSE);"`
+1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
+1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
 
 # Debian 8 GNU/Linux Setup
 
@@ -99,9 +112,24 @@ export MANDRILL_API_KEY="V62ndycapG44sI-x9EcG1A"
 
 1. `pip install -r requirements.txt`
 1. `python manage.py migrate`
-1. If you have data: `python manage.py loaddata data.json`
+1. If you have data...
+   * then run: `python manage.py loaddata data.json`
+   * else, see the next section *Populate the database with dummy data*
 1. `python manage.py runserver 0.0.0.0:8000`
-1. Navigate to the IP address of your VM in your web browser, port 8000.
+1. Navigate to the IP address of your debian VM in your web browser, port 8000.
+
+## Populate the database with dummy data
+
+The survey app needs some modes and employers defined in the database in order
+to work properly.  The following steps will populate the appropriate database
+tables with some dummy default values.
+
+1. Become postgres: `su postgres`
+1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (0, 'Biking', 6.8, 0, 11, TRUE);"`
+1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (1, 'Driving alone', 0, 518, 39.3, FALSE);"`
+1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
+1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
+1. `exit`
 
 # Bonus: Export data to CSV
 
