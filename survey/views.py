@@ -65,9 +65,13 @@ def add_checkin(request):
 
             # write form responses to cookie
             for attr in ['name', 'email', 'home_address', 'work_address']:
-                # TODO: include employer and team
                 if attr in commute_form.cleaned_data:
                     request.session[attr] = commute_form.cleaned_data[attr]
+            for attr in ['employer', 'team']:
+                if attr in commute_form.cleaned_data:
+                    if commute_form.cleaned_data[attr] is not None:
+                        # import pdb; pdb.set_trace()
+                        request.session[attr] = commute_form.cleaned_data[attr].id
             for attr in ['share', 'comments', 'volunteer']:
                 if attr in extra_commute_form.cleaned_data:
                     request.session[attr] = extra_commute_form.cleaned_data[attr]
@@ -108,13 +112,20 @@ def add_checkin(request):
         initial_commute = {}
         initial_extra_commute = {}
 
-        for attr in ['name', 'email', 'home_address', 'work_address']:
+        for attr in ['name', 'email', 'home_address', 'work_address', 'employer', 'team']:
             if attr in request.session:
                 initial_commute[attr] = request.session.get(attr)
 
         for attr in ['share', 'comments', 'volunteer']:
             if attr in request.session:
                 initial_extra_commute[attr] = request.session.get(attr)
+
+        if 'employer' in request.session:
+            id = request.session.get('employer')
+            initial_commute['employer'] = Employer.objects.get(pk=id)
+        if 'team' in request.session:
+            id = request.session.get('team')
+            initial_commute['employer'] = Team.objects.get(pk=id)
 
         commute_form = CommuterForm(initial=initial_commute)
         extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute)
