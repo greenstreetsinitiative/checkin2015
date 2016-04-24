@@ -296,7 +296,7 @@ class Commutersurvey(models.Model):
                 normal_car_carbon += carbon
             elif leg.day == 'w':
                 wr_day_carbon += leg.carbon
-        carbon_saved = wr_day_carbon - normal_car_carbon
+        carbon_saved = normal_car_carbon - wr_day_carbon
         return carbon_saved
 
     def calories_totalled(self):
@@ -389,4 +389,4 @@ class Leg(models.Model):
         #resave the related survey (recalculates carbon and calories)
         self.checkin.save()
     def __unicode__(self):
-        return unicode(self.mode)
+        return u"%s, %s, %s" % (self.mode, self.day, self.direction)
