@@ -32,10 +32,9 @@
         <hr>
         <!-- Information about retail partners rewards. Personal codes here? -->
 
-        <p class="lead"><strong>Celebrate with our <a href="http://checkin-greenstreets.rhcloud.com/retail">retail partners</a> offering special discounts for Walk/Ride Day participants.</strong></p>
+        <p class="lead"><strong>Celebrate with our <a href="{% url 'retail:index' %}">retail partners</a> offering special discounts for Walk/Ride Day participants.</strong></p>
         <br>
-        <a href="http://checkin-greenstreets.rhcloud.com/retail" target="_blank">View our retail map for discounts!</a>
-
+        <a href="{% url 'retail:index' %}" target="_blank">View our retail map for discounts!</a>
       </div>
     </div>
 </section>

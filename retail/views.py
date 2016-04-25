@@ -154,7 +154,7 @@ def index(request):
       p = partner(name=name,phone=phone,website=website,street=street,city=city,zipcode=zipcode,latitude=latitude,longitude=longitude,offer=offer,category='None',contact_name=contact_name,contact_phone=contact_phone,contact_email=contact_email,notes='',approved=False)
       p.save()
       try:
-        message['text'] = 'A new retail partner application was submitted.\nhttp://checkin-greenstreets/admin/retail/partner/'
+        message['text'] = 'A new retail partner application was submitted.\nhttp://checkinapp-greenstreets/admin/retail/partner/'
         message['subject'] = 'New retail partner!'
         mandrill_client.messages.send(message=message, async=True)
       except mandrill.Error, e:
