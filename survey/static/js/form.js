@@ -18,11 +18,23 @@ $(function() {
   var allParentIDs = $.map($subteamSelect.find('option'), function(opt) { return $(opt).attr('data-parent') });
 
   $employerSelect.on('change', function() {
+    // reset the subtean form
+    $subteamSelect.val('').trigger('chosen:updated');
+
     // hide or show the other dropdown
     var parentid = $employerSelect.find(':selected').val();
     var hasSubteam = jQuery.inArray(parentid, allParentIDs) > 0;
 
     if (hasSubteam) {
+      // show the select element with only the relevant options
+      $subteamSelect.find('option').each(function(){
+        if ($(this).attr('data-parent') == parentid) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+        $subteamSelect.chosen('destroy').chosen({ width: "99%" });
+      });
       $subteamSelect.parent().show();
     } else {
       $subteamSelect.parent().hide();
