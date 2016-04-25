@@ -142,7 +142,7 @@ class Team(models.Model):
         ordering = ['parent__name', 'name']
 
     def __unicode__(self):
-        return unicode(self.name)
+        return u"%s - %s" % (self.parent.name, self.name)
 
     def count_checkins(self, shortmonth, year):
         """Calculates and returns number of employees participating"""
