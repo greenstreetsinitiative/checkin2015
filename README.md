@@ -64,6 +64,7 @@ tables with some dummy default values.
 1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (1, 'Driving alone', 0, 518, 39.3, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (1, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
+1. `psql -d checkin -c "INSERT INTO survey_month VALUES (0, '2019-02-01', '2019-01-01', '2019-01-29');"`
 
 # Debian 8 GNU/Linux Setup
 
@@ -84,7 +85,7 @@ tables with some dummy default values.
 ## Setup the virtual environment
 
 1. Become a normal user: `su <username>` (replace `<username>` with your normal development user)
-    If you don't have a normal user in your VM yet, make one: `adduser guest`
+   * If you don't have a normal user in your VM yet, make one first: `adduser guest`
 1. `git clone <URL of this repository>`
 1. `cd <this repository>`
 1. `source /etc/bash_completion`
@@ -129,6 +130,7 @@ tables with some dummy default values.
 1. `psql -d checkin -c "INSERT INTO survey_mode VALUES (1, 'Driving alone', 0, 518, 39.3, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (1, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
+1. `psql -d checkin -c "INSERT INTO survey_month VALUES (0, '2019-02-01', '2019-01-01', '2019-01-29');"`
 1. `exit`
 
 # Bonus: Export data to CSV
