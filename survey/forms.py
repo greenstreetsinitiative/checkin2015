@@ -131,7 +131,7 @@ class ExtraCommuterForm(ModelForm):
             "Please contact me with information on ways to help or volunteer"
             " with Green Streets Initiative")
         self.fields['comments'].widget.attrs['placeholder'] = (
-            "On a rainy spring day, what is your favorite mode of commuting?")
+            "April's question-of-the-month: If you could designate a road in the Greater Boston Area to have a safe-for-biking lane, which road or stretch of road would you pick?")
         self.fields['comments'].widget.attrs['rows'] = 4
 
         # add CSS classes for bootstrap
