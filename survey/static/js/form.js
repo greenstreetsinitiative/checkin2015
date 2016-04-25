@@ -342,6 +342,9 @@ $(function() {
     geocodeAddress($(this));
   });
 
+  //trigger initial blur to show pre-filled addresses on the map
+  $('#id_home_address, #id_work_address').trigger('blur');
+
   var directionsService, directionsDisplay,
       directionsService2, directionsDisplay2,
       directionsService3, directionsDisplay3;
