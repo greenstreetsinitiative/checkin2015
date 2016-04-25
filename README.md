@@ -135,6 +135,14 @@ tables with some dummy default values.
    * Note: The above command sets Walk/Ride Day to some time way in the future, but activates the checkin now.  Just don't be surprised when you see "this month" and "2019" in the same sentence.
 1. `exit`
 
+# Django admin interface
+
+The admin interface is useful for easily editing the database. First, set up an admin user:
+
+`python manage.py createsuperuser`
+
+then just navigate to `/admin` and login.
+
 # Bonus: Export data to CSV
 
 ```
