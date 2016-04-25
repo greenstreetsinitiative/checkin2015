@@ -155,7 +155,7 @@ def send_email(success, dump=None):
     if success:
         subject = ('New retail partner!')
         message = (
-            'A new retail partner application was submitted.\nhttp://checkinapp-greenstreets/admin/retail/partner')
+            'A new retail partner application was submitted.\nhttp://checkinapp-greenstreets.rhcloud.com/admin/retail/partner')
     else:
         subject = ('Attempted new retail partner; failure')
         message = dump
