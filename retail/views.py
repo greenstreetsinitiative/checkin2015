@@ -10,18 +10,7 @@ from django.core.exceptions import ValidationError
 import json, re, urllib2
 
 from django.conf import settings
-import mandrill
-mandrill_client = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-
-message = {
-  'from_email': 'retailpartners@gogreenstreets.org',
-  'from_name': 'Green Streets Initiative - Retail Partners',
-  'metadata': {'website': 'checkin.gogreenstreets.org'},
-  'to': [{'email': 'gustavo@gogreenstreets.org',
-       'type': 'to'}],
-  'subject': '',
-  'text': ''
-}
+from django.core.mail import send_mail, BadHeaderError
 
 phoneRE = re.compile(r'(?:\()?\d{3}(?:-|\s|\.|\)\s|\))?\d{3}(?:-|\.|\s)?\d{4}')
 mobileRE = re.compile(r'Android(?=.*Mobile)|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini')  # android tablets don't contain 'mobile' in their user agents,
@@ -153,20 +142,23 @@ def index(request):
     if not errors['issues']:
       p = partner(name=name,phone=phone,website=website,street=street,city=city,zipcode=zipcode,latitude=latitude,longitude=longitude,offer=offer,category='None',contact_name=contact_name,contact_phone=contact_phone,contact_email=contact_email,notes='',approved=False)
       p.save()
-      try:
-        message['text'] = 'A new retail partner application was submitted.\nhttp://checkinapp-greenstreets/admin/retail/partner/'
-        message['subject'] = 'New retail partner!'
-        mandrill_client.messages.send(message=message, async=True)
-      except mandrill.Error, e:
-        pass
+      send_email(True)
       return HttpResponse(json.dumps({'success':True}), content_type="application/json")
     else:
-      try:
-        message['text'] = json.dumps(errors, indent=4)
-        message['subject'] = 'Attempted new retail partner; failure'
-      except mandrill.Error, e:
-        pass
+      send_email(False, json.dumps(errors, indent=4))
       return HttpResponse(json.dumps({'success':False, 'message': errors}), content_type="application/json")
 
   else:
     return HttpResponse('Request method not accepted.')
+
+def send_email(success, dump=None):
+    if success:
+        subject = ('New retail partner!')
+        message = (
+            'A new retail partner application was submitted.\nhttp://checkinapp-greenstreets/admin/retail/partner')
+    else:
+        subject = ('Attempted new retail partner; failure')
+        message = dump
+    recipient_list = ['info@gogreenstreets.org','gustavo@gogreenstreets.org']
+    from_email = 'retailpartners@gogreenstreets.org'
+    send_mail(subject, message, from_email, recipient_list, fail_silently=True)
