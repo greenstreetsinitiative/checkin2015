@@ -69,11 +69,16 @@
       <p class="commuteexamples"><strong>For illustrative purposes only.</strong> These routes are automatically generated from the locations typed above.</p>
     </div>
     <hr class="green-big">
-    
+
+    {{ NormalTW_formset.management_form }}
+    {{ NormalFW_formset.management_form }}
+    {{ WRTW_formset.management_form }}
+    {{ WRFW_formset.management_form }}
+
     <div class="row wr-day">
       <div class="headingthing">
         <h2>Your Walk/Ride Day* commute</h2>
-        Please enter all segments (legs) of your commute and the approximate duration of each segment. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). Feel free to check in early, before your actual commute. You can go back and make changes; the system will record only your most recent submission. 
+        Please enter all segments (legs) of your commute and the approximate duration of each segment. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). Feel free to check in early, before your actual commute. You can go back and make changes; the system will record only your most recent submission.
         <br>
         *If you don't work on Fridays or for another reason, you may substitute another day to detail as your "Walk/Ride Day" commute.
         </div>
@@ -96,12 +101,11 @@
         </div>
       </div>
 
-     
+
       <div class="col-sm-6">
       <div class="from-work">
         <center>
         <h4>FROM Work TO Home</h4><hr class="green"></center>
-         
         {{ wrday_copy }}
 
         <div class="legs-wrapper">
@@ -123,7 +127,7 @@
         <h2>Your normal day commute</h2>
         Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.
         </div>
-
+      {{ commute_copy }}
       <div class="col-sm-6 normal-legs">
         <div class="to-work">
 
@@ -147,6 +151,7 @@
       <div class="from-work">
         <center>
         <h4>FROM Work TO Home</h4><hr class="green"></center>
+        {{ normal_copy }}
 
         <div class="legs-wrapper">
         {% for form in NormalFW_formset %}
@@ -181,10 +186,7 @@
       </div>
     {% endfor %}
 
-    {{ NormalTW_formset.management_form }}
-    {{ NormalFW_formset.management_form }}
-    {{ WRTW_formset.management_form }}
-    {{ WRFW_formset.management_form }}
+
 
     <center>
     {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}

@@ -12,38 +12,181 @@ $(function() {
     $('.browser').hide();
   }
 
+  var $normalFWLegs = $('.normal-day .from-work .legs-wrapper');
+  var $normalTWLegs = $('.normal-day .to-work .legs-wrapper');
+  var $walkrideFWLegs = $('.wr-day .from-work .legs-wrapper');
+  var $walkrideTWLegs = $('.wr-day .to-work .legs-wrapper');
+
   // activate formset plugin for the 4 formsets
-  $(' .normal-day .from-work .legs-wrapper .leggedrow').formset({
+  $normalFWLegs.find('.leggedrow').formset({
       prefix: 'nfw',
       addText: 'Add more segments',
       deleteText: 'Remove this segment',
       formCssClass: 'dynamic-nfw-form',
-      keepFieldValues: 'input[type="hidden"][name^="nfw-0-d"]'
+      keepFieldValues: 'input[type="hidden"][name^="nfw"]'
   });
-  $('.normal-day .to-work .legs-wrapper .leggedrow').formset({
+  $normalTWLegs.find('.leggedrow').formset({
       prefix: 'ntw',
       addText: 'Add more segments',
       deleteText: 'Remove this segment',
       formCssClass: 'dynamic-ntw-form',
-      keepFieldValues: 'input[type="hidden"][name^="ntw-0-d"]'
+      keepFieldValues: 'input[type="hidden"][name^="ntw"]'
   });
-  $('.wr-day .from-work .legs-wrapper .leggedrow').formset({
+  $walkrideFWLegs.find('.leggedrow').formset({
       prefix: 'wfw',
       addText: 'Add more segments',
       deleteText: 'Remove this segment',
       formCssClass: 'dynamic-wfw-form',
-      keepFieldValues: 'input[type="hidden"][name^="wfw-0-d"]'
+      keepFieldValues: 'input[type="hidden"][name^="wfw"]'
   });
-  $('.wr-day .to-work .legs-wrapper .leggedrow').formset({
+  $walkrideTWLegs.find('.leggedrow').formset({
       prefix: 'wtw',
       addText: 'Add more segments',
       deleteText: 'Remove this segment',
       formCssClass: 'dynamic-wtw-form',
-      keepFieldValues: 'input[type="hidden"][name^="wtw-0-d"]'
+      keepFieldValues: 'input[type="hidden"][name^="wtw"]'
   });
 
   // don't let people delete that first leg!! trick by making the link invisible!
-  $('.legs-wrapper .leggedrow:first-of-type .delete-row:first-of-type').css('visibility','hidden')
+  $('.legs-wrapper .leggedrow:first-of-type .delete-row:first-of-type').css('visibility','hidden');
+
+  var $walkrideSameBothWaysRadio = $('[name="walkride_same_as_reverse"]');
+  var $normalEqualsWalkrideRadio = $('[name="normal_same_as_walkride"]');
+  var $normalSameBothWaysRadio = $('[name="normal_same_as_reverse"]');
+
+  // handles options for if walkride day's commute FROM work is same as TO work
+  $walkrideSameBothWaysRadio
+    .on('checkin:initialize', function(event) {
+      if (shouldOpen($walkrideSameBothWaysRadio)) {
+        $walkrideFWLegs.show();
+      } else {
+        $walkrideFWLegs.hide();
+      }
+    })
+    .on('change', function() {
+      if (shouldOpen($walkrideSameBothWaysRadio)) {
+        $walkrideFWLegs.show();
+      } else {
+        // on closing, should copy other form
+        $walkrideFWLegs.hide();
+        $walkrideSameBothWaysRadio.trigger('checkin:copyleg');
+      }
+    });
+
+  // handles options for if the normal commute happens to be the same as the walk-ride day commute
+  $normalEqualsWalkrideRadio
+    .on('checkin:initialize', function(event) {
+      if (shouldOpen($normalEqualsWalkrideRadio)) {
+        $('.normal-legs').show();
+      } else {
+        // on closing, should copy other form
+        $('.normal-legs').hide();
+      }
+    })
+    .on('change', function() {
+      if (shouldOpen($normalEqualsWalkrideRadio)) {
+        $('.normal-legs').show();
+      } else {
+        // on closing, should copy other form
+        $('.normal-legs').hide();
+        $normalEqualsWalkrideRadio.trigger('checkin:copyleg');
+      }
+    });
+
+  // handles options for if normal day's commute FROM work is same as TO work
+  $normalSameBothWaysRadio
+    .on('checkin:initialize', function(event) {
+      if (shouldOpen($normalSameBothWaysRadio)) {
+        $normalFWLegs.show();
+      } else {
+        // on closing, should copy other form
+        $normalFWLegs.hide();
+      }
+    })
+    .on('change', function() {
+      if (shouldOpen($normalSameBothWaysRadio)) {
+        $normalFWLegs.show();
+      } else {
+        // on closing, should copy other form
+        $normalFWLegs.hide();
+        // only copy this if normal legs arent expected
+        // to be equal to wr-day legs
+        if (shouldOpen($normalEqualsWalkrideRadio)) {
+          $normalSameBothWaysRadio.trigger('checkin:copyleg');
+        }
+      }
+    });
+
+
+  $walkrideSameBothWaysRadio.on('checkin:copyleg', function(event) {
+    copyLegData($walkrideTWLegs, $walkrideFWLegs);
+  });
+  $normalEqualsWalkrideRadio.on('checkin:copyleg', function(event) {
+    copyLegData($walkrideTWLegs, $normalTWLegs);
+    copyLegData($walkrideFWLegs, $normalFWLegs);
+  });
+  $normalSameBothWaysRadio.on('checkin:copyleg', function(event) {
+    copyLegData($normalTWLegs, $normalFWLegs);
+  });
+
+  // trigger the hiding/showing
+  $walkrideSameBothWaysRadio.trigger('checkin:initialize');
+  $normalEqualsWalkrideRadio.trigger('checkin:initialize');
+  $normalSameBothWaysRadio.trigger('checkin:initialize');
+
+  $('form').submit(function() {
+    // if any of the radio buttons say true, and were
+    // not actually changed, we need to still copy the forms
+    // trigger the copying only
+    $walkrideSameBothWaysRadio.trigger('change');
+    $normalEqualsWalkrideRadio.trigger('change');
+    $normalSameBothWaysRadio.trigger('change');
+
+    return;
+  });
+
+  function shouldOpen(selector) {
+    // returns true or false
+    return selector.filter(':checked').val() == "False";
+  }
+
+  function clearLegData(selector) {
+    var $legs = $(selector).find('.leggedrow'); //legs
+    var $durations = $legs.find('input[name$="duration"]'); //durations
+    var $modes = $legs.find('select[name$="mode"]'); //modes
+    $durations.val('');
+    $modes.val('').trigger('change');
+  }
+
+  function copyLegData($originalForm, $newForm) {
+    clearLegData($newForm);
+    var $originalLegs = $originalForm.find('.leggedrow');
+    // click 'add' or 'remove' until right number of legs
+    var extraLegs = $originalLegs.length - $newForm.find('.leggedrow').length;
+    if (extraLegs > 0) {
+      // add legs
+      for (var i = 0; i < extraLegs; i++) {
+        $newForm.find('.add-row').trigger('click');
+        console.log('added hidden leg');
+      }
+    } else if (extraLegs < 0) {
+      // remove legs
+      for (var i = 0; i < -1*extraLegs; i++) {
+        $newForm.find('.delete-row').last().trigger('click');
+        console.log('removed hidden leg');
+      }
+    }
+
+    // copying the values
+    $originalLegs.each(function(index, leg) {
+      var $originalLeg = $(leg);
+      var originalDuration = $originalLeg.find('input[name$="duration"]').val();
+      var originalMode = $originalLeg.find('select[name$="mode"]').val();
+      var $newLeg = $newForm.find('.leggedrow').eq(index);
+      $newLeg.find('input[name$="duration"]').val(originalDuration);
+      $newLeg.find('select[name$="mode"]').val(originalMode);
+    });
+  }
 
   // do all this stuff for geocoding
   var geocoder = new google.maps.Geocoder();
