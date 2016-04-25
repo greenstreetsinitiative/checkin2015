@@ -10,6 +10,30 @@ from django.forms.widgets import HiddenInput
 
 from datetime import datetime
 
+# CUSTOM WIDGETS
+# Move this to a widgets.py file if there are more than a couple
+
+class subteamSelectWidget(forms.Select):
+    """
+    Modification of Select widget: add the team's parent Employer
+    via a data-parent attribute on rendering <option>
+    """
+    def __init__(self, attrs={'class': 'form-control'}, choices=()):
+        super(subteamSelectWidget, self).__init__(attrs, choices)
+
+    def render_option(self, selected_choices, option_value, option_label):
+        result = super(subteamSelectWidget, self).render_option(selected_choices,
+                                                             option_value, option_label)
+        if option_value:
+            parentid = Team.objects.get(pk=option_value).parent.id
+        else:
+            parentid = 'blank'
+        open_tag_end = result.index('>')
+        result = result[:open_tag_end] + ' data-parent="{}"'.format(parentid) + \
+            result[open_tag_end:]
+
+        return result
+
 
 class AlertErrorList(ErrorList):
     """define custom formatting for the leg errors"""
@@ -31,6 +55,9 @@ class CommuterForm(ModelForm):
                   'employer']
         if not datetime.now().month < 4 or datetime.now().month > 10:
             fields.append('team')
+            widgets = {
+                'team': subteamSelectWidget()
+            }
 
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
@@ -82,7 +109,6 @@ class CommuterForm(ModelForm):
             'Please enter an email address.')
 
         if 'team' in self.fields:
-        	self.fields['team'].widget.attrs['class'] = 'form-control'
         	self.fields['team'].required = False
 
 class ExtraCommuterForm(ModelForm):

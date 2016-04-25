@@ -12,6 +12,25 @@ $(function() {
     $('.browser').hide();
   }
 
+  var $employerSelect = $('select[name="employer"]');
+  var $subteamSelect = $('select[name="team"]');
+
+  var allParentIDs = $.map($subteamSelect.find('option'), function(opt) { return $(opt).attr('data-parent') });
+
+  $employerSelect.on('change', function() {
+    // hide or show the other dropdown
+    var parentid = $employerSelect.find(':selected').val();
+    var hasSubteam = jQuery.inArray(parentid, allParentIDs) > 0;
+
+    if (hasSubteam) {
+      $subteamSelect.parent().show();
+    } else {
+      $subteamSelect.parent().hide();
+    }
+  });
+
+  $employerSelect.trigger('change');
+
   var $normalFWLegs = $('.normal-day .from-work .legs-wrapper');
   var $normalTWLegs = $('.normal-day .to-work .legs-wrapper');
   var $walkrideFWLegs = $('.wr-day .from-work .legs-wrapper');
