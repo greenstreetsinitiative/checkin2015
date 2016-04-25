@@ -77,7 +77,7 @@
 
     <div class="row wr-day">
       <div class="headingthing">
-        <h2>Your Walk/Ride Day* commute</h2>
+        <h2>Your Walk/Ride Day* Commute</h2>
         Please enter all segments (legs) of your commute and the approximate duration of each segment. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). Feel free to check in early, before your actual commute. You can go back and make changes; the system will record only your most recent submission.
         <br>
         *If you don't work on Fridays or for another reason, you may substitute another day to detail as your "Walk/Ride Day" commute.
@@ -124,10 +124,10 @@
 
     <div class="row normal-day">
       <div class="headingthing">
-        <h2>Your normal day commute</h2>
+        <h2>Your Normal Day Commute</h2>
         Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.
         </div>
-      {{ commute_copy }}
+      <div class="col-sm-12">{{ commute_copy }}</div>
       <div class="col-sm-6 normal-legs">
         <div class="to-work">
 
@@ -185,8 +185,6 @@
 
       </div>
     {% endfor %}
-
-
 
     <center>
     {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}

@@ -105,12 +105,10 @@ class ExtraCommuterForm(ModelForm):
             "Please contact me with information on ways to help or volunteer"
             " with Green Streets Initiative")
         self.fields['comments'].widget.attrs['placeholder'] = (
-            "Employers may now register for the 2016 Walk/Ride Day Corporate Challenge. Registration deadline is April 14. If you would like us to invite your employer please leave us a note here in the comments section with the name of your employer!")
+            "On a rainy spring day, what is your favorite mode of commuting?")
         self.fields['comments'].widget.attrs['rows'] = 4
 
         # add CSS classes for bootstrap
-        if 'share' in self.fields:
-            self.fields['share'].widget.attrs['class'] = 'form-control'
         self.fields['comments'].widget.attrs['class'] = 'form-control'
 
 class RequiredFormSet(BaseInlineFormSet):
