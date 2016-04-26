@@ -40,9 +40,6 @@ else:
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 SECRET_RECAPTCHA_KEY = os.getenv('SECRET_RECAPTCHA_KEY', '')
 
-# Mandrill (https://mandrillapp.com/) is used to email checkin confirmations
-MANDRILL_API_KEY = os.environ['MANDRILL_API_KEY']
-
 # MapQuest
 MAPQUEST_API_KEY = os.environ['MAPQUEST_API_KEY']
 
@@ -179,10 +176,10 @@ STATICFILES_DIRS = (
 )
 
 # Email settings
-EMAIL_HOST = 'smtp.mandrillapp.com'
-EMAIL_PORT = 587
-EMAIL_HOST_PASSWORD = MANDRILL_API_KEY
-EMAIL_HOST_USER = 'jkatzchristy@gogreenstreets.org'
+EMAIL_HOST = 'smtp.elasticemail.com'
+EMAIL_PORT = 2525
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 
 USE_DJANGO_JQUERY = False
 JQUERY_URL = 'static/libs/jquery-1.11.0.min.js'
