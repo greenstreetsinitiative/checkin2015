@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, HiddenInput
 
-from survey.models import Commutersurvey, Employer, Team, Leg
+from survey.models import Commutersurvey, Employer, Team, Leg, QuestionOfTheMonth
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
@@ -114,7 +114,9 @@ class CommuterForm(ModelForm):
 class ExtraCommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
-        fields = ['comments', 'volunteer']
+        fields = ['question_of_the_month', 'comments', 'volunteer']
+	
+
 
         # TODO: Take into account day and not just month
         if not datetime.now().month < 4 or datetime.now().month > 10:
@@ -126,12 +128,26 @@ class ExtraCommuterForm(ModelForm):
         if 'share' in self.fields:
             self.fields['share'].label = (
                 "Please don't share my identifying information with my employer")
-        self.fields['comments'].label = "Add a comment"
+	
+	# query the DB to get the txt of the question l is a dict object
+	l = (QuestionOfTheMonth.objects.all().filter(id='0').values('value')[0])
+
+	self.fields['question_of_the_month'].label = (
+	    l['value'])
+
+	self.fields['question_of_the_month'].widget.attrs['rows'] = 4
+
+        # add CSS classes for bootstrap
+        self.fields['question_of_the_month'].widget.attrs['class'] = 'form-control'
+
+	self.fields['comments'].label = (
+	    "Add a comment")
+
         self.fields['volunteer'].label = (
             "Please contact me with information on ways to help or volunteer"
             " with Green Streets Initiative")
         self.fields['comments'].widget.attrs['placeholder'] = (
-            "April's question-of-the-month: If you could designate a road in the Greater Boston Area (or in your area if you are elsewhere) to have a safe-for-biking lane, which road or stretch of road would you pick?")
+            "")
         self.fields['comments'].widget.attrs['rows'] = 4
 
         # add CSS classes for bootstrap

@@ -212,6 +212,8 @@ class Commutersurvey(models.Model):
     employer = models.ForeignKey('Employer')
     team = models.ForeignKey('Team', null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
+    question_of_the_month = models.TextField(null=True, blank=True)
+    
     share = models.BooleanField(
         "Please don't share my identifying information with my employer",
         default=False)
@@ -390,3 +392,12 @@ class Leg(models.Model):
         self.checkin.save()
     def __unicode__(self):
         return u"%s, %s, %s" % (self.mode, self.day, self.direction)
+
+# Model for QuestionOfTheMonth
+class QuestionOfTheMonth(models.Model):
+
+    # charfield value in DB
+    value = models.CharField("value", max_length=400, blank=True, null=True)
+
+    def get_value(self):
+        return str(self.value)

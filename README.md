@@ -65,6 +65,8 @@ tables with some dummy default values.
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (1, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
 1. `psql -d checkin -c "INSERT INTO survey_month VALUES (0, '2019-02-01', '2010-01-01', '2019-01-29');"`
+
+1. `psql -d checkin -c "INSERT INTO survey_questionofthemonth VALUES (0,'TEST QUESTION');"`
    * Note: The above command sets Walk/Ride Day to some time way in the future, but activates the checkin now.  Just don't be surprised when you see "this month" and "2019" in the same sentence.
 
 # Debian 8 GNU/Linux Setup
@@ -132,6 +134,7 @@ tables with some dummy default values.
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (0, 'test employer 1', 1, FALSE, NULL, TRUE, FALSE);"`
 1. `psql -d checkin -c "INSERT INTO survey_employer VALUES (1, 'test employer 2', 1, FALSE, NULL, TRUE, TRUE);"`
 1. `psql -d checkin -c "INSERT INTO survey_month VALUES (0, '2019-02-01', '2010-01-01', '2019-01-29');"`
+1. `psql -d checkin -c "INSERT INTO survey_questionofthemonth VALUES (0,'TEST QUESTION');"`
    * Note: The above command sets Walk/Ride Day to some time way in the future, but activates the checkin now.  Just don't be surprised when you see "this month" and "2019" in the same sentence.
 1. `exit`
 
