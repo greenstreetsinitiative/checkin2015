@@ -130,7 +130,7 @@ class ExtraCommuterForm(ModelForm):
                 "Please don't share my identifying information with my employer")
 	
 	# query the DB to get the txt of the question l is a dict object
-	l = (QuestionOfTheMonth.objects.all().filter(id='0').values('value')[0])
+	l = (QuestionOfTheMonth.objects.all().filter(month=datetime.now().month).values('value')[0])
 
 	self.fields['question_of_the_month'].label = (
 	    l['value'])

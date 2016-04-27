@@ -1,0 +1,33 @@
+Change log on checkin2015-master (cloned 4/25/16 by Haihan Lan)
+
+4/25/16:
+
+Issue:
+add editable question-of-the-month field to checkin #37
+
+Objectives:
+1. Add field for "Question of the month" in form commutersurvey
+2. Allow dynamic change to the "Question of the month" field label through django admin
+
+
+Procedure:
+
+1. Added Charfield model for QOTM field label in models.py
+2. Added declarations in admin.py to enable admin modification of database entry for QOTM field label 
+3. Added processing code in views.py for session write to cookie and write to db
+4. Migrated changes
+5. Ran 2 test cases on form with test string and no test string for QOTM field and verified db save of field data
+
+4/26/16:
+
+Issue: Cristen wanted  QOTM field label associated with a month
+
+Objectives:
+1. Add column to QOTM field in db for month (integer, validate min_value=1, min_value = 12)
+
+Procedure:
+
+1. Modified model for QOTM field label in models.py to include month as column
+2. Modified admin.py to include month column as editable
+3. Modified forms.py to query checkin db and select the row with month column matchin datetime.now().month
+4. Ran test case to verify correct query filtered by month from db, range validation and saving commuter form to db

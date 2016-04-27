@@ -1,8 +1,8 @@
 from __future__ import division
 from django.db import models
 from django.db.models import Sum
-from django.core.validators import MaxValueValidator
-# unused import: MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
@@ -397,7 +397,9 @@ class Leg(models.Model):
 class QuestionOfTheMonth(models.Model):
 
     # charfield value in DB
+    
+    month = models.IntegerField("month", validators=[MinValueValidator(1), MaxValueValidator(12)])
     value = models.CharField("value", max_length=400, blank=True, null=True)
 
-    def get_value(self):
-        return str(self.value)
+    def __unicode__(self):
+        return u"%s, %s" % (self.month, self.value)
