@@ -399,6 +399,7 @@ class QuestionOfTheMonth(models.Model):
     # charfield value in DB
     
     month = models.IntegerField("month", validators=[MinValueValidator(1), MaxValueValidator(12)])
+    year = models.IntegerField("year", validators=[MinValueValidator(2016), MaxValueValidator(2050)])
     value = models.CharField("value", max_length=400, blank=True, null=True)
 
     def __unicode__(self):

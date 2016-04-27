@@ -89,8 +89,8 @@ class SectorAdmin(admin.ModelAdmin):
 
 # add admin configuration for QOTM
 class QOTMAdmin(admin.ModelAdmin):
-    list_display = ['id', 'month','value']
-    list_editable = ['month', 'value']
+    list_display = ['id', 'year' ,'month','value']
+    list_editable = ['year', 'month', 'value']
     actions = [export_as_csv]
 
 admin.site.register(Commutersurvey, CommutersurveyAdmin)
