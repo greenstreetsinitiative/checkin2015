@@ -122,10 +122,17 @@ def add_checkin(request):
 
         if 'employer' in request.session:
             id = request.session.get('employer')
-            initial_commute['employer'] = Employer.objects.get(pk=id)
+            try:
+                initial_commute['employer'] = Employer.objects.get(pk=id)
+            except Employer.DoesNotExist:
+                initial_commute['employer'] = ''
         if 'team' in request.session:
-            id = request.session.get('team')
-            initial_commute['employer'] = Team.objects.get(pk=id)
+            teamid = request.session.get('team')
+            if teamid:
+                try:
+                    initial_commute['team'] = Team.objects.get(pk=teamid)
+                except Team.DoesNotExist:
+                    initial_commute['team'] = ''
 
         commute_form = CommuterForm(initial=initial_commute)
         extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute)
