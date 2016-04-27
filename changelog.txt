@@ -29,5 +29,18 @@ Procedure:
 
 1. Modified model for QOTM field label in models.py to include month as column
 2. Modified admin.py to include month column as editable
-3. Modified forms.py to query checkin db and select the row with month column matchin datetime.now().month
+3. Modified forms.py to query checkin db and select the row with month column matching datetime.now().month
 4. Ran test case to verify correct query filtered by month from db, range validation and saving commuter form to db
+
+4/27/16:
+
+
+Objectives:
+1. Add column to QOTM field in db for year (integer, validate min_value=2050, min_value = 2016)
+
+Procedure:
+
+1. Modified model for QOTM field label in models.py to include yaer as column
+2. Modified admin.py to include year column as editable
+3. Modified forms.py to query checkin db and select the row with year column matching datetime.now().year
+4. Ran test case to verify correct query filtered by month and year from db, range validation and saving commuter form to db
