@@ -4,6 +4,7 @@ from django.forms import ModelForm, HiddenInput
 from survey.models import Commutersurvey, Employer, Team, Leg
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
+from django.db.models import Q
 
 from django.forms.util import ErrorList
 from django.forms.widgets import HiddenInput
@@ -62,20 +63,23 @@ class CommuterForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
 
+        not_in_challenge = Q(nochallenge=True)
+        in_2016_challenge = Q(active2016=True)
+
         if datetime.now().month < 4 or datetime.now().month > 10:
             # it's not a challenge!
-            self.fields['employer'].queryset = Employer.objects.filter(
-                nochallenge=True)
+            self.fields['employer'].queryset = Employer.objects.filter(not_in_challenge)
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
                 " 'Student' or 'Other employer' as appropriate")
             self.fields['employer'].label = "Employer"
         else:
             # we're in a challenge
-            self.fields['employer'].queryset = Employer.objects.filter(
-                active2016=True)
+            companies = Employer.objects.filter(
+                not_in_challenge | in_2016_challenge)
+            self.fields['employer'].queryset = companies
             self.fields['team'].queryset = Team.objects.filter(
-                parent__active2016=True)
+                parent__in=companies)
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
                 " 'Student', or 'Other employer not in the"
