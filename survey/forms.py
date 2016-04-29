@@ -63,12 +63,9 @@ class CommuterForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
 
-        not_in_challenge = Q(nochallenge=True)
-        in_2016_challenge = Q(active2016=True)
-
         if datetime.now().month < 4 or datetime.now().month > 10:
             # it's not a challenge!
-            self.fields['employer'].queryset = Employer.objects.filter(not_in_challenge)
+            self.fields['employer'].queryset = Employer.objects.filter(nochallenge=True)
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
                 " 'Student' or 'Other employer' as appropriate")
@@ -76,7 +73,8 @@ class CommuterForm(ModelForm):
         else:
             # we're in a challenge
             companies = Employer.objects.filter(
-                not_in_challenge | in_2016_challenge)
+                Q(active2015=False),
+                Q(nochallenge=True) | Q(active2016=True))
             self.fields['employer'].queryset = companies
             self.fields['team'].queryset = Team.objects.filter(
                 parent__in=companies)
