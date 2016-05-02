@@ -89,10 +89,10 @@ class Employer(models.Model):
 
     def average_percent_participation(self, year):
         """Calculates and returns the percentage of employees participating"""
-        elapsed_months = Month.objects.filter(
-            wr_day__year=year, open_checkin__lte=date.today()).count()
-        return Commutersurvey.objects.filter(employer=self).count() / \
-            (self.nr_employees * elapsed_months)
+        elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
+            wr_day__year=year, open_checkin__lte=date.today())
+        return Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() / \
+            (self.nr_employees * elapsed_months.count())
 
     def percent_already_green(self, shortmonth, year):
         """Calculates and returns the percentage of employees who
@@ -161,10 +161,10 @@ class Team(models.Model):
 
     def average_percent_participation(self, year):
         """Calculates and returns the percentage of employees participating"""
-        elapsed_months = Month.objects.filter(
-            wr_day__year=year, open_checkin__lte=date.today()).count()
-        return Commutersurvey.objects.filter(team=self).count() / \
-            (self.nr_members * elapsed_months)
+        elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
+            wr_day__year=year, open_checkin__lte=date.today())
+        return Commutersurvey.objects.filter(team=self, wr_day_month__in=elapsed_months).count() / \
+            (self.nr_members * elapsed_months.count())
 
     def percent_participation(self, shortmonth, year):
         """Calculates and returns the percentage of team employees participating"""
