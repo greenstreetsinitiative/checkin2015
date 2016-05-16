@@ -143,6 +143,13 @@ The admin interface is useful for easily editing the database. First, set up an 
 
 then just navigate to `/admin` and login.
 
+## Run tests
+
+1. `pip install -r requirements.txt`
+1. `pip install -r test-requirements.txt`
+1. `python manage.py test --settings=checkin2015.dev`
+
+
 # Bonus: Export data to CSV
 
 ```

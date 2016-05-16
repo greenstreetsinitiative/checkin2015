@@ -4,8 +4,9 @@ python:
   - "2.7"
 
 install:
-  # TODO: install prod requirements as well
   - pip install -qr test-requirements.txt
 
 script:
   - pep8 checkin2015/
+  - coverage run --branch --source=checkin2015,leaderboard,retail,survey ./manage.py test --settings=checkin2015.dev
+  - coverage report
