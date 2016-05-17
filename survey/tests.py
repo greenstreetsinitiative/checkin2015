@@ -32,7 +32,7 @@ class LegTests(TestCase):
             mode = cycle(self.all_modes)
         )
 
-    def decimal_place_index(self, number):
+    def decimal_places(self, number):
         # converts to string, reverses it, and finds where the decimal point is
         return repr(number)[::-1].find('.')
 
@@ -48,17 +48,17 @@ class LegTests(TestCase):
         # no one leg will both expend carbon and burn calories. so use two legs.
         carpool_leg = self.leg_recipe.make(mode=models.Mode.objects.get(pk=3))
         running_leg = self.leg_recipe.make(mode=models.Mode.objects.get(pk=11))
-        self.assertLessEqual(self.decimal_place_index(carpool_leg.carbon), 3)
-        self.assertLessEqual(self.decimal_place_index(carpool_leg.calories), 3)
-        self.assertLessEqual(self.decimal_place_index(running_leg.carbon), 3)
-        self.assertLessEqual(self.decimal_place_index(running_leg.calories), 3)
+        self.assertLessEqual(self.decimal_places(carpool_leg.carbon), 3)
+        self.assertLessEqual(self.decimal_places(carpool_leg.calories), 3)
+        self.assertLessEqual(self.decimal_places(running_leg.carbon), 3)
+        self.assertLessEqual(self.decimal_places(running_leg.calories), 3)
 
     def test_commutersurvey_model_calculations_up_to_3_decimal_places(self):
         checkin = self.survey_recipe.make()
         self.generate_leg_set(checkin)
         checkin.save()
 
-        self.assertLessEqual(self.decimal_place_index(checkin.carbon_change), 3)
-        self.assertLessEqual(self.decimal_place_index(checkin.calorie_change), 3)
-        self.assertLessEqual(self.decimal_place_index(checkin.carbon_savings), 3)
-        self.assertLessEqual(self.decimal_place_index(checkin.calories_total), 3)
+        self.assertLessEqual(self.decimal_places(checkin.carbon_change), 3)
+        self.assertLessEqual(self.decimal_places(checkin.calorie_change), 3)
+        self.assertLessEqual(self.decimal_places(checkin.carbon_savings), 3)
+        self.assertLessEqual(self.decimal_places(checkin.calories_total), 3)
