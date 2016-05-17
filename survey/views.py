@@ -72,7 +72,7 @@ def add_checkin(request):
                     if commute_form.cleaned_data[attr] is not None:
                         # import pdb; pdb.set_trace()
                         request.session[attr] = commute_form.cleaned_data[attr].id
-            for attr in ['share', 'comments', 'volunteer']:
+            for attr in ['share', 'volunteer']:
                 if attr in extra_commute_form.cleaned_data:
                     request.session[attr] = extra_commute_form.cleaned_data[attr]
 
@@ -121,7 +121,7 @@ def add_checkin(request):
                 if attr in request.session:
                     initial_commute[attr] = request.session.get(attr)
 
-            for attr in ['share', 'comments', 'volunteer']:
+            for attr in ['share', 'volunteer']:
                 if attr in request.session:
                     initial_extra_commute[attr] = request.session.get(attr)
 
