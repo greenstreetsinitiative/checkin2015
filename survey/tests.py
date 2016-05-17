@@ -1,9 +1,40 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.conf import settings
+from django.utils.importlib import import_module
 import models
 from model_mommy import mommy
 from model_mommy.recipe import Recipe, foreign_key
 from itertools import cycle
 from random import randint
+import datetime
+from datetime import date
+
+class SessionTestCase(TestCase):
+    def setUp(self):
+        # http://code.djangoproject.com/ticket/10899
+        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+        engine = import_module(settings.SESSION_ENGINE)
+        store = engine.SessionStore()
+        store.save()
+        self.session = store
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
+
+class CheckinViewTestCase(SessionTestCase):
+    def opencheckin(self):
+        now = datetime.datetime.now()
+        yesterday = now - datetime.timedelta(days=1)
+        tomorrow = now + datetime.timedelta(days=1)
+        models.Month.objects.create(wr_day=now, open_checkin=yesterday, close_checkin=tomorrow)
+
+    def test_session_erased(self):
+        self.opencheckin()
+        s = self.session
+        s["name"] = 'Bob'
+        s.save()
+        fresh_response = self.client.get('/checkin/', follow=True)
+        self.assertEqual(fresh_response.context['form']['name'].value(), 'Bob')
+        referred_response = self.client.get('/checkin/?referral=true', follow=True)
+        self.assertNotEqual(referred_response.context['form']['name'].value(), 'Bob')
 
 class ModeTests(TestCase):
 
