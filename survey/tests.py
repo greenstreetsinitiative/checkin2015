@@ -1,6 +1,7 @@
 from django.test import TestCase
 import models
-
+from model_mommy import mommy
+from model_mommy.recipe import Recipe, foreign_key
 
 class ModeTests(TestCase):
 
