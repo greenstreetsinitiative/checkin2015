@@ -1,0 +1,156 @@
+[
+  {
+    "fields": {
+      "carb": 518.0,
+      "met": 0.0,
+      "green": false,
+      "speed": 39.3,
+      "name": "Driving alone"
+    },
+    "model": "survey.mode",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "carb": 280.0,
+      "met": 0.0,
+      "green": false,
+      "speed": 39.3,
+      "name": "Driving alone (alternate vehicle)"
+    },
+    "model": "survey.mode",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "carb": 259.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 39.3,
+      "name": "Carpooling"
+    },
+    "model": "survey.mode",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "carb": 177.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 32.7,
+      "name": "Commuter rail"
+    },
+    "model": "survey.mode",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "carb": 156.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 20.0,
+      "name": "Subway"
+    },
+    "model": "survey.mode",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "carb": 299.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 12.7,
+      "name": "Bus"
+    },
+    "model": "survey.mode",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "carb": 101.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 39.3,
+      "name": "Shuttle"
+    },
+    "model": "survey.mode",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "carb": 818.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 9.6,
+      "name": "Boat"
+    },
+    "model": "survey.mode",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "carb": 310.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 11.42,
+      "name": "Transit (other)"
+    },
+    "model": "survey.mode",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "carb": 0.0,
+      "met": 4.3,
+      "green": true,
+      "speed": 3.5,
+      "name": "Walking"
+    },
+    "model": "survey.mode",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "carb": 0.0,
+      "met": 7.0,
+      "green": true,
+      "speed": 5.0,
+      "name": "Running"
+    },
+    "model": "survey.mode",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "carb": 0.0,
+      "met": 6.8,
+      "green": true,
+      "speed": 11.0,
+      "name": "Biking"
+    },
+    "model": "survey.mode",
+    "pk": 12
+  },
+  {
+    "fields": {
+      "carb": 0.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 0.0,
+      "name": "Other"
+    },
+    "model": "survey.mode",
+    "pk": 13
+  },
+  {
+    "fields": {
+      "carb": 0.0,
+      "met": 0.0,
+      "green": true,
+      "speed": 0.0,
+      "name": "Telecommuting"
+    },
+    "model": "survey.mode",
+    "pk": 14
+  }
+]
