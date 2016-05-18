@@ -108,41 +108,36 @@ def add_checkin(request):
             else:
                 pass
     else:
-        if request.GET.get('referral'):
-            request.session.flush() # delete the session!
-            commute_form = CommuterForm()
-            extra_commute_form = ExtraCommuterForm()
-        else:
-            # initialize forms with cookies
-            initial_commute = {}
-            initial_extra_commute = {}
+        # initialize forms with cookies
+        initial_commute = {}
+        initial_extra_commute = {}
 
-            for attr in ['name', 'email', 'home_address', 'work_address', 'employer', 'team']:
-                if attr in request.session:
-                    initial_commute[attr] = request.session.get(attr)
+        for attr in ['name', 'email', 'home_address', 'work_address', 'employer', 'team']:
+            if attr in request.session:
+                initial_commute[attr] = request.session.get(attr)
 
-            for attr in ['share', 'volunteer']:
-                if attr in request.session:
-                    initial_extra_commute[attr] = request.session.get(attr)
+        for attr in ['share', 'volunteer']:
+            if attr in request.session:
+                initial_extra_commute[attr] = request.session.get(attr)
 
-            if 'employer' in request.session:
-                id = request.session.get('employer')
+        if 'employer' in request.session:
+            id = request.session.get('employer')
+            try:
+                initial_commute['employer'] = Employer.objects.get(pk=id)
+            except Employer.DoesNotExist:
+                initial_commute['employer'] = ''
+        if 'team' in request.session:
+            teamid = request.session.get('team')
+            if teamid:
                 try:
-                    initial_commute['employer'] = Employer.objects.get(pk=id)
-                except Employer.DoesNotExist:
-                    initial_commute['employer'] = ''
-            if 'team' in request.session:
-                teamid = request.session.get('team')
-                if teamid:
-                    try:
-                        initial_commute['team'] = Team.objects.get(pk=teamid)
-                    except Team.DoesNotExist:
-                        initial_commute['team'] = ''
+                    initial_commute['team'] = Team.objects.get(pk=teamid)
+                except Team.DoesNotExist:
+                    initial_commute['team'] = ''
 
-            commute_form = CommuterForm(initial=initial_commute)
-            extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute)
+        commute_form = CommuterForm(initial=initial_commute)
+        extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute)
 
-            # TODO: use request session to instantiate the formsets with initial=[{},{},{}...] for each formset
+        # TODO: use request session to instantiate the formsets with initial=[{},{},{}...] for each formset
 
         leg_formset_NormalTW = MakeLegs_NormalTW(instance=Commutersurvey(), prefix='ntw')
         leg_formset_NormalFW = MakeLegs_NormalFW(instance=Commutersurvey(), prefix='nfw')

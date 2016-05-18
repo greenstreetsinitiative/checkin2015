@@ -21,20 +21,20 @@ class SessionTestCase(TestCase):
 
 class CheckinViewTestCase(SessionTestCase):
     def opencheckin(self):
+        # Make sure there is a Month object in the database that
+        # lets the checkin be open at the time of the test.
         now = datetime.datetime.now()
         yesterday = now - datetime.timedelta(days=1)
         tomorrow = now + datetime.timedelta(days=1)
         models.Month.objects.create(wr_day=now, open_checkin=yesterday, close_checkin=tomorrow)
 
-    def test_session_erased(self):
+    def test_session_populates_form(self):
         self.opencheckin()
         s = self.session
         s["name"] = 'Bob'
         s.save()
-        fresh_response = self.client.get('/checkin/', follow=True)
-        self.assertEqual(fresh_response.context['form']['name'].value(), 'Bob')
-        referred_response = self.client.get('/checkin/?referral=true', follow=True)
-        self.assertNotEqual(referred_response.context['form']['name'].value(), 'Bob')
+        response = self.client.get('/checkin/', follow=True)
+        self.assertEqual(response.context['form']['name'].value(), 'Bob')
 
 class ModeTests(TestCase):
 
