@@ -36,6 +36,11 @@ class CheckinViewTestCase(SessionTestCase):
         response = self.client.get('/checkin/', follow=True)
         self.assertEqual(response.context['form']['name'].value(), 'Bob')
 
+    def test_complete_page_advises_private(self):
+        message = "Open in an incognito or private window"
+        response = self.client.get('/checkin/complete/', follow=True)
+        self.assertContains(response, message)
+
 class ModeTests(TestCase):
 
     def setUp(self):

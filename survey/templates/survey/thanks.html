@@ -26,9 +26,16 @@
             <p>This special "savings" number is based on a normal commute of driving to work. For all modes of transportation, we calculate carbon dioxide emissions by taking your time spent on a mode and multiplying by an estimated carbon dioxide output for that mode at an estimated average speed for that mode. These estimations are derived from findings by the <a href="http://www.apta.com/resources/statistics/Documents/FactBook/2013-APTA-Fact-Book.pdf">American Public Transportation Association</a>, the <a href="http://www.buses.org/files/ComparativeEnergy.pdf">American Bus Association</a>, and the <a href="http://nhts.ornl.gov/2009/pub/stt.pdf">Federal Highway Administration</a>.</p>
         {% endif %}
 
-
-        <a id="checkin-another" class="btn btn-large btn-primary" href="{% url 'commuterform' %}">Check in another person</a>
-        <a class="btn btn-large btn-warning" href="/leaderboard/2016/">View Leaderboard</a>
+        <div class="center-block thanks-actions">
+          <div>
+            <a id="checkin-another" class="btn btn-large btn-primary" href="{% url 'commuterform' %}">Check in another person</a>
+            <br><span>Open in an incognito or private window if <strong>on a public computer</strong>. <a href="http://www.wikihow.com/Activate-Incognito-Mode" target="_blank">See how</a>.</span>
+          </div>
+          <div>
+            <a class="btn btn-large btn-warning" href="/leaderboard/2016/">View Leaderboard</a>
+            <br>
+          </div>
+        </div>
         <hr>
         <!-- Information about retail partners rewards. Personal codes here? -->
 
