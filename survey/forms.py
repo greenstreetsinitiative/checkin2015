@@ -1,7 +1,8 @@
 from django import forms
 from django.forms import ModelForm, HiddenInput
 
-from survey.models import Commutersurvey, Employer, Team, Leg
+from survey.models import Commutersurvey, Employer, Team, Leg, QuestionOfTheMonth
+from survey.utils import *
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 from django.db.models import Q
@@ -114,7 +115,7 @@ class CommuterForm(ModelForm):
 class ExtraCommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
-        fields = ['comments', 'volunteer']
+        fields = ['comments', 'share', 'volunteer']
 
         # TODO: Take into account day and not just month
         if not datetime.now().month < 4 or datetime.now().month > 10:
@@ -126,16 +127,16 @@ class ExtraCommuterForm(ModelForm):
         if 'share' in self.fields:
             self.fields['share'].label = (
                 "Please don't share my identifying information with my employer")
-        self.fields['comments'].label = "Add a comment"
+
+        current_question = QuestionOfTheMonth.objects.get(wr_day_month=current_or_next_month()).value
+
+        self.fields['comments'].label = "Question of the Month: " + current_question
+        self.fields['comments'].widget.attrs['rows'] = 4
+        self.fields['comments'].widget.attrs['class'] = 'form-control'
+
         self.fields['volunteer'].label = (
             "Please contact me with information on ways to help or volunteer"
             " with Green Streets Initiative")
-        self.fields['comments'].widget.attrs['placeholder'] = (
-            "April's question-of-the-month: If you could designate a road in the Greater Boston Area (or in your area if you are elsewhere) to have a safe-for-biking lane, which road or stretch of road would you pick?")
-        self.fields['comments'].widget.attrs['rows'] = 4
-
-        # add CSS classes for bootstrap
-        self.fields['comments'].widget.attrs['class'] = 'form-control'
 
 class RequiredFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):

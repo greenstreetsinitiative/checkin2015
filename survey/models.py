@@ -395,3 +395,11 @@ class Leg(models.Model):
         self.checkin.save()
     def __unicode__(self):
         return u"%s, %s, %s" % (self.mode, self.day, self.direction)
+
+# Model for QuestionOfTheMonth
+class QuestionOfTheMonth(models.Model):
+    wr_day_month = models.ForeignKey('Month', blank=True, null=True, default=0)
+    value = models.TextField(blank=True, null=True, default='')
+
+    def __unicode__(self):
+        return u"%s (%s)" % (self.value, self.wr_day_month)
