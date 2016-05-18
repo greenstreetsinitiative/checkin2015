@@ -139,3 +139,22 @@ class LegTests(TestCase):
         self.assertLessEqual(self.decimal_places(checkin.calorie_change), 3)
         self.assertLessEqual(self.decimal_places(checkin.carbon_savings), 3)
         self.assertLessEqual(self.decimal_places(checkin.calories_total), 3)
+
+class QOTMTests(TestCase):
+    def make_month(self):
+        # Make sure there is a Month object in the database that
+        # lets the checkin be open at the time of the test.
+        now = datetime.datetime.now()
+        yesterday = now - datetime.timedelta(days=1)
+        tomorrow = now + datetime.timedelta(days=1)
+        m = models.Month.objects.create(wr_day=now, open_checkin=yesterday, close_checkin=tomorrow)
+        return m
+
+    def test_create_qotm(self):
+        month = self.make_month()
+        question = "What do you think about bikes?"
+        q = models.QuestionOfTheMonth.objects.create(wr_day_month=month, value=question)
+        self.assertEqual(q.wr_day_month, month)
+        self.assertEqual(q.value, "What do you think about bikes?")
+
+    # TODO test that the view shows the relevant question on the form
