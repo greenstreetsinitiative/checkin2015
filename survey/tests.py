@@ -7,7 +7,6 @@ from model_mommy.recipe import Recipe, foreign_key
 from itertools import cycle
 from random import randint
 import datetime
-from datetime import date
 
 class SessionTestCase(TestCase):
     def setUp(self):
