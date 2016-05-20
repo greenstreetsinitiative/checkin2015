@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator
 import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
+from survey.utils import sanely_rounded
 
 def get_surveys_by_employer(employer, chosenmonth, year):
     if chosenmonth != 'all':
@@ -256,11 +257,11 @@ class Commutersurvey(models.Model):
         difference = {'carbon': 0.000, 'calories': 0.000}
         for leg in legs:
             if leg.day == 'w':
-                difference["carbon"] += round(leg.carbon, 3)
-                difference["calories"] += round(leg.calories, 3)
+                difference["carbon"] += sanely_rounded(leg.carbon)
+                difference["calories"] += sanely_rounded(leg.calories)
             elif leg.day == 'n':
-                difference["carbon"] -= round(leg.carbon, 3)
-                difference["calories"] -= round(leg.calories, 3)
+                difference["carbon"] -= sanely_rounded(leg.carbon)
+                difference["calories"] -= sanely_rounded(leg.calories)
         # import pdb; pdb.set_trace()
         return difference
 
@@ -298,7 +299,7 @@ class Commutersurvey(models.Model):
             elif leg.day == 'w':
                 wr_day_carbon += leg.carbon
         carbon_saved = normal_car_carbon - wr_day_carbon
-        return round(carbon_saved, 3)
+        return sanely_rounded(carbon_saved)
 
     def calories_totalled(self):
         """Returns the total amount of calories burned due to wrday"""
@@ -319,11 +320,11 @@ class Commutersurvey(models.Model):
 
         """overwrites the save method in order to calculate all the data!"""
         changes = self.calculate_difference()
-        self.carbon_change = round(changes["carbon"], 3)
-        self.calorie_change = round(changes["calories"], 3)
+        self.carbon_change = sanely_rounded(changes["carbon"])
+        self.calorie_change = sanely_rounded(changes["calories"])
         self.change_type = self.change_analysis()
         self.already_green = self.check_green()
-        self.carbon_savings = round(self.carbon_saved(),2)
+        self.carbon_savings = sanely_rounded(self.carbon_saved())
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
 
@@ -382,7 +383,7 @@ class Leg(models.Model):
                 s = float(speed) # average speed in mph
                 #kilograms carbon expended in leg based on duration in minutes
                 carbon = (coo/1000) * s * (self.duration/60)
-        return {'carbon': round(carbon, 3), 'calories': round(calories, 3)}
+        return {'carbon': sanely_rounded(carbon), 'calories': sanely_rounded(calories)}
 
     def save(self, *args, **kwargs):
         """save carbon change"""
