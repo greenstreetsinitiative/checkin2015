@@ -2,6 +2,23 @@ body {
   font-family: 'Martel Sans', Helvetica, Arial, sans-serif;
 }
 
+.thanks-actions {
+  width: 80%;
+}
+
+.thanks-actions div {
+  display: inline-block;
+  width: 48%;
+  vertical-align: top;
+}
+
+.thanks-actions div span {
+  font-size: .9em;
+  color: darkred;
+  display: block;
+  margin-top: 5px;
+}
+
 .selections {
   background-color: #BBE9FC;
   padding: 20px;

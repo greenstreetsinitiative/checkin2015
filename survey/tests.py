@@ -1,9 +1,44 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.conf import settings
+from django.utils.importlib import import_module
 import models
 from model_mommy import mommy
 from model_mommy.recipe import Recipe, foreign_key
 from itertools import cycle
 from random import randint
+import datetime
+
+class SessionTestCase(TestCase):
+    def setUp(self):
+        # http://code.djangoproject.com/ticket/10899
+        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+        engine = import_module(settings.SESSION_ENGINE)
+        store = engine.SessionStore()
+        store.save()
+        self.session = store
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
+
+class CheckinViewTestCase(SessionTestCase):
+    def opencheckin(self):
+        # Make sure there is a Month object in the database that
+        # lets the checkin be open at the time of the test.
+        now = datetime.datetime.now()
+        yesterday = now - datetime.timedelta(days=1)
+        tomorrow = now + datetime.timedelta(days=1)
+        models.Month.objects.create(wr_day=now, open_checkin=yesterday, close_checkin=tomorrow)
+
+    def test_session_populates_form(self):
+        self.opencheckin()
+        s = self.session
+        s["name"] = 'Bob'
+        s.save()
+        response = self.client.get('/checkin/', follow=True)
+        self.assertEqual(response.context['form']['name'].value(), 'Bob')
+
+    def test_complete_page_advises_private(self):
+        message = "Open in an incognito or private window"
+        response = self.client.get('/checkin/complete/', follow=True)
+        self.assertContains(response, message)
 
 class ModeTests(TestCase):
 
