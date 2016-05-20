@@ -1,6 +1,9 @@
 from django.test import TestCase
 import models
-
+from model_mommy import mommy
+from model_mommy.recipe import Recipe, foreign_key
+from itertools import cycle
+from random import randint
 
 class ModeTests(TestCase):
 
@@ -18,4 +21,44 @@ class ModeTests(TestCase):
 
 class LegTests(TestCase):
 
-    pass
+    fixtures = ['modes.json']
+
+    def setUp(self):
+        self.survey_recipe = Recipe(models.Commutersurvey)
+        self.all_modes = models.Mode.objects.all()
+        self.leg_recipe = Recipe(
+            models.Leg,
+            checkin = self.survey_recipe.make(),
+            mode = cycle(self.all_modes)
+        )
+
+    def decimal_places(self, number):
+        # converts to string, reverses it, and finds where the decimal point is
+        return repr(number)[::-1].find('.')
+
+    def generate_leg_set(self, checkin):
+        # generates a set of legs to associate with a given checkin
+        # set is complete in the sense of having 1+ leg per direction/day pair
+        self.leg_recipe.make(day='w', direction='fw', checkin=checkin, _quantity=randint(1,3))
+        self.leg_recipe.make(day='w', direction='tw', checkin=checkin, _quantity=randint(1,3))
+        self.leg_recipe.make(day='n', direction='fw', checkin=checkin, _quantity=randint(1,3))
+        self.leg_recipe.make(day='n', direction='tw', checkin=checkin, _quantity=randint(1,3))
+
+    def test_leg_model_calculations_up_to_3_decimal_places(self):
+        # no one leg will both expend carbon and burn calories. so use two legs.
+        carpool_leg = self.leg_recipe.make(mode=models.Mode.objects.get(pk=3))
+        running_leg = self.leg_recipe.make(mode=models.Mode.objects.get(pk=11))
+        self.assertLessEqual(self.decimal_places(carpool_leg.carbon), 3)
+        self.assertLessEqual(self.decimal_places(carpool_leg.calories), 3)
+        self.assertLessEqual(self.decimal_places(running_leg.carbon), 3)
+        self.assertLessEqual(self.decimal_places(running_leg.calories), 3)
+
+    def test_commutersurvey_model_calculations_up_to_3_decimal_places(self):
+        checkin = self.survey_recipe.make()
+        self.generate_leg_set(checkin)
+        checkin.save()
+
+        self.assertLessEqual(self.decimal_places(checkin.carbon_change), 3)
+        self.assertLessEqual(self.decimal_places(checkin.calorie_change), 3)
+        self.assertLessEqual(self.decimal_places(checkin.carbon_savings), 3)
+        self.assertLessEqual(self.decimal_places(checkin.calories_total), 3)
