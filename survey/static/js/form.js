@@ -15,17 +15,21 @@ $(function() {
   var $employerSelect = $('select[name="employer"]');
   var $subteamSelect = $('select[name="team"]');
 
-  var allParentIDs = $.map($subteamSelect.find('option'), function(opt) { return $(opt).attr('data-parent') });
+  $employerSelect.on('checkin:setsubteams', setSubteamToggling());
+  $employerSelect.trigger('chosen:updated').trigger('checkin:setsubteams');
 
   $employerSelect.on('change', function() {
-    // reset the subtean form
-    $subteamSelect.val('').trigger('chosen:updated');
+    $subteamSelect.val('').trigger('chosen:updated'); // reset the subteam form
+    setSubteamToggling();
+  });
 
+  function setSubteamToggling(event) {
     // hide or show the other dropdown
     var parentid = $employerSelect.find(':selected').val();
-    var hasSubteam = jQuery.inArray(parentid, allParentIDs) > 0;
+    var allParentIDs = $.map($subteamSelect.find('option'), function(opt) { return $(opt).attr('data-parent') });
+    var employerHasSubteam = jQuery.inArray(parentid, allParentIDs) > 0;
 
-    if (hasSubteam) {
+    if (employerHasSubteam) {
       // show the select element with only the relevant options
       $subteamSelect.find('option').each(function(){
         if ($(this).attr('data-parent') == parentid) {
@@ -33,15 +37,21 @@ $(function() {
         } else {
           $(this).hide();
         }
-        $subteamSelect.chosen('destroy').chosen({ width: "99%" });
       });
-      $subteamSelect.parent().show();
+      $subteamSelect.chosen('destroy').chosen({ width: "99%" });
+
+      $subteamSelect.parent().parent().show();
     } else {
-      $subteamSelect.parent().hide();
+      $subteamSelect.parent().parent().hide();
+    }
+  }
+
+  $subteamSelect.on('change', function() {
+    var subteamValueChosen = $subteamSelect.val() !== '';
+    if (subteamValueChosen && $('.team-alert')) {
+      $('.team-alert').remove();
     }
   });
-
-  $employerSelect.trigger('change');
 
   var $normalFWLegs = $('.normal-day .from-work .legs-wrapper');
   var $normalTWLegs = $('.normal-day .to-work .legs-wrapper');
@@ -165,7 +175,7 @@ $(function() {
   $normalEqualsWalkrideRadio.trigger('checkin:initialize');
   $normalSameBothWaysRadio.trigger('checkin:initialize');
 
-  $('form').submit(function() {
+  $('form').submit(function(e) {
     // if any of the radio buttons say true, and were
     // not actually changed, we need to still copy the forms
     // trigger the copying only
@@ -173,7 +183,15 @@ $(function() {
     $normalEqualsWalkrideRadio.trigger('change');
     $normalSameBothWaysRadio.trigger('change');
 
-    return;
+    var subteamVisible = $('#id_team_chosen').is(':visible');
+    var subteamValueChosen = $subteamSelect.val() !== '';
+
+    if (subteamVisible && !subteamValueChosen) {
+      $('button[type="submit"]').before('<div class="alert alert-danger team-alert" role="alert">Your company has sub-teams! Please indicate your team affiliation above.</div>');
+      return false;
+    } else {
+      return true;
+    }
   });
 
   function shouldOpen(selector) {
