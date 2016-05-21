@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.conf import settings
 from django.utils.importlib import import_module
 import models
+import utils
 from model_mommy import mommy
 from model_mommy.recipe import Recipe, foreign_key
 from itertools import cycle
@@ -17,18 +18,11 @@ class SessionTestCase(TestCase):
         store.save()
         self.session = store
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
-        self.opencheckin()
 
 class CheckinViewTestCase(SessionTestCase):
-    def opencheckin(self):
-        # Make sure there is a Month object in the database that
-        # lets the checkin be open at the time of the test.
-        now = datetime.datetime.now()
-        yesterday = now - datetime.timedelta(days=1)
-        tomorrow = now + datetime.timedelta(days=1)
-        models.Month.objects.create(wr_day=now, open_checkin=yesterday, close_checkin=tomorrow)
 
     def test_session_populates_form(self):
+        utils.this_month()
         s = self.session
         s["name"] = 'Bob'
         s.save()
@@ -139,3 +133,36 @@ class LegTests(TestCase):
         self.assertLessEqual(self.decimal_places(checkin.calorie_change), 3)
         self.assertLessEqual(self.decimal_places(checkin.carbon_savings), 3)
         self.assertLessEqual(self.decimal_places(checkin.calories_total), 3)
+
+class QOTMTests(TestCase):
+    def test_create_qotm(self):
+        m = utils.this_month()
+        question = "What do you think about bikes?"
+        q = models.QuestionOfTheMonth.objects.create(wr_day_month=m, value=question)
+        self.assertEqual(q.wr_day_month, m)
+        self.assertEqual(q.value, "What do you think about bikes?")
+
+    def test_current_month_question_shown(self):
+        before = datetime.datetime.now() - datetime.timedelta(days=32)
+        after = datetime.datetime.now() + datetime.timedelta(days=32)
+        last_month = models.Month.objects.create(
+            wr_day = before,
+            open_checkin = before - datetime.timedelta(days=3),
+            close_checkin = before + datetime.timedelta(days=3))
+        next_month = models.Month.objects.create(
+            wr_day = after,
+            open_checkin = after - datetime.timedelta(days=3),
+            close_checkin = after + datetime.timedelta(days=3))
+
+        models.QuestionOfTheMonth.objects.create(
+            wr_day_month=last_month,
+            value='Why is transit important?')
+        models.QuestionOfTheMonth.objects.create(
+            wr_day_month=utils.this_month(),
+            value='When will the DC Metro stop catching fire?')
+        models.QuestionOfTheMonth.objects.create(
+            wr_day_month=next_month,
+            value='How many tradeoffs does the state DOT make when budgeting?')
+
+        response = self.client.get('/checkin/', follow=True)
+        self.assertContains(response, 'When will the DC Metro stop catching fire?')
