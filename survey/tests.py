@@ -18,7 +18,6 @@ class SessionTestCase(TestCase):
         store.save()
         self.session = store
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
-        self.opencheckin()
 
 class CheckinViewTestCase(SessionTestCase):
 
