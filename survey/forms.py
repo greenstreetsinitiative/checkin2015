@@ -128,9 +128,13 @@ class ExtraCommuterForm(ModelForm):
             self.fields['share'].label = (
                 "Please don't share my identifying information with my employer")
 
-        current_question = QuestionOfTheMonth.objects.get(wr_day_month=current_or_next_month()).value
+        try:
+            current_question = QuestionOfTheMonth.objects.get(wr_day_month=current_or_next_month())
+            form_question = 'Question of the Month: ' + current_question.value
+        except:
+            form_question = 'Comment'
 
-        self.fields['comments'].label = "Question of the Month: " + current_question
+        self.fields['comments'].label = form_question
         self.fields['comments'].widget.attrs['rows'] = 4
         self.fields['comments'].widget.attrs['class'] = 'form-control'
 
