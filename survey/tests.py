@@ -17,6 +17,7 @@ class SessionTestCase(TestCase):
         store.save()
         self.session = store
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
+        self.opencheckin()
 
 class CheckinViewTestCase(SessionTestCase):
     def opencheckin(self):
@@ -28,12 +29,53 @@ class CheckinViewTestCase(SessionTestCase):
         models.Month.objects.create(wr_day=now, open_checkin=yesterday, close_checkin=tomorrow)
 
     def test_session_populates_form(self):
-        self.opencheckin()
         s = self.session
         s["name"] = 'Bob'
         s.save()
         response = self.client.get('/checkin/', follow=True)
         self.assertEqual(response.context['form']['name'].value(), 'Bob')
+
+    def test_checkin_subteam_warning(self):
+        warning = "Your company has sub-teams! Please indicate your team affiliation above."
+        response = self.client.get('/checkin/', follow=True)
+        self.assertNotContains(response, warning)
+
+        e = mommy.make(models.Employer)
+        e.team_set.create(name='Team1')
+        e.team_set.create(name='Team2')
+        e.team_set.create(name='Team3')
+
+        # this won't work. need a liveserver test case?
+        # https://docs.djangoproject.com/en/1.7/topics/testing/tools/#django.test.LiveServerTestCase
+        # response_post = self.client.post('/checkin/', {
+        #     'name': 'Fname Lname',
+        #     'email': 'example@email.com',
+        #     'home_address': '123 Residential St., City, ST 12345',
+        #     'work_address': '987 Business Ave., OtherCity, ST 12354',
+        #     'employer': e,
+        #     'team': '',
+        #     'wtw-TOTAL_FORMS': 1,
+        #     'wtw-INITIAL_FORMS': 0,
+        #     'wfw-TOTAL_FORMS': 1,
+        #     'wfw-INITIAL_FORMS': 0,
+        #     'ntw-TOTAL_FORMS': 1,
+        #     'ntw-INITIAL_FORMS': 0,
+        #     'nfw-TOTAL_FORMS': 1,
+        #     'nfw-INITIAL_FORMS': 0,
+        #     'walkride_same_as_reverse': 'True',
+        #     'normal_same_as_walkride': 'False',
+        #     'normal_same_as_reverse': 'False',
+        #     'wtw-MIN_NUM_FORMS': 0,
+        #     'wtw-MAX_NUM_FORMS': 10,
+        #     'wfw-MIN_NUM_FORMS': 0,
+        #     'wfw-MAX_NUM_FORMS': 10,
+        #     'ntw-MIN_NUM_FORMS': 0,
+        #     'ntw-MAX_NUM_FORMS': 10,
+        #     'nfw-MIN_NUM_FORMS': 0,
+        #     'nfw-MAX_NUM_FORMS': 10
+        # }, follow=True)
+        #
+        # self.assertContains(response, warning)
 
     def test_complete_page_advises_private(self):
         message = "Open in an incognito or private window"
