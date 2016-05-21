@@ -76,6 +76,12 @@ def add_checkin(request):
                 if attr in extra_commute_form.cleaned_data:
                     request.session[attr] = extra_commute_form.cleaned_data[attr]
 
+            # This is just to generate cleaned_data. The radio button choices will be valid.
+            wrday_copy.is_valid(); commute_copy.is_valid(); normal_copy.is_valid();
+            request.session['walkride_same_as_reverse'] = str(wrday_copy.cleaned_data['walkride_same_as_reverse'])
+            request.session['normal_same_as_walkride'] = str(commute_copy.cleaned_data['normal_same_as_walkride'])
+            request.session['normal_same_as_reverse'] = str(normal_copy.cleaned_data['normal_same_as_reverse'])
+
             ##################################
             # SAVE THE LEGS WITH THE CHECKIN #
             ##################################
@@ -89,12 +95,13 @@ def add_checkin(request):
                 request.POST, instance=commutersurvey, prefix='nfw')
 
             if leg_formset_WRTW.is_valid() and leg_formset_WRFW.is_valid() and leg_formset_NormalTW.is_valid() and leg_formset_NormalFW.is_valid():
-
                 commutersurvey.save()
                 leg_formset_WRTW.save()
                 leg_formset_WRFW.save()
                 leg_formset_NormalTW.save()
                 leg_formset_NormalFW.save()
+
+                write_formset_cookies(request, leg_formset_WRTW, leg_formset_WRFW, leg_formset_NormalTW, leg_formset_NormalFW)
                 send_email(commutersurvey)
                 return render_to_response(
                     'survey/thanks.html',
@@ -144,9 +151,20 @@ def add_checkin(request):
         leg_formset_WRTW = MakeLegs_WRTW(instance=Commutersurvey(), prefix='wtw')
         leg_formset_WRFW = MakeLegs_WRFW(instance=Commutersurvey(), prefix='wfw')
 
-        normal_copy = NormalFromWorkSameAsAboveForm()
-        wrday_copy = WalkRideFromWorkSameAsAboveForm()
-        commute_copy = NormalIdenticalToWalkrideForm()
+        if 'normal_same_as_reverse' in request.session:
+            normal_copy = NormalFromWorkSameAsAboveForm(initial={'normal': request.session.get('normal_same_as_reverse')})
+        else:
+            normal_copy = NormalFromWorkSameAsAboveForm()
+
+        if 'walkride_same_as_reverse' in request.session:
+            wrday_copy = WalkRideFromWorkSameAsAboveForm(initial={'wr_day': request.session.get('walkride_same_as_reverse')})
+        else:
+            wrday_copy = WalkRideFromWorkSameAsAboveForm()
+
+        if 'normal_same_as_walkride' in request.session:
+            commute_copy = NormalIdenticalToWalkrideForm(initial={'commute': request.session.get('normal_same_as_walkride')})
+        else:
+            commute_copy = NormalIdenticalToWalkrideForm()
 
     # now just go ahead and render.
     return render(request, "survey/new_checkin.html",
@@ -209,3 +227,14 @@ def send_email(commutersurvey):
     from_email = 'checkin@gogreenstreets.org'
     send_mail(subject, message_plain, from_email, recipient_list,
               html_message=message_html, fail_silently=True)
+
+def write_formset_cookies(request, *args):
+    # takes a list of formsets and writes them to the session
+    for formset in args:
+        for form in formset:
+            for attr in form.cleaned_data:
+                input_name = form.prefix + '-' + attr
+                if attr in ['mode', 'checkin']:
+                    request.session[input_name] = form.cleaned_data[attr].id
+                else:
+                    request.session[input_name] = form.cleaned_data[attr]
