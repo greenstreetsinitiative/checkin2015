@@ -208,7 +208,7 @@ def send_email(commutersurvey):
         '-Christy, Director <br>Green Streets Initiative</span><br> '
         '<span class="mobile_link">617-299-1872 (office)</span></p>'
         '<p>Share with your friends and colleagues! '
-        '<a href="http://checkin.gogreenstreets.org" '
+        '<a href="http://checkinapp-greenstreets.rhcloud.com/" '
         'style="color: #2ba6cb;text-decoration: none;">Make sure'
         ' they get a chance to check in</p>'.format(
             name=name,
