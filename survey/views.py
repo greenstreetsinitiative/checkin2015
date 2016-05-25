@@ -189,7 +189,7 @@ def send_email(commutersurvey):
         '<p>Dear {name},</p><p>Thank you for checking'
         ' in your Walk/Ride Day commute! This email confirms your'
         ' participation in {survey_date}\'s Walk/Ride Day! Feel '
-        'free to show it to our <a href="http://checkin'
+        'free to show it to our <a href="http://checkinapp'
         '-greenstreets.rhcloud.com/retail" style="color:'
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
