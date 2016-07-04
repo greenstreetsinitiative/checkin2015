@@ -6,11 +6,7 @@ $(function() {
 
   // show message for those running IE 7 or lower
   var isIE = document.all && !document.querySelector;
-  if (isIE) {
-    $('.browser').show();
-  } else {
-    $('.browser').hide();
-  }
+  $('.browser').toggle(isIE);
 
   var $employerSelect = $('select[name="employer"]');
   var $subteamSelect = $('select[name="team"]');
@@ -32,11 +28,7 @@ $(function() {
     if (employerHasSubteam) {
       // show the select element with only the relevant options
       $subteamSelect.find('option').each(function(){
-        if ($(this).attr('data-parent') == parentid) {
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
+        $(this).toggle($(this).attr('data-parent') == parentid);
       });
       $subteamSelect.chosen('destroy').chosen({ width: "99%" });
 
@@ -98,11 +90,7 @@ $(function() {
   // handles options for if walkride day's commute FROM work is same as TO work
   $walkrideSameBothWaysRadio
     .on('checkin:initialize', function(event) {
-      if (shouldOpen($walkrideSameBothWaysRadio)) {
-        $walkrideFWLegs.show();
-      } else {
-        $walkrideFWLegs.hide();
-      }
+      $walkrideFWLegs.toggle(shouldOpen($walkrideSameBothWaysRadio));
     })
     .on('change', function() {
       if (shouldOpen($walkrideSameBothWaysRadio)) {
@@ -117,12 +105,7 @@ $(function() {
   // handles options for if the normal commute happens to be the same as the walk-ride day commute
   $normalEqualsWalkrideRadio
     .on('checkin:initialize', function(event) {
-      if (shouldOpen($normalEqualsWalkrideRadio)) {
-        $('.normal-legs').show();
-      } else {
-        // on closing, should copy other form
-        $('.normal-legs').hide();
-      }
+        $('.normal-legs').toggle(shouldOpen($normalEqualsWalkrideRadio));
     })
     .on('change', function() {
       if (shouldOpen($normalEqualsWalkrideRadio)) {
@@ -137,12 +120,7 @@ $(function() {
   // handles options for if normal day's commute FROM work is same as TO work
   $normalSameBothWaysRadio
     .on('checkin:initialize', function(event) {
-      if (shouldOpen($normalSameBothWaysRadio)) {
-        $normalFWLegs.show();
-      } else {
-        // on closing, should copy other form
-        $normalFWLegs.hide();
-      }
+        $normalFWLegs.toggle(shouldOpen($normalSameBothWaysRadio));
     })
     .on('change', function() {
       if (shouldOpen($normalSameBothWaysRadio)) {
@@ -157,7 +135,6 @@ $(function() {
         }
       }
     });
-
 
   $walkrideSameBothWaysRadio.on('checkin:copyleg', function(event) {
     copyLegData($walkrideTWLegs, $walkrideFWLegs);
@@ -174,6 +151,36 @@ $(function() {
   $walkrideSameBothWaysRadio.trigger('checkin:initialize');
   $normalEqualsWalkrideRadio.trigger('checkin:initialize');
   $normalSameBothWaysRadio.trigger('checkin:initialize');
+
+  //////////
+  // if legs were filled in previously, fill them in again here.
+  // savedLegs is defined in the new_checkin.html template
+  if (savedLegs['wtw']['durations'].length > 0) {
+    fillSavedLegs(savedLegs['wtw'], $walkrideTWLegs);
+
+    // if (savedLegs['wfw'] == savedLegs['wtw']) {
+    if (_.isEqual(savedLegs['wfw'], savedLegs['wtw'])) {
+      $walkrideSameBothWaysRadio.val(['True']).trigger('change');
+    } else {
+      $walkrideSameBothWaysRadio.val(['False']).trigger('change');
+      fillSavedLegs(savedLegs['wfw'], $walkrideFWLegs);
+    }
+
+    if (_.isEqual(savedLegs['ntw'], savedLegs['wtw'])) {
+      $normalEqualsWalkrideRadio.val(['True']).trigger('change');
+    } else {
+      $normalEqualsWalkrideRadio.val(['False']).trigger('change');
+      fillSavedLegs(savedLegs['ntw'], $normalTWLegs);
+
+      if (_.isEqual(savedLegs['nfw'], savedLegs['ntw'])) {
+        $normalSameBothWaysRadio.val(['True']).trigger('change');
+      } else {
+        $normalSameBothWaysRadio.val(['False']).trigger('change');
+        fillSavedLegs(savedLegs['nfw'], $normalFWLegs);
+      }
+    }
+  }
+  //////////
 
   $('form').submit(function(e) {
     // if any of the radio buttons say true, and were
@@ -235,6 +242,19 @@ $(function() {
       $newLeg.find('input[name$="duration"]').val(originalDuration);
       $newLeg.find('select[name$="mode"]').val(originalMode);
     });
+  }
+
+  // takes an object and applies its information to the element
+  function fillSavedLegs(info, $element) {
+    var numLegs = info['durations'].length;
+    var modeSelect = 'select[name$="mode"]:last';
+    var durationInput = 'input[name$="duration"]:last';
+
+    for (var i = 0; i < numLegs; i++) {
+      $element.find(modeSelect).val(info['modes'][i]);
+      $element.find(durationInput).val(info['durations'][i]);
+      if (i+1 < numLegs) { $element.find('a.add-row').click() }
+    }
   }
 
   // do all this stuff for geocoding
