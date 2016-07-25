@@ -6,11 +6,7 @@ $(function() {
 
   // show message for those running IE 7 or lower
   var isIE = document.all && !document.querySelector;
-  if (isIE) {
-    $('.browser').show();
-  } else {
-    $('.browser').hide();
-  }
+  $('.browser').toggle(isIE);
 
   var $employerSelect = $('select[name="employer"]');
   var $subteamSelect = $('select[name="team"]');
@@ -32,11 +28,7 @@ $(function() {
     if (employerHasSubteam) {
       // show the select element with only the relevant options
       $subteamSelect.find('option').each(function(){
-        if ($(this).attr('data-parent') == parentid) {
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
+        $(this).toggle($(this).attr('data-parent') == parentid);
       });
       $subteamSelect.chosen('destroy').chosen({ width: "99%" });
 
@@ -98,11 +90,7 @@ $(function() {
   // handles options for if walkride day's commute FROM work is same as TO work
   $walkrideSameBothWaysRadio
     .on('checkin:initialize', function(event) {
-      if (shouldOpen($walkrideSameBothWaysRadio)) {
-        $walkrideFWLegs.show();
-      } else {
-        $walkrideFWLegs.hide();
-      }
+      $walkrideFWLegs.toggle(shouldOpen($walkrideSameBothWaysRadio));
     })
     .on('change', function() {
       if (shouldOpen($walkrideSameBothWaysRadio)) {
@@ -117,12 +105,7 @@ $(function() {
   // handles options for if the normal commute happens to be the same as the walk-ride day commute
   $normalEqualsWalkrideRadio
     .on('checkin:initialize', function(event) {
-      if (shouldOpen($normalEqualsWalkrideRadio)) {
-        $('.normal-legs').show();
-      } else {
-        // on closing, should copy other form
-        $('.normal-legs').hide();
-      }
+        $('.normal-legs').toggle(shouldOpen($normalEqualsWalkrideRadio));
     })
     .on('change', function() {
       if (shouldOpen($normalEqualsWalkrideRadio)) {
@@ -137,12 +120,7 @@ $(function() {
   // handles options for if normal day's commute FROM work is same as TO work
   $normalSameBothWaysRadio
     .on('checkin:initialize', function(event) {
-      if (shouldOpen($normalSameBothWaysRadio)) {
-        $normalFWLegs.show();
-      } else {
-        // on closing, should copy other form
-        $normalFWLegs.hide();
-      }
+        $normalFWLegs.toggle(shouldOpen($normalSameBothWaysRadio));
     })
     .on('change', function() {
       if (shouldOpen($normalSameBothWaysRadio)) {
@@ -157,7 +135,6 @@ $(function() {
         }
       }
     });
-
 
   $walkrideSameBothWaysRadio.on('checkin:copyleg', function(event) {
     copyLegData($walkrideTWLegs, $walkrideFWLegs);
@@ -174,6 +151,36 @@ $(function() {
   $walkrideSameBothWaysRadio.trigger('checkin:initialize');
   $normalEqualsWalkrideRadio.trigger('checkin:initialize');
   $normalSameBothWaysRadio.trigger('checkin:initialize');
+
+  //////////
+  // if legs were filled in previously, fill them in again here.
+  // savedLegs is defined in the new_checkin.html template
+  if (savedLegs['wtw']['durations'].length > 0) {
+    fillSavedLegs(savedLegs['wtw'], $walkrideTWLegs);
+
+    // if (savedLegs['wfw'] == savedLegs['wtw']) {
+    if (_.isEqual(savedLegs['wfw'], savedLegs['wtw'])) {
+      $walkrideSameBothWaysRadio.val(['True']).trigger('change');
+    } else {
+      $walkrideSameBothWaysRadio.val(['False']).trigger('change');
+      fillSavedLegs(savedLegs['wfw'], $walkrideFWLegs);
+    }
+
+    if (_.isEqual(savedLegs['ntw'], savedLegs['wtw'])) {
+      $normalEqualsWalkrideRadio.val(['True']).trigger('change');
+    } else {
+      $normalEqualsWalkrideRadio.val(['False']).trigger('change');
+      fillSavedLegs(savedLegs['ntw'], $normalTWLegs);
+
+      if (_.isEqual(savedLegs['nfw'], savedLegs['ntw'])) {
+        $normalSameBothWaysRadio.val(['True']).trigger('change');
+      } else {
+        $normalSameBothWaysRadio.val(['False']).trigger('change');
+        fillSavedLegs(savedLegs['nfw'], $normalFWLegs);
+      }
+    }
+  }
+  //////////
 
   $('form').submit(function(e) {
     // if any of the radio buttons say true, and were
@@ -237,198 +244,16 @@ $(function() {
     });
   }
 
-  // do all this stuff for geocoding
-  var geocoder = new google.maps.Geocoder();
-  var position1, position2, marker1, marker2;
+  // takes an object and applies its information to the element
+  function fillSavedLegs(info, $element) {
+    var numLegs = info['durations'].length;
+    var modeSelect = 'select[name$="mode"]:last';
+    var durationInput = 'input[name$="duration"]:last';
 
-  function geocodeAddress($address) {
-    geocoder.geocode({address: $address.val()}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        $address.val(results[0]['formatted_address']);
-
-        if ($address.attr('id') == "id_home_address") {
-          position1 = results[0].geometry.location;
-
-          if (marker1) {
-            marker1.setMap(null);
-          }
-
-          marker1 = new google.maps.Marker({
-                     map: map,
-                     title: results[0]['formatted_address'],
-                     position: results[0].geometry.location,
-                     animation: google.maps.Animation.DROP
-                   });
-        } else if ($address.attr('id') == "id_work_address") {
-          position2 = results[0].geometry.location;
-
-          if (marker2) {
-            marker2.setMap(null);
-          }
-
-          marker2 = new google.maps.Marker({
-                     map: map,
-                     title: results[0]['formatted_address'],
-                     position: results[0].geometry.location,
-                     animation: google.maps.Animation.DROP
-                   });
-        }
-
-        map.panTo(results[0].geometry.location);
-
-        if (position1 && position2) {
-          setCommuteGeom(position1, position2);
-          setCommuteGeom2(position1, position2);
-          setCommuteGeom3(position1, position2);
-        }
-      }
-    });
-
-
-  }
-
-  function setCommuteGeom(origin, destination) {
-    directionsService.route({
-      origin: origin,
-      destination: destination,
-      travelMode: google.maps.TravelMode.BICYCLING
-    }, function(response, status) {
-      if (status == google.maps.DirectionsStatus.OK) {
-        directionsDisplay.setMap(map);
-        directionsDisplay.setDirections(response);
-        toggleCommuteDistance(response.routes[0].legs[0].distance.text + ' (by bike)');
-        } else {
-        toggleCommuteDistance('');
-      }
-    });
-  }
-
-  function setCommuteGeom2(origin, destination) {
-    directionsService2.route({
-      origin: origin,
-      destination: destination,
-      travelMode: google.maps.TravelMode.TRANSIT
-    }, function(response, status) {
-      if (status == google.maps.DirectionsStatus.OK) {
-        directionsDisplay2.setMap(map);
-        directionsDisplay2.setDirections(response);
-        toggleCommuteDistance2(response.routes[0].legs[0].distance.text + ' (by transit)');
-      } else {
-        toggleCommuteDistance2('');
-         }
-       });
-     }
-
-  function setCommuteGeom3(origin, destination) {
-    directionsService3.route({
-      origin: origin,
-      destination: destination,
-      travelMode: google.maps.TravelMode.WALKING
-    }, function(response, status) {
-      if (status == google.maps.DirectionsStatus.OK) {
-        directionsDisplay3.setMap(map);
-        directionsDisplay3.setDirections(response);
-        toggleCommuteDistance3(response.routes[0].legs[0].distance.text + ' (by foot)');
-      } else {
-        toggleCommuteDistance3('');
-      }
-    });
-  }
-
-  function toggleCommuteDistance(text) {
-    if (text !== '') {
-      $('#commute-distance').text(text);
-      $('#commute-distance').css('background', '#77C5F1');
-    } else {
-      $('#commute-distance').text('');
-      $('#commute-distance').css('background', '#fff');
+    for (var i = 0; i < numLegs; i++) {
+      $element.find(modeSelect).val(info['modes'][i]);
+      $element.find(durationInput).val(info['durations'][i]);
+      if (i+1 < numLegs) { $element.find('a.add-row').click() }
     }
   }
-
-  function toggleCommuteDistance2(text) {
-    if (text !== '') {
-      $('#commute-distance2').text(text);
-      $('#commute-distance2').css('background', '#CDAAFF');
-    } else {
-      $('#commute-distance2').text('');
-      $('#commute-distance2').css('background', '#fff');
-    }
-  }
-
-  function toggleCommuteDistance3(text) {
-    if (text !== '') {
-      $('#commute-distance3').text(text);
-      $('#commute-distance3').css('background', '#FF9966');
-    } else {
-      $('#commute-distance3').text('');
-      $('#commute-distance3').css('background', '#fff');
-    }
-  }
-
-  function pathToGeoJson(path) {
-    if (path.length <= 1) {
-      // point if home and work location are the same;
-      // empty coordinates is a valid MultiLineString in GEOS,
-      // only one coordinate is not
-      return { type: 'MultiLineString', coordinates: [] };
-    } else {
-      return {
-        type: 'MultiLineString',
-        coordinates: [
-          $.map(path, function(v,i) {
-            return [[v.lng(), v.lat()]];
-          })
-        ]
-      };
-    }
-  }
-
-  // trigger address geocoder on several UI interactions
-  $('#id_home_address, #id_work_address').on('keyup', function(event) {
-    if (event.which === 13) geocodeAddress($(this));
-  });
-  $('#id_home_address, #id_work_address').on('blur', function(event) {
-    geocodeAddress($(this));
-  });
-
-  //trigger initial blur to show pre-filled addresses on the map
-  $('#id_home_address, #id_work_address').trigger('blur');
-
-  var directionsService, directionsDisplay,
-      directionsService2, directionsDisplay2,
-      directionsService3, directionsDisplay3;
-
-  directionsService = new google.maps.DirectionsService();
-  directionsService2 = new google.maps.DirectionsService();
-  directionsService3 = new google.maps.DirectionsService();
-  directionsDisplay = new google.maps.DirectionsRenderer({
-    markerOptions: {
-      visible: false
-    }
-  });
-  directionsDisplay2 = new google.maps.DirectionsRenderer({
-    markerOptions: {
-      visible: false
-    },
-    polylineOptions: {
-      strokeColor: '#CDAAFF'
-    }
-  });
-  directionsDisplay3 = new google.maps.DirectionsRenderer({
-    markerOptions: {
-      visible: false
-    },
-    polylineOptions: {
-      strokeColor: '#FF9966'
-    }
-  });
-
-  map = new google.maps.Map(document.getElementById('map-canvas'), {
-    zoom: 11,
-    mapTypeId: google.maps.MapTypeId.TERRAIN,
-    center: new google.maps.LatLng(42.357778, -71.061667),
-    streetViewControl: false,
-    mapTypeControl: false
-  });
-
 });

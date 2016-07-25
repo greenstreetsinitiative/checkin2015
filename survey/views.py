@@ -166,6 +166,9 @@ def add_checkin(request):
         else:
             commute_copy = NormalIdenticalToWalkrideForm()
 
+    # get previously entered legs if any.
+    savedLegs = get_formset_cookies(request)
+
     # now just go ahead and render.
     return render(request, "survey/new_checkin.html",
                   {
@@ -181,6 +184,7 @@ def add_checkin(request):
                       'normal_copy': normal_copy,
                       'wrday_copy': wrday_copy,
                       'commute_copy': commute_copy,
+                      'savedLegs': json.dumps(savedLegs)
                   })
 
 def send_email(commutersurvey):
@@ -240,3 +244,26 @@ def write_formset_cookies(request, *args):
                     request.session[input_name] = form.cleaned_data[attr].id
                 else:
                     request.session[input_name] = form.cleaned_data[attr]
+
+def get_formset_cookies(request):
+    legInfo = {
+        'nfw': { 'durations': [], 'modes': [] },
+        'ntw': { 'durations': [], 'modes': [] },
+        'wfw': { 'durations': [], 'modes': [] },
+        'wtw': { 'durations': [], 'modes': [] }
+    }
+
+    for k, v in request.session.items():
+        if k.endswith('duration') or k.endswith('mode'):
+            key = k.split('-')
+            arr = key[0] # ex. 'wtw'
+            index = int(key[1]) # 0,1,2...
+            attr = key[2] + 's' # ex. 'durations'
+            legInfo[arr][attr].append((index, v)) # use tuple to aid in sorting
+
+    for attr in ['durations', 'modes']:
+        for legset in legInfo:
+            # sort by the item[0] and return only the item[1]
+            legInfo[legset][attr] = [item[1] for item in sorted(legInfo[legset][attr])]
+
+    return legInfo
