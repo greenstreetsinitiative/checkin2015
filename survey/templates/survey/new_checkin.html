@@ -21,9 +21,11 @@
 
 <div class="row">
   <center>
-    <h1>Walk/Ride Day Check-In</h1>
-    <h2>{{ wr_day }}</h2>
-    <p class="lead">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="http://gogreenstreets.org/2016-walkride-day-corporate-challenge">Corporate Challenge</a> (from April through October). You may opt out of sharing your information with your employer below.</p>
+    <h1>{{ wr_day }} <br> Walk/Ride Day Check-In</h1>
+    Don’t work on Fridays? Check in your commute for another day!<br>
+    Check-ins will be accepted from <span class="date" style="display: inline-block;">{{ wr_open }}</span> through <span class="date" style="display: inline-block;">{{ wr_close }}</span></p>
+    <p><img src="{% static 'img/car-24.png' %}" height="32" width="32"><img src="{% static 'img/school-24.png' %}" height="32" width="32"><img src="{% static 'img/pitch-24.png' %}" height="32" width="32"><img src="{% static 'img/bicycle-24.png' %}" height="32" width="32"><img src="{% static 'img/rail-24.png' %}" height="32" width="32"><img src="{% static 'img/warehouse-24.png' %}" height="32" width="32"><img src="{% static 'img/scooter-24.png' %}" height="32" width="32"></p>
+
     <div class="panel panel-danger browser"><p class="text-danger"><strong>We strongly recommend</strong> using an up-to-date Internet browser such as Internet Explorer 8 or later, <a href="http://www.google.com/chrome/">Google Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a> if you have trouble checking in with multiple commute segments. As another alternative, you may also use your smartphone to check in!</p></div>
   </center>
 </div>
@@ -36,37 +38,40 @@
   <fieldset>
   {% csrf_token %}
     {{ form.non_field_errors }}
+
+    <p class="opt-out">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="http://gogreenstreets.org/2016-walkride-day-corporate-challenge">Corporate Challenge</a> (from April through October). <strong>You may opt out of sharing your information with your employer by clicking this checkbox:</strong> {{ extra_form.share }}</p>
     {% for field in form %}
-      <div class="form-group {% if field.errors %}has-error{% endif %}">
-        <div class="col-sm-5">
+    {% if forloop.counter|divisibleby:2 %}<div class="row">{% endif %}
+      <div class="col-sm-6 form-group {% if field.errors %}has-error{% endif %}">
+        <div class="col-sm-3">
           {{ field.label_tag }}
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-9">
           {{ field }}
           {% if field.help_text %}
-              <span style="font-family: 'Alegreya Sans';">{{ field.help_text }}</span>
+              <span class="help-block">{{ field.help_text }}</span>
           {% endif %}
           {% if field.errors %}
-            <div class="help-block">
+            <span class="help-block">
             {% for error in field.errors %}
               {{ error|escape }}<br>
             {% endfor %}
-            </div>
+            </span>
           {% endif %}
         </div>
-
       </div>
+    {% if forloop.counter|divisibleby:2 %}</div>{% endif %}
     {% endfor %}
 
-    <div>
-      <label>This Could Be You...</label>
-      <div class="clearfix">
+    <div class="row">
+      <div class="col-sm-3">
+        <label>This Could Be You...</label>
+        <p class="commuteexamples"><strong>For illustrative purposes only.</strong> These routes are automatically generated from the locations typed above.</p>
         <div id="commute-distance"></div>
         <div id="commute-distance3"></div>
         <div id="commute-distance2"></div>
       </div>
-      <div id="map-canvas" class="clearfix"></div>
-      <p class="commuteexamples"><strong>For illustrative purposes only.</strong> These routes are automatically generated from the locations typed above.</p>
+      <div id="map-canvas" class="col-sm-9"></div>
     </div>
     <hr class="green-big">
 
@@ -75,12 +80,12 @@
     {{ WRTW_formset.management_form }}
     {{ WRFW_formset.management_form }}
 
+    <p class="lead">Please enter all segments of your commute and the approximate time spent on that segment in minutes. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.</p>
+
     <div class="row wr-day">
       <div class="headingthing">
-        <h2>Your Walk/Ride Day* Commute</h2>
-        Please enter all segments (legs) of your commute and the approximate duration of each segment. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). Feel free to check in early, before your actual commute. You can go back and make changes; the system will record only your most recent submission.
-        <br>
-        *If you don't work on Fridays or for another reason, you may substitute another day to detail as your "Walk/Ride Day" commute.
+        <h2>Your Walk/Ride Day Commute</h2>
+
         </div>
       <div class="col-sm-6">
         <div class="to-work">
@@ -92,8 +97,12 @@
         <div class="legs-wrapper">
         {% for form in WRTW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
-
-              {{ form }}
+              {% for field in form.visible_fields %}
+                <div class="{% if forloop.counter|divisibleby:2 %}col-sm-4{% else %}col-sm-8{% endif %}">
+                  {{ field.label_tag }}
+                  {{ field }}
+                </div>
+              {% endfor %}
             </div>
         {% endfor %}
         </div>
@@ -111,8 +120,12 @@
         <div class="legs-wrapper">
         {% for form in WRFW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
-
-              {{ form }}
+              {% for field in form.visible_fields %}
+                <div class="{% if forloop.counter|divisibleby:2 %}col-sm-4{% else %}col-sm-8{% endif %}">
+                  {{ field.label_tag }}
+                  {{ field }}
+                </div>
+              {% endfor %}
             </div>
         {% endfor %}
         </div>
@@ -125,7 +138,6 @@
     <div class="row normal-day">
       <div class="headingthing">
         <h2>Your Normal Day Commute</h2>
-        Please enter all segments (legs) of your commute and also include time spent walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.
         </div>
       <div class="col-sm-12">{{ commute_copy }}</div>
       <div class="col-sm-6 normal-legs">
@@ -138,8 +150,12 @@
         <div class="legs-wrapper">
         {% for form in NormalTW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
-
-              {{ form }}
+              {% for field in form.visible_fields %}
+                <div class="{% if forloop.counter|divisibleby:2 %}col-sm-4{% else %}col-sm-8{% endif %}">
+                  {{ field.label_tag }}
+                  {{ field }}
+                </div>
+              {% endfor %}
             </div>
         {% endfor %}
         </div>
@@ -156,8 +172,12 @@
         <div class="legs-wrapper">
         {% for form in NormalFW_formset %}
             <div id="{{ form.prefix }}-row" class="leggedrow">
-
-              {{ form }}
+              {% for field in form.visible_fields %}
+                <div class="{% if forloop.counter|divisibleby:2 %}col-sm-4{% else %}col-sm-8{% endif %}">
+                  {{ field.label_tag }}
+                  {{ field }}
+                </div>
+              {% endfor %}
             </div>
         {% endfor %}
         </div>
@@ -166,32 +186,33 @@
       </div>
 
     </div>
-    <hr class="green-big">
-    {% for field in extra_form %}
+    <hr class="green">
+    <div class="row">
       <div class="form-group {% if field.errors %}has-error{% endif %}">
         <div class="col-sm-5">
-          {{ field.label_tag }}
+          {{ extra_form.comments.label_tag }}
         </div>
         <div class="col-sm-7">
-          {{ field }}
-          {% if field.errors %}
+          {{ extra_form.comments }}
+          {% if extra_form.comments.errors %}
             <div class="help-block">
-            {% for error in field.errors %}
+            {% for error in extra_form.comments.errors %}
               {{ error|escape }}<br>
             {% endfor %}
             </div>
           {% endif %}
         </div>
-
       </div>
-    {% endfor %}
+    </div>
+
+
 
     <center>
     {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
       <div class="alert alert-danger" role="alert">Oops! Please finish completing your checkin.</div>
     {% endif %}
-
-    <button class="cool-button button--ujarak" type="submit" name="action" value="action">
+    <hr class="green-big">
+    <button class="cool-button" type="submit" name="action" value="action">
       Submit your checkin!
     </button>
     </center>

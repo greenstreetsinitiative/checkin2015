@@ -87,11 +87,11 @@ class CommuterForm(ModelForm):
                 "sub-teams you must choose a sub-team.")
 
         self.fields['home_address'].help_text = (
-        	"We do not give your address to other parties. "
-        	"You may enter an approximate location if you wish.")
+        	"Or nearby intersection. "
+        	"(Include zipcode)")
         self.fields['work_address'].help_text = (
-        	"Or, if you are not "
-        	"employed, other destination")
+        	"Or, if you do not commute to work, "
+        	"other destination. (Include zipcode)")
 
         # add CSS classes for bootstrap
         self.fields['name'].widget.attrs['class'] = 'form-control'
@@ -115,7 +115,7 @@ class CommuterForm(ModelForm):
 class ExtraCommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
-        fields = ['comments', 'share', 'volunteer']
+        fields = ['comments', 'share']
 
         # TODO: Take into account day and not just month
         if not datetime.now().month < 4 or datetime.now().month > 10:
@@ -138,10 +138,6 @@ class ExtraCommuterForm(ModelForm):
         self.fields['comments'].widget.attrs['rows'] = 4
         self.fields['comments'].widget.attrs['class'] = 'form-control'
 
-        self.fields['volunteer'].label = (
-            "Please contact me with information on ways to help or volunteer"
-            " with Green Streets Initiative")
-
 class RequiredFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super(RequiredFormSet, self).__init__(*args, **kwargs)
@@ -160,7 +156,7 @@ def MakeLegForm(day, direction):
             super(LegForm, self).__init__(*args, **kwargs)
 
             self.fields['mode'].label = "How you did, or will, travel"
-            self.fields['duration'].label = "Time in minutes"
+            self.fields['duration'].label = "Minutes"
 
             self.fields['mode'].widget.attrs['class'] = 'form-control'
             self.fields['duration'].widget.attrs['class'] = 'form-control'
