@@ -52,6 +52,11 @@ class CheckinViewTestCase(SessionTestCase):
         self.assertEqual(nb_surveys_before+1, nb_surveys_after, "1 Commutersurvey should have been created")
         self.assertEqual(nb_legs_before+4, nb_legs_after, "4 legs should have been created")
 
+        survey = models.Commutersurvey.objects.filter(name='Bob the Tester')[0]
+        self.assertEqual(survey.name, 'Bob the Tester', "The wrong name was saved")
+        self.assertEqual(survey.comments, 'Answer to the question', 'The wrong comment/answer was saved')
+        self.assertTrue(survey.share, 'The "Do not share" setting was not saved')
+        
     def test_session_populates_form(self):
         utils.this_month()
         s = self.session
@@ -214,7 +219,7 @@ class When:
     @property
     def with_all_the_fields(self):
         self.request.POST = {
-            'name': 'Bob',
+            'name': 'Bob the Tester',
             'email': 'test@test.com',
             'home_address': '123 Boston St, Salem, MA 01970, USA',
             'work_address': '124 Boston St, Salem, MA 01970, USA',
@@ -267,7 +272,8 @@ class When:
             'nfw-0-direction': 'fw',
             'nfw-0-id': '',
             'nfw-0-checkin': '',
-            'comments': '',
+            'share': 'True',
+            'comments': 'Answer to the question',
             'action': 'action'
         }
         return self

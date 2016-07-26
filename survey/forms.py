@@ -53,13 +53,13 @@ class AlertErrorList(ErrorList):
 class CommuterForm(ModelForm):
     class Meta:
         model = Commutersurvey
-        fields = ['name', 'email', 'home_address', 'work_address',
-                  'employer']
+        fields = ['name', 'email', 'employer']
         if not datetime.now().month < 4 or datetime.now().month > 10:
             fields.append('team')
             widgets = {
                 'team': subteamSelectWidget()
             }
+        fields += ['home_address', 'work_address']
 
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
@@ -79,19 +79,14 @@ class CommuterForm(ModelForm):
                 parent__in=companies)
             self.fields['employer'].help_text = (
                 "Use 'Not employed', 'Self',"
-                " 'Student', or 'Other employer not in the"
-                " Corporate Challenge' as appropriate")
+                " 'Student', or 'Other employer' as appropriate")
             self.fields['team'].label = "Sub-team"
-            self.fields['team'].help_text = (
-                "If your company has participating "
-                "sub-teams you must choose a sub-team.")
 
         self.fields['home_address'].help_text = (
-        	"We do not give your address to other parties. "
-        	"You may enter an approximate location if you wish.")
+        	"or nearby intersection (INCLUDE ZIPCODE)")
         self.fields['work_address'].help_text = (
         	"Or, if you are not "
-        	"employed, other destination")
+        	"employed, other destination (INCLUDE ZIPCODE)")
 
         # add CSS classes for bootstrap
         self.fields['name'].widget.attrs['class'] = 'form-control'
