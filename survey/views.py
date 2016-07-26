@@ -19,8 +19,9 @@ from datetime import date
 
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt
 def add_checkin(request):
 
     try:
@@ -111,7 +112,8 @@ def add_checkin(request):
                         'calorie_change': commutersurvey.calorie_change,
                         'carbon_savings': commutersurvey.carbon_savings,
                         'change_type': commutersurvey.change_type,
-                    })
+                    },
+                    context_instance=RequestContext(request))
             else:
                 pass
     else:
