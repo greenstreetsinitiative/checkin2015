@@ -108,6 +108,9 @@
                   {{ field }}
                 </div>
               {% endfor %}
+              {% for field in form.hidden_fields %}
+                  {{ field }}
+              {% endfor %}
             </div>
         {% endfor %}
         </div>
@@ -130,6 +133,9 @@
                   {{ field.label_tag }}
                   {{ field }}
                 </div>
+              {% endfor %}
+              {% for field in form.hidden_fields %}
+                  {{ field }}
               {% endfor %}
             </div>
         {% endfor %}
@@ -161,6 +167,9 @@
                   {{ field }}
                 </div>
               {% endfor %}
+              {% for field in form.hidden_fields %}
+                  {{ field }}
+              {% endfor %}
             </div>
         {% endfor %}
         </div>
@@ -182,6 +191,9 @@
                   {{ field.label_tag }}
                   {{ field }}
                 </div>
+              {% endfor %}
+              {% for field in form.hidden_fields %}
+                  {{ field }}
               {% endfor %}
             </div>
         {% endfor %}
