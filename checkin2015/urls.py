@@ -53,7 +53,11 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 
     # Retail Partners
-    url(r'^retail/$', include('retail.urls', namespace='retail'))
+    url(r'^retail/$', include('retail.urls', namespace='retail')),
+
+    url(r'^stravaupload/(?P<bikeTotal>\d+)/(?P<runTotal>\d+)/(?P<walkTotal>\d+)$', 'survey.views.stravaupload', name='stravaUpload'),
+
+    url(r'^logout/$', 'survey.views.logout', name='logout_strava'),
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

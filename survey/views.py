@@ -16,6 +16,8 @@ from survey.forms import NormalFromWorkSameAsAboveForm, WalkRideFromWorkSameAsAb
 
 import json
 from datetime import date
+import datetime
+import requests
 
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -23,6 +25,26 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def add_checkin(request):
+
+    # check for a redirect from strava page
+    fullname = ''
+    email = ''
+    stravaUsername = ''
+    stravaCode = request.GET.get('code', '')
+    if 'code' in request.session and stravaCode == '':
+        stravaCode =  request.session['code']
+    if stravaCode != '':
+        params = {'client_id':12852, 'client_secret':'cfa726430a012abbf44b73a4c24e04ede3a033b1', 'code':stravaCode}
+        r = requests.post("https://www.strava.com/oauth/token", data=params)
+        if r.status_code == 200:
+            j = json.loads(r.text)
+            request.session['strava_access_token'] = j['access_token']
+            request.session['code'] = stravaCode
+            fullname = j['athlete']['firstname'] + " " + j['athlete']['lastname']
+            email = j['athlete']['email']
+            stravaUsername = j['athlete']['username']
+        else:
+            return redirect('logout_strava')
 
     try:
         wr_day = Month.objects.get(open_checkin__lte=date.today(),
@@ -102,8 +124,32 @@ def add_checkin(request):
                 leg_formset_NormalTW.save()
                 leg_formset_NormalFW.save()
 
+
+                bikeTotal = 0
+                runTotal = 0
+                walkTotal = 0
+
+                if 'code' in request.session:
+                    for form in leg_formset_WRTW:
+                        if("Biking" in str(form.cleaned_data['mode'])):
+                            bikeTotal += form.cleaned_data['duration']
+                        if("Run" in str(form.cleaned_data['mode'])):
+                            runTotal += form.cleaned_data['duration']
+                        if("Walk" in str(form.cleaned_data['mode'])):
+                            walkTotal += form.cleaned_data['duration']
+
+                    for form in leg_formset_WRFW:
+                        if("Biking" in str(form.cleaned_data['mode'])):
+                            bikeTotal += form.cleaned_data['duration']
+                        if("Run" in str(form.cleaned_data['mode'])):
+                            runTotal += form.cleaned_data['duration']
+                        if("Walk" in str(form.cleaned_data['mode'])):
+                            walkTotal += form.cleaned_data['duration']
+
+
                 write_formset_cookies(request, leg_formset_WRTW, leg_formset_WRFW, leg_formset_NormalTW, leg_formset_NormalFW)
                 send_email(commutersurvey)
+
                 return render_to_response(
                     'survey/thanks.html',
                     {
@@ -112,6 +158,9 @@ def add_checkin(request):
                         'calorie_change': commutersurvey.calorie_change,
                         'carbon_savings': commutersurvey.carbon_savings,
                         'change_type': commutersurvey.change_type,
+                        'bike_total' : bikeTotal,
+                        'run_total' : runTotal,
+                        'walk_total' : walkTotal,
                     },
                     context_instance=RequestContext(request))
             else:
@@ -181,6 +230,9 @@ def add_checkin(request):
                       'normal_copy': normal_copy,
                       'wrday_copy': wrday_copy,
                       'commute_copy': commute_copy,
+                      'fullname': fullname,
+                      'email': email,
+                      'strava_username': stravaUsername,
                   })
 
 def send_email(commutersurvey):
@@ -240,3 +292,48 @@ def write_formset_cookies(request, *args):
                     request.session[input_name] = form.cleaned_data[attr].id
                 else:
                     request.session[input_name] = form.cleaned_data[attr]
+
+
+def stravaupload(request, bikeTotal, runTotal, walkTotal):
+
+    params = {'access_token': request.session['strava_access_token'], 'name':'GSI Walk/Ride Day Commute', 'type':'', 'start_date_local': datetime.datetime.now(), 'elapsed_time': 0 }
+
+    bikeTotal = int(bikeTotal)
+    runTotal = int(runTotal)
+    walkTotal = int(walkTotal)
+
+    #bikeTotal = int(request.session['strava_bike_total'])
+
+    if bikeTotal > 0:
+        params['type'] = 'Ride'
+        params['elapsed_time'] = bikeTotal * 60
+        params['name'] = 'GSI Walk/Ride Day Commute (Bike)'
+        requests.post("https://www.strava.com/api/v3/activities", data=params)
+
+    #runTotal = int(request.session['strava_run_total'])
+
+    if runTotal > 0:
+        params['type'] = 'Run'
+        params['elapsed_time'] = runTotal * 60
+        params['name'] = 'GSI Walk/Ride Day Commute (Run)'
+        requests.post("https://www.strava.com/api/v3/activities", data=params)
+
+
+    #walkTotal = int(request.session['strava_walk_total'])
+
+    if walkTotal > 0:
+        params['type'] = 'Walk'    
+        params['elapsed_time'] = walkTotal * 60
+        params['name'] = 'GSI Walk/Ride Day Commute (Walk)'
+        requests.post("https://www.strava.com/api/v3/activities", data=params)
+
+
+    return HttpResponse('<h1>Page was found</h1>')
+
+def logout(request):
+    del request.session['code']
+    del request.session['strava_access_token']
+    request.session.modified = True
+    return redirect('commuterform')
+
+

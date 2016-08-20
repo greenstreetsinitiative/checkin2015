@@ -8,10 +8,29 @@
 {% endblock %}
 
 {% block body %}
+
+<script>
+    function uploadActivity(){
+        $.get('/stravaupload/{{ bike_total }}/{{ run_total }}/{{ walk_total }}', function(data, status){
+            if(status == "success"){
+                $("#uploadDiv").html('<b>Your activity upload is complete.</b>')
+            }else{
+                $("#uploadDiv").html('<b>There was error while uploading the activity.</b>')
+            }
+        });
+    }
+</script>
+
 <section class="thanks-page">
     <div class="row">
       <div class="span12">
         <h1 class="thanks-page">Thank you, {{ person }}, for checking in for <span class="nowrap">Walk/Ride Day</span> <span class="nowrap">{{ month }}</span>!</h1>
+
+        {% if bike_total > 0 or run_total > 0 or walk_total > 0 %}
+            <br>
+            <div id="uploadDiv"><a href="#" onclick="uploadActivity();return false;"><b>Upload my commute</b></a> to <span color="orange">Strava</span></b></div>
+        {% endif %}
+
 
         {% if calories_burned > 0.01 %}
             <br>

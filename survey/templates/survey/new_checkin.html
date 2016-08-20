@@ -32,6 +32,23 @@
   <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your checkin.</center></div>
 {% endif %}
 
+<center id="stravaSpace">
+  <div >
+    <a href="" id="stravalink">
+      <img src="{% static '/static/img/stravalogin.png' %}"  alt="strava" style="height:30px;">
+    </a>
+  </div>
+  <br>
+</center>
+<br>
+
+<script>
+  var a = document.getElementById('stravalink'); 
+
+  a.href = 'https://www.strava.com/oauth/authorize?client_id=12852&response_type=code&redirect_uri=' + location.protocol + '//' + location.hostname + ':8000/checkin/' + '&scope=write&state=mystate&approval_prompt=force'
+</script>
+
+
 <form name="form" method="post" action="{{request.path}}" class="form-horizontal">
   <fieldset>
   {% csrf_token %}
@@ -57,6 +74,17 @@
 
       </div>
     {% endfor %}
+
+    <script>
+      var n = '{{ fullname }}'
+      var e = '{{ email }}'
+
+      if(n != ''){
+        $("#id_name").val(n);
+        $("#id_email").val(e);
+        $( "#stravaSpace" ).replaceWith( "<center><div id='username'>Strava Username: {{ strava_username }} <br><span id='logout'><a href='/logout/'>Log Out</a></span><div id='logoutSpace'><br></div></div></center> " ); 
+      }
+    </script>
 
     <div>
       <label>This Could Be You...</label>

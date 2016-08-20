@@ -2,6 +2,27 @@ body {
   font-family: 'Martel Sans', Helvetica, Arial, sans-serif;
 }
 
+
+#logout{
+  display: none;
+}
+
+#logoutSpace{
+  display: block;
+}
+
+#username:hover #logout{
+  display: inline;
+}
+
+#username:hover #logoutSpace{
+  display: none;
+}
+
+#username{
+  width: 40%;
+}
+
 .thanks-actions {
   width: 80%;
 }
