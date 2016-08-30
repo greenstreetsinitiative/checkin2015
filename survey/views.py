@@ -23,28 +23,11 @@ from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
+import base64
+
 @csrf_exempt
 def add_checkin(request):
 
-    # check for a redirect from strava page
-    fullname = ''
-    email = ''
-    stravaUsername = ''
-    stravaCode = request.GET.get('code', '')
-    if 'code' in request.session and stravaCode == '':
-        stravaCode =  request.session['code']
-    if stravaCode != '':
-        params = {'client_id':12852, 'client_secret':'cfa726430a012abbf44b73a4c24e04ede3a033b1', 'code':stravaCode}
-        r = requests.post("https://www.strava.com/oauth/token", data=params)
-        if r.status_code == 200:
-            j = json.loads(r.text)
-            request.session['strava_access_token'] = j['access_token']
-            request.session['code'] = stravaCode
-            fullname = j['athlete']['firstname'] + " " + j['athlete']['lastname']
-            email = j['athlete']['email']
-            stravaUsername = j['athlete']['username']
-        else:
-            return redirect('logout_strava')
 
     try:
         wr_day = Month.objects.get(open_checkin__lte=date.today(),
@@ -129,22 +112,30 @@ def add_checkin(request):
                 runTotal = 0
                 walkTotal = 0
 
-                if 'code' in request.session:
-                    for form in leg_formset_WRTW:
-                        if("Biking" in str(form.cleaned_data['mode'])):
-                            bikeTotal += form.cleaned_data['duration']
-                        if("Run" in str(form.cleaned_data['mode'])):
-                            runTotal += form.cleaned_data['duration']
-                        if("Walk" in str(form.cleaned_data['mode'])):
-                            walkTotal += form.cleaned_data['duration']
+                
+                for form in leg_formset_WRTW:
+                    if("Biking" in str(form.cleaned_data['mode'])):
+                        bikeTotal += form.cleaned_data['duration']
+                    if("Run" in str(form.cleaned_data['mode'])):
+                        runTotal += form.cleaned_data['duration']
+                    if("Walk" in str(form.cleaned_data['mode'])):
+                        walkTotal += form.cleaned_data['duration']
 
-                    for form in leg_formset_WRFW:
-                        if("Biking" in str(form.cleaned_data['mode'])):
-                            bikeTotal += form.cleaned_data['duration']
-                        if("Run" in str(form.cleaned_data['mode'])):
-                            runTotal += form.cleaned_data['duration']
-                        if("Walk" in str(form.cleaned_data['mode'])):
-                            walkTotal += form.cleaned_data['duration']
+                for form in leg_formset_WRFW:
+                    if("Biking" in str(form.cleaned_data['mode'])):
+                        bikeTotal += form.cleaned_data['duration']
+                    if("Run" in str(form.cleaned_data['mode'])):
+                        runTotal += form.cleaned_data['duration']
+                    if("Walk" in str(form.cleaned_data['mode'])):
+                        walkTotal += form.cleaned_data['duration']
+
+                stravaDisplay = ''
+                if 'strava_access_token' in request.session:
+                    stravaDisplay = 'display'
+
+                fitbitDisplay = ''
+                if 'fitbit_name' in request.session:
+                    fitbitDisplay = 'display'
 
 
                 write_formset_cookies(request, leg_formset_WRTW, leg_formset_WRFW, leg_formset_NormalTW, leg_formset_NormalFW)
@@ -161,6 +152,8 @@ def add_checkin(request):
                         'bike_total' : bikeTotal,
                         'run_total' : runTotal,
                         'walk_total' : walkTotal,
+                        'strava_display' : stravaDisplay,
+                        'fitbit_display' : fitbitDisplay,
                     },
                     context_instance=RequestContext(request))
             else:
@@ -217,6 +210,15 @@ def add_checkin(request):
         else:
             commute_copy = NormalIdenticalToWalkrideForm()
 
+
+    fitbit_name = ''
+    if 'fitbit_name' in request.session:
+        fitbit_name = request.session['fitbit_name']
+
+    strava_username = ''
+    if 'strava_username' in request.session:
+        strava_username = request.session['strava_username']
+
     # now just go ahead and render.
     return render(request, "survey/new_checkin.html",
                   {
@@ -230,9 +232,10 @@ def add_checkin(request):
                       'normal_copy': normal_copy,
                       'wrday_copy': wrday_copy,
                       'commute_copy': commute_copy,
-                      'fullname': fullname,
-                      'email': email,
-                      'strava_username': stravaUsername,
+                      #'fullname': stravaDict['fullname'],
+                      #'email': stravaDict['email'],
+                      'strava_username': strava_username,
+                      'fitbit_name': fitbit_name
                   })
 
 def send_email(commutersurvey):
@@ -293,6 +296,30 @@ def write_formset_cookies(request, *args):
                 else:
                     request.session[input_name] = form.cleaned_data[attr]
 
+def stravaLogin(request):
+
+    #fullname = ''
+    #email = ''
+    stravaUsername = ''
+    stravaCode = request.GET.get('code', '')
+    if 'code' in request.session and stravaCode == '':
+        stravaCode =  request.session['code']
+    if stravaCode != '':
+        params = {'client_id':12852, 'client_secret':'cfa726430a012abbf44b73a4c24e04ede3a033b1', 'code':stravaCode}
+        r = requests.post("https://www.strava.com/oauth/token", data=params)
+        if r.status_code == 200:
+            j = json.loads(r.text)
+            request.session['strava_access_token'] = j['access_token']
+            #request.session['code'] = stravaCode
+            #fullname = j['athlete']['firstname'] + " " + j['athlete']['lastname']
+            #email = j['athlete']['email']
+            request.session['strava_username'] = j['athlete']['username']
+        else:
+            return redirect('logout_all')
+
+    #return {'fullname' : fullname, 'email' : email, 'stravaUsername': stravaUsername, 'stravaCode': stravaCode }
+    return redirect('commuterform')
+
 
 def stravaupload(request, bikeTotal, runTotal, walkTotal):
 
@@ -330,10 +357,150 @@ def stravaupload(request, bikeTotal, runTotal, walkTotal):
 
     return HttpResponse('<h1>Page was found</h1>')
 
-def logout(request):
-    del request.session['code']
-    del request.session['strava_access_token']
+
+def logoutSteps(request):
+    #if 'code' in request.session:
+    #    del request.session['code']
+
+    if 'strava_username' in request.session:
+        del request.session['strava_username']
+
+    if 'strava_access_token' in request.session:
+        del request.session['strava_access_token']
+
+    if 'fitbit_name' in request.session:
+        del request.session['fitbit_name']
+
+    if 'fitbit_access_token' in request.session:
+        del request.session['fitbit_access_token']
+
+    if 'fitbit_user_id' in request.session:
+        del request.session['fitbit_user_id']
+        
     request.session.modified = True
+
+
+def logout(request):
+    logoutSteps(request)
     return redirect('commuterform')
+
+
+
+def fitbitLogin(request):
+    fullname = ''
+    email = ''
+    stravaUsername = ''
+    fitbitCode = request.GET.get('code', '')
+    
+    #if 'code' in request.session and stravaCode == '':
+    #    stravaCode =  request.session['code']
+    #if stravaCode != '':
+    params = {'client_id':'227S4M', 'code': fitbitCode, 'grant_type':'authorization_code', 'redirect_uri':'http://mysite.com:8000/fitbitLogin/'}
+
+    encoded = "Basic " + str(base64.b64encode("227S4M:1b9ba7635ace55e7c106ffd1a8c72e40"))
+
+    headers = {'Authorization': encoded, 'Content-Type': 'application/x-www-form-urlencoded' }
+
+
+    r = requests.post("https://api.fitbit.com/oauth2/token", data=params, headers=headers)
+
+
+    print(r.status_code)
+    if r.status_code == 200:
+        j = json.loads(r.text)
+        #request.session['strava_access_token'] = j['access_token']
+        #request.session['code'] = stravaCode
+        #fullname = j['athlete']['firstname'] + " " + j['athlete']['lastname']
+        #email = j['athlete']['email']
+        #stravaUsername = j['athlete']['username']
+        access_token = j['access_token']
+        user_id = j['user_id']
+        print(user_id)
+
+        request.session['fitbit_access_token'] = access_token
+
+        request.session['fitbit_user_id'] = user_id
+
+        headers = {'Authorization':'Bearer ' + str(access_token)}
+
+        rTwo = requests.get("https://api.fitbit.com/1/user/" + user_id + "/profile.json", data={}, headers=headers)
+
+        jTwo = json.loads(rTwo.text)
+
+        request.session['fitbit_name'] = jTwo['user']['displayName']
+
+        return redirect('commuterform')
+
+
+    else:
+        return redirect('logout_all')
+
+
+def fitbitupload(request, bikeTotal, runTotal, walkTotal, caloriesBurned):
+
+    bikeTotal = int(bikeTotal)
+    runTotal = int(runTotal)
+    walkTotal = int(walkTotal)
+
+    access_token = request.session['fitbit_access_token']
+
+    user_id = request.session['fitbit_user_id']
+    
+    date = str(datetime.datetime.now().date())
+
+    time = datetime.datetime.now().strftime("%H:%M:%S")
+
+    params = {'activityName':'', 'manualCalories': str(caloriesBurned), 'startTime': time, 'durationMillis':'', 'date':date}
+
+    headers = {'Authorization':'Bearer ' + str(access_token)}
+
+
+    #bikeTotal = int(request.session['strava_bike_total'])
+
+    if bikeTotal > 0:
+        params['activityName'] = 'GSI Walk/Ride Day Commute (Bike)'
+        params['durationMillis'] = bikeTotal * 60000
+
+        r = requests.post("https://api.fitbit.com/1/user/" + str(user_id) + "/activities.json", data=params, headers=headers)
+
+        print("yay")
+        print(r.status_code)
+        print(r.text)
+
+
+    if runTotal > 0:
+        params['activityName'] = 'GSI Walk/Ride Day Commute (Run)'
+        params['durationMillis'] = runTotal * 60000
+
+        r = requests.post("https://api.fitbit.com/1/user/" + str(user_id) + "/activities.json", data=params, headers=headers)
+
+        print("yay run")
+        print(r.status_code)
+        print(r.text)
+
+
+    if walkTotal > 0:
+        params['activityName'] = 'GSI Walk/Ride Day Commute (Walk)'
+        params['durationMillis'] = walkTotal * 60000
+
+        r = requests.post("https://api.fitbit.com/1/user/" + str(user_id) + "/activities.json", data=params, headers=headers)
+
+        print("yay walk")
+        print(r.status_code)
+        print(r.text)
+
+
+    return HttpResponse('<h1>Page was found</h1>')
+  
+
+
+
+
+
+
+
+
+
+
 
 

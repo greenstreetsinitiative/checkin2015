@@ -57,7 +57,13 @@ urlpatterns = patterns(
 
     url(r'^stravaupload/(?P<bikeTotal>\d+)/(?P<runTotal>\d+)/(?P<walkTotal>\d+)$', 'survey.views.stravaupload', name='stravaUpload'),
 
-    url(r'^logout/$', 'survey.views.logout', name='logout_strava'),
+    url(r'^fitbitupload/(?P<bikeTotal>\d+)/(?P<runTotal>\d+)/(?P<walkTotal>\d+)/(?P<caloriesBurned>\d+)$', 'survey.views.fitbitupload', name='fitbitUpload'),
+
+    url(r'^logout/$', 'survey.views.logout', name='logout_all'),
+
+    url(r'^fitbitLogin/$', 'survey.views.fitbitLogin', name='fitbit_login'),
+
+    url(r'^stravaLogin/$', 'survey.views.stravaLogin', name='strava_login')
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

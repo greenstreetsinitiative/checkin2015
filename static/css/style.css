@@ -3,13 +3,36 @@ body {
 }
 
 
-#logout{
-  display: none;
+.stravaStyle{
+  display:inline-block;
+  text-decoration:none;
+  color:white;
+  background-color:#FF4500;
+  height: 35px; 
+  line-height:35px;
+  width:150px;
+  margin-right: 10px
+
+}
+
+.fitbitStyle{
+  text-decoration:none;
+  display:inline-block;
+  color:white;
+  background-color:#008B8B;
+  height: 35px; 
+  line-height:35px;
+  width:150px
+}
+
+#signIn:hover #logoutSpace{
+  visibility: visible;
 }
 
 #logoutSpace{
-  display: block;
+  visibility: hidden;
 }
+
 
 #username:hover #logout{
   display: inline;

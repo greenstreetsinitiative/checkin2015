@@ -10,12 +10,22 @@
 {% block body %}
 
 <script>
-    function uploadActivity(){
+    function uploadStravaActivity(){
         $.get('/stravaupload/{{ bike_total }}/{{ run_total }}/{{ walk_total }}', function(data, status){
             if(status == "success"){
-                $("#uploadDiv").html('<b>Your activity upload is complete.</b>')
+                $("#uploadDiv").replaceWith('<div class="stravaStyle"><b>Upload complete.</b></div>')
             }else{
-                $("#uploadDiv").html('<b>There was error while uploading the activity.</b>')
+                $("#uploadDiv").replaceWith('<div class="stravaStyle"><b>Upload error.</b></div>')
+            }
+        });
+    }
+
+    function uploadFitbitActivity(){
+        $.get('/fitbitupload/{{ bike_total }}/{{ run_total }}/{{ walk_total }}/{{ calories_burned|floatformat:"0" }}', function(data, status){
+            if(status == "success"){
+                $("#fbUploadDiv").replaceWith('<div class="fitbitStyle"><b>Upload complete.</b></div>')
+            }else{
+                $("#fbUploadDiv").replaceWith('<div class="fitbitStyle"><b>Upload error.</b></div>')
             }
         });
     }
@@ -27,8 +37,14 @@
         <h1 class="thanks-page">Thank you, {{ person }}, for checking in for <span class="nowrap">Walk/Ride Day</span> <span class="nowrap">{{ month }}</span>!</h1>
 
         {% if bike_total > 0 or run_total > 0 or walk_total > 0 %}
-            <br>
-            <div id="uploadDiv"><a href="#" onclick="uploadActivity();return false;"><b>Upload my commute</b></a> to <span color="orange">Strava</span></b></div>
+            {% if strava_display != '' %}
+            <a href="#" id="uploadDiv" class="stravaStyle" onclick="uploadStravaActivity();return false;" style="text-decoration:none;color:white">Upload to Strava</a>
+            {% endif %}
+
+            {% if fitbit_display != '' %}
+            <a href="#" id="fbUploadDiv" class="fitbitStyle" onclick="uploadFitbitActivity();return false;" style="text-decoration:none;color:white"> Upload to FitBit
+            </a>
+            {% endif %}
         {% endif %}
 
 

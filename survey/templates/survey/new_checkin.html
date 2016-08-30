@@ -32,21 +32,38 @@
   <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your checkin.</center></div>
 {% endif %}
 
-<center id="stravaSpace">
-  <div >
-    <a href="" id="stravalink">
-      <img src="{% static '/static/img/stravalogin.png' %}"  alt="strava" style="height:30px;">
-    </a>
+<div  style="text-align:center;display:inline-block; width:100%" id="signIn">
+  
+  <div style="text-align:center">
+    <div id="stravaSpace" style="display:inline">
+      <a href="#" id="stravalink" style="display:inline-block;text-decoration:none;color:white;background-color:#FF4500;height: 35px; line-height:35px;width:150px;margin-right: 10px">
+      Sign-in to Strava
+      </a>
+    </div>
+
+    <div id="fitbitSpace" style="display:inline">
+      <a href="#" id="fitbitLink" style="text-decoration:none;display:inline-block;color:white;background-color:#008B8B;height: 35px; line-height:35px;width:150px">
+      Sign-in to FitBit
+      </a>
+    </div>
   </div>
-  <br>
-</center>
+
+  <div id="logoutSpace" style="margin:5px; display:inline-block"></div>
+
+</div>
+
 <br>
 
 <script>
   var a = document.getElementById('stravalink'); 
 
-  a.href = 'https://www.strava.com/oauth/authorize?client_id=12852&response_type=code&redirect_uri=' + location.protocol + '//' + location.hostname + ':8000/checkin/' + '&scope=write&state=mystate&approval_prompt=force'
+  a.href = 'https://www.strava.com/oauth/authorize?client_id=12852&response_type=code&redirect_uri=' + location.protocol + '//' + location.hostname + ':8000/stravaLogin/' + '&scope=write&state=mystate&approval_prompt=force'
+
+  var f = document.getElementById('fitbitLink');
+
+  f.href = 'https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=227S4M&redirect_uri='+ location.protocol + '//' + location.hostname + ':8000/fitbitLogin/&scope=activity%20nutrition%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight'
 </script>
+
 
 
 <form name="form" method="post" action="{{request.path}}" class="form-horizontal">
@@ -76,14 +93,25 @@
     {% endfor %}
 
     <script>
-      var n = '{{ fullname }}'
-      var e = '{{ email }}'
+      var s = '{{ strava_username }}'
+      //var n = '{{ fullname }}'
+      //var e = '{{ email }}'
+      var f = '{{ fitbit_name }}'
 
-      if(n != ''){
-        $("#id_name").val(n);
-        $("#id_email").val(e);
-        $( "#stravaSpace" ).replaceWith( "<center><div id='username'>Strava Username: {{ strava_username }} <br><span id='logout'><a href='/logout/'>Log Out</a></span><div id='logoutSpace'><br></div></div></center> " ); 
+      if(s != ''){
+        //$("#id_name").val(n);
+        //$("#id_email").val(e);
+        $( "#stravaSpace" ).replaceWith( "<div id='username' style='display:inline-block;color:white;background-color:#FF4500;height: 35px; line-height:35px;width:150px;margin-right: 10px'><b>Strava:</b> {{ strava_username }} </div> " ); 
+
+        $("#logoutSpace").html(" <a href='/logout/' >Log Out</a>");
       }
+
+      if(f != ''){
+        $( "#fitbitSpace" ).replaceWith( "<div id='username' style='display:inline-block;color:white;background-color:#008B8B;height: 35px; line-height:35px;width:150px;margin-right: 10px'><b>Fitbit:</b> {{ fitbit_name }} </div> " ); 
+        
+        $("#logoutSpace").html(" <a href='/logout/' >Log Out</a>");
+      }
+
     </script>
 
     <div>
