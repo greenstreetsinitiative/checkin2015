@@ -88,10 +88,10 @@ class CommuterForm(ModelForm):
 
         self.fields['home_address'].help_text = (
         	"Or nearby intersection. "
-        	"(Include zipcode)")
+        	"(<b>INCLUDE ZIPCODE</b>)")
         self.fields['work_address'].help_text = (
         	"Or, if you do not commute to work, "
-        	"other destination. (Include zipcode)")
+        	"other destination. (<b>INCLUDE ZIPCODE</b>)")
 
         # add CSS classes for bootstrap
         self.fields['name'].widget.attrs['class'] = 'form-control'

@@ -54,7 +54,7 @@
         <div class="col-sm-9">
           {{ field }}
           {% if field.help_text %}
-              <span class="help-block">{{ field.help_text }}</span>
+              <span class="help-block">{% autoescape off %}{{ field.help_text }}{% endautoescape %}</span>
           {% endif %}
           {% if field.errors %}
             <span class="help-block">
@@ -89,7 +89,7 @@
 
     <div class="row wr-day">
       <div class="headingthing">
-        <h2>Your Walk/Ride Day Commute</h2>
+        <h2>Your <b>Walk/Ride Day</b> Commute</h2>
 
         </div>
       <div class="col-sm-6">
@@ -148,7 +148,7 @@
 
     <div class="row normal-day">
       <div class="headingthing">
-        <h2>Your Normal Day Commute</h2>
+        <h2>Your <b>Normal Day</b> Commute</h2>
         </div>
       <div class="col-sm-12">{{ commute_copy }}</div>
       <div class="col-sm-6 normal-legs">

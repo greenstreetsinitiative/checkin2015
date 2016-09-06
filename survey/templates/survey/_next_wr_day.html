@@ -2,14 +2,9 @@
 
 {% if type == 'current_wr_day' %}
 
-	<center>
-	<a style="font-size:18px; font-weight:300;" href="{% url "commuterform" %}" class="cool-button button--ujarak" tabindex="3">Check-in your <br>commute here!</a>
-	</center>
-
-	<p style="font-weight: 300; font-size: 16px;">
-	<strong>This month's Walk/Ride Day: <span class="date">{{ date }}</span></strong>
-	<br>
-	Check-ins will be accepted from<br> <span class="date" style="display: inline-block;">{{ open }}</span> through <span class="date" style="display: inline-block;">{{ close }}</span></p>
+    <script language="JavaScript">
+        window.location.href = '{% url "commuterform" %}';
+    </script>
 
 {% elif type == 'next_wr_day' %}
 
