@@ -26,7 +26,7 @@
 
 <div class="row">
   <center>
-    <h1>{{ wr_day }} <br> Walk/Ride Day Check-In</h1>
+    <h1>{{ wr_day }} Walk/Ride Day Check-In</h1>
     Don’t work on Fridays? Check in your commute for another day!<br>
     Check-ins will be accepted from <span class="date" style="display: inline-block;">{{ wr_open }}</span> through <span class="date" style="display: inline-block;">{{ wr_close }}</span></p>
     <p><img src="{% static 'img/car-24.png' %}" height="32" width="32"><img src="{% static 'img/school-24.png' %}" height="32" width="32"><img src="{% static 'img/pitch-24.png' %}" height="32" width="32"><img src="{% static 'img/bicycle-24.png' %}" height="32" width="32"><img src="{% static 'img/rail-24.png' %}" height="32" width="32"><img src="{% static 'img/warehouse-24.png' %}" height="32" width="32"><img src="{% static 'img/scooter-24.png' %}" height="32" width="32"></p>
@@ -85,7 +85,7 @@
     {{ WRTW_formset.management_form }}
     {{ WRFW_formset.management_form }}
 
-    <p class="lead">Please enter all segments of your commute and the approximate time spent on that segment in minutes. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.</p>
+    <p class="opt-out">Please enter all segments of your commute and the approximate time spent on that segment in minutes. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.</p>
 
     <div class="row wr-day">
       <div class="headingthing">

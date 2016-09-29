@@ -365,7 +365,12 @@ p.wrday {
   font-size:16px;
 }
 
-h1,h2,h3,legend {
+h1 {
+  margin-top: 0px;
+  font-family: 'Alegreya Sans SC';
+}
+
+h2,h3,legend {
   font-family: 'Alegreya Sans SC';
 }
 
