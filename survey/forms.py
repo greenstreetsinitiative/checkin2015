@@ -55,7 +55,7 @@ class CommuterForm(ModelForm):
         model = Commutersurvey
         fields = ['name', 'email', 'home_address', 'work_address',
                   'employer']
-        if not datetime.now().month < 4 or datetime.now().month > 11:
+        if not datetime.now().month < 4 or datetime.now().month > 12:
             fields.append('team')
             widgets = {
                 'team': subteamSelectWidget()
@@ -64,7 +64,7 @@ class CommuterForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CommuterForm, self).__init__(*args, **kwargs)
 
-        if datetime.now().month < 4 or datetime.now().month > 11:
+        if datetime.now().month < 4 or datetime.now().month > 12:
             # it's not a challenge!
             self.fields['employer'].queryset = Employer.objects.filter(nochallenge=True)
             self.fields['employer'].help_text = (
@@ -118,7 +118,7 @@ class ExtraCommuterForm(ModelForm):
         fields = ['comments', 'share']
 
         # TODO: Take into account day and not just month
-        if not datetime.now().month < 4 or datetime.now().month > 11:
+        if not datetime.now().month < 4 or datetime.now().month > 12:
             fields = ['share'] + fields
 
     def __init__(self, *args, **kwargs):
