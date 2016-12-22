@@ -171,17 +171,45 @@ def MakeLegForm(day, direction):
 
     return LegForm
 
+
+def MakeLegFormThree(day, direction):
+    class LegForm(ModelForm):
+
+        class Meta:
+            model = Leg
+            fields = ['mode', 'duration', 'day', 'direction']
+
+        def __init__(self, *args, **kwargs):
+            super(LegForm, self).__init__(*args, **kwargs)
+
+            self.fields['mode'].label = "How you typically travel"
+            self.fields['duration'].label = "Minutes"
+
+            self.fields['mode'].widget.attrs['class'] = 'form-control'
+            self.fields['duration'].widget.attrs['class'] = 'form-control'
+            self.fields['day'].initial = day
+            self.fields['direction'].initial = direction
+            self.fields['day'].widget = HiddenInput()
+            self.fields['direction'].widget = HiddenInput()
+            self.fields['duration'].error_messages['max_value'] = (
+                'Did you really travel a whole day?')
+            self.fields['mode'].error_messages['required'] = (
+                'Please tell us how you did, or will, travel.')
+
+    return LegForm
+
+
 MakeLegs_WRTW = inlineformset_factory(Commutersurvey, Leg, form=MakeLegForm('w','tw'), extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
 MakeLegs_WRFW = inlineformset_factory(Commutersurvey, Leg, form=MakeLegForm('w','fw'),
                                       extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
-MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=MakeLegForm('n','tw'),
+MakeLegs_NormalTW = inlineformset_factory(Commutersurvey, Leg, form=MakeLegFormThree('n','tw'),
                                           extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
-MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=MakeLegForm('n','fw'),
+MakeLegs_NormalFW = inlineformset_factory(Commutersurvey, Leg, form=MakeLegFormThree('n','fw'),
                                           extra=1, max_num=10, can_delete=True, formset=RequiredFormSet)
 
 class NormalFromWorkSameAsAboveForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'I did, or will, travel the same way as I did, or will travel TO work, but in reverse'
+    label = 'I usually travel the same way as I typically travel TO work, but in reverse.'
     normal_same_as_reverse = forms.BooleanField(widget=widget, initial=True,
                                                 label=label, required=False)
 
@@ -193,6 +221,6 @@ class WalkRideFromWorkSameAsAboveForm(forms.Form):
 
 class NormalIdenticalToWalkrideForm(forms.Form):
     widget = forms.RadioSelect(choices=((True, 'YES'), (False, 'NO')))
-    label = 'My normal commute is exactly like my walk ride day commute.'
+    label = 'My normal commute is exactly like my walk/ride day commute.'
     normal_same_as_walkride = forms.BooleanField(widget=widget, initial=True,
                                                  label=label, required=False)
