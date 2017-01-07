@@ -50,6 +50,7 @@
       <li role="presentation" class="active"><a href="#impacts" aria-controls="impacts" role="tab" data-toggle="pill">Impacts</a></li>
       <li role="presentation"><a href="#commutes" aria-controls="commutes" role="tab" data-toggle="pill">Commutes</a></li>
       <li role="presentation"><a href="#participation" aria-controls="participation" role="tab" data-toggle="pill">Participation</a></li>
+      <li role="presentation"><a href="#modes" aria-controls="modes" role="tab" data-toggle="pill">Modes</a></li>
     </ul>
 
     <!-- data -->
@@ -125,6 +126,50 @@
           </div>
 
       </div>
+
+      <div role="tabpanel" class="tab-pane" id="modes">
+	<div class="container">
+          <ul class="nav nav-tabs">
+			<li class="active">
+			  {% for month in months %}
+				{% if month = current_month %}
+				  <li class="active"><a href="#{{month}}" data-toggle="tab">{{month}}</a></li>
+				{% else %}
+				  <li><a href="#{{month}}" data-toggle="tab">{{month}}</a></li>
+				{% endif %}
+			  {% endfor %}
+			</li>
+		  </ul>
+	  <div class="tab-content ">
+	  {% for month, data in all_months_modes.items %}
+	  {% if month = current_month %}
+	  <div class="tab-pane active" id="{{month}}">
+          {% else %}
+	  <div class="tab-pane" id="{{month}}">
+          {% endif %}
+
+	  <h4>Walk Ride Day</h4>
+	  <table class="table table-hover table-bordered" style="width:40%">
+		<tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+		{% for mode, leg in data.legs_wr.items %}
+		<tr><td>{{mode}}</td><td>{{leg.people}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+		  <td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+		{% endfor %}
+	  </table>
+	  <h4>Normal Commute</h4>
+	  <table class="table table-hover table-bordered" style="width:40%">
+		<tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+		{% for mode, leg in data.legs_n.items %}
+		  <tr><td>{{mode}}</td><td>{{leg.people}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+			<td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+		{% endfor %}
+	  </table>
+	</div>
+	{% endfor %}
+	</div>
+	</div>
+      </div>
+
 
     </div>
 

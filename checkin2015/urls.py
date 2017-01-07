@@ -53,7 +53,10 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 
     # Retail Partners
-    url(r'^retail/$', include('retail.urls', namespace='retail'))
+    url(r'^retail/$', include('retail.urls', namespace='retail')),
+
+    # Employer Information Page
+    url(r'^employers/(?P<secret_code>\w+)/(?P<year>[0-9]{4})/$', 'leaderboard.views.info', name="info")
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
