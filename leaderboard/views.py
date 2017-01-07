@@ -141,6 +141,11 @@ def company(request, year=2016, employerid=None, teamid=None):
         ]
 
         past_months = datetime.datetime.now().month - 3 # subtract 3 because jan/feb/mar are not in challenge
+        
+        # show all months before April
+        if past_months <= 0:
+            past_months = 7
+
         months = ['april','may','june','july','august','september','october'][0:past_months]
 
         for month in reversed(months):
