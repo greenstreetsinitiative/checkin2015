@@ -53,12 +53,10 @@ def calculate_rankings(company_dict):
 
 # If txt file with employer keys doesn't exist, call generate_keys() once
 def generate_keys():
-	for employer in Employer.objects.all():
-		print employer.secret_key_3		
+	for employer in Employer.objects.all():	
 		if employer.secret_key_3 == "None":
         		employer.secret_key_3 = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(15))
 			employer.save()
-			print employer.secret_key_3
 
 
 def calculate_metrics(company, selected_month, year):
@@ -580,7 +578,6 @@ def info(request, secret_code, year):
 		if m.month == wr_month:
 			month_class = m
 			break
-	    print month_class
 	    if QuestionOfTheMonth.objects.filter(wr_day_month=month_class).count() == 0:
 		question = ''
 	    else:
@@ -714,7 +711,6 @@ def info(request, secret_code, year):
 		if people[i]['last'] <= info['last'] <= people[i+1]['last']:
 			people.insert(info, i)
 		break
-    print employees_totals_by_letter
 
     return render_to_response('employer.html', {
 		'all_months_data': all_months_data,
