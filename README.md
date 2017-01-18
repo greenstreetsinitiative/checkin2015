@@ -155,3 +155,19 @@ then just navigate to `/admin` and login.
 ```
 psql -d checkin -c "\copy (select checkins.*, legs.* from (select a.id, a.name, a.email, orgs.employer_name, orgs.team_name, a.share, a.home_address, a.work_address, a.comments, a.carbon_change, a.carbon_savings, a.calorie_change, a.calories_total, a.change_type, a.already_green from survey_commutersurvey a left outer join (select m.id as employer_id, m.name as employer_name, n.id as team_id, n.name as team_name from survey_employer m left outer join survey_team n on m.id = n.parent_id) orgs on (a.employer_id = orgs.employer_id and a.team_id = orgs.team_id)) checkins right outer join (select x.checkin_id, x.day, x.direction, y.name, x.duration  from survey_leg x, survey_mode y where x.mode_id = y.id) legs on checkins.id = legs.checkin_id) to ../Checkins.csv CSV HEADER"
 ```
+
+# Deployment Instructions
+
+1. Complete "Setting Up Your Machine" at https://developers.openshift.com/managing-your-applications/client-tools.html
+1. https://www.openshift.com/
+1. Click My Account -> OpenShift Web Console
+1. Log-in with the username and password
+1. Click checkindev under applications
+1. Copy the Source Code on the right side
+1. Clone the repository (e.g. "git clone ssh://57b...")
+1. Change directories to the cloned repo.
+1. Connect a new repo via an upstream (e.g. "git remote add upstream -m master git://github.com/openshift/django-example.git")
+1. Pull the upstream repo (e.g. "git pull -s recursive -X theirs upstream master")
+1. Run "git push" to finish the update
+
+
