@@ -257,6 +257,7 @@ def company(request, year=2016, employerid=None, teamid=None):
 			for leg in legs:
 			    if leg['mode'] not in employer_legs:
 				employer_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
+				person_modes.add(leg['mode'])
 			    elif leg['mode'] in employer_legs:
 				employer_legs[leg['mode']]['duration'] += leg['duration']
 				employer_legs[leg['mode']]['calories'] += leg['calories']
@@ -393,16 +394,20 @@ def cumulative(year, employer):  # calculate statistics for employer for the yea
 	surveys = get_surveys_by_employer(employer, 'all', year)
 	num_checkins = employer.count_checkins('all', year)
 	for survey in surveys:
+	    	person_modes = set()
 		legs_n, legs_wr = survey.get_legs()
 		for legs, all_legs in [(legs_n, all_legs_n), (legs_wr, all_legs_wr)]:
 			for leg in legs:
 			    if leg['mode'] not in all_legs:
 				all_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
+				person_modes.add(leg['mode'])
 			    elif leg['mode'] in all_legs:
 				all_legs[leg['mode']]['duration'] += leg['duration']
 				all_legs[leg['mode']]['calories'] += leg['calories']
 				all_legs[leg['mode']]['carbon'] += leg['carbon']
-				all_legs[leg['mode']]['people'] += 1
+			    if leg['mode'] not in person_modes:
+			        all_legs[leg['mode']]['people'] += 1
+			        person_modes.add(leg['mode'])
 	return {'num_checkins': num_checkins, 'calories_n': calories_n, 'calories_wr': calories_wr, 'carbon_n': carbon_n, 'carbon_wr': carbon_wr,
 		'carbon_saved': carbon_saved, 'all_legs_n': all_legs_n, 'all_legs_wr': all_legs_wr}
 
@@ -678,6 +683,7 @@ def info(request, secret_code, year):
 			for leg in legs:
 			    if leg['mode'] not in employer_legs:
 				employer_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
+				person_modes.add(leg['mode'])
 			    elif leg['mode'] in employer_legs:
 				employer_legs[leg['mode']]['duration'] += leg['duration']
 				employer_legs[leg['mode']]['calories'] += leg['calories']
