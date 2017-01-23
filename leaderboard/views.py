@@ -610,6 +610,7 @@ def info(request, secret_code, year):
 		if survey.comments != '':
 		    comments.append(survey.comments)
 		legs_n, legs_wr = survey.get_legs()
+		print legs_wr
 
 		[legs_n_objects, legs_wrd_objects] = survey.get_legs_objects()  # for tables
 
@@ -669,6 +670,9 @@ def info(request, secret_code, year):
 		    employees_totals[survey.email]["calorie_change"] += info["calorie_change"]
 		    for legs, legs_total in [(info['legs_n'], employees_totals[survey.email]['legs_n']), (info['legs_wr'], employees_totals[survey.email]['legs_wr'])]:
 			for leg in legs:
+			    print 'leg'
+			    print legs
+			    print legs_total
 	                    if leg['mode'] not in legs_total:
 				legs_total[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon']}
 	   		    elif leg['mode'] in legs_total:
@@ -676,7 +680,7 @@ def info(request, secret_code, year):
 				legs_total[leg['mode']]['calories'] += leg['calories']
 				legs_total[leg['mode']]['carbon'] += leg['carbon']
 	        else:
-		    employees_totals[survey.email] = {'first': first, 'last': last, 'email': survey.email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': info['legs_n'], 'legs_wr': info['legs_wr']}
+		    employees_totals[survey.email] = {'first': first, 'last': last, 'email': survey.email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': {}, 'legs_wr': {}}
 
 		person_modes = set()
 		for legs, employer_legs in [(legs_n, employer_legs_n), (legs_wr, employer_legs_wr)]:
@@ -721,7 +725,7 @@ def info(request, secret_code, year):
 	for i in range(len(people)-1):
 		if people[i]['last'] <= info['last'] <= people[i+1]['last']:
 			people.insert(info, i)
-		break
+			break
 
     return render_to_response('employer.html', {
 		'all_months_data': all_months_data,
