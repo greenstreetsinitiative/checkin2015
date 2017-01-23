@@ -662,7 +662,20 @@ def info(request, secret_code, year):
 	        info["leg_dirs_n"], info["leg_modes_n"], info["leg_mins_n"], info["leg_kcals_n"], info["leg_carbon_n"] = leg_dirs_n, leg_modes_n, leg_mins_n, leg_kcals_n, leg_carbon_n
 	        info["leg_dirs_wrd"], info["leg_modes_wrd"], info["leg_mins_wrd"], info["leg_kcals_wrd"], info["leg_carbon_wrd"] = leg_dirs_wrd, leg_modes_wrd, leg_mins_wrd, leg_kcals_wrd, leg_carbon_wrd
 	        if not survey.share:
-		    employees_by_letter[last_name_starts_with.upper()].append(info)
+			people = employees_by_letter[info['last'][0]]  # list of people already in totals_by_letter list starting with first letter of lastname
+			if len(people) == 0:
+				people += [info]
+			else:
+				print info['last']
+				added = False
+				for i in range(len(people)):
+					if info['last'] <= people[i]['last']:
+						people.insert(i, info)
+						added = True
+						break
+				if not added:
+					people.append(info)
+				print people
 	    
 	        if survey.email in employees_totals: # modes > duration, calories, co2 emitted
 		    employees_totals[survey.email]["carbon_change"] += info["carbon_change"]
@@ -713,7 +726,8 @@ def info(request, secret_code, year):
 	    month_data = {'surveys': surveys, 'employer_info': employer_info, 'employees_by_letter': employees_by_letter, 'comments': comments, 'employer_legs_n': employer_legs_n, \
 				'employer_legs_wr': employer_legs_wr, 'question': question}
 	    all_months_data[int_to_month_string[month]] = month_data
-	    print month_data
+	    #print month
+	    #print month_data
 
     employees_totals_by_letter = {}
     letters = [letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
@@ -726,8 +740,8 @@ def info(request, secret_code, year):
 		people += [info]
 	else:
 		added = False
-		for i in range(len(people)-1):
-			if people[i]['last'] <= info['last'] <= people[i+1]['last']:
+		for i in range(len(people)):
+			if info['last'] <= people[i]['last']:
 				people.insert(i, info)
 				added = True
 				break
