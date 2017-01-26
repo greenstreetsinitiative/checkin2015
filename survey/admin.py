@@ -9,7 +9,7 @@ from django.db.models import Sum, Count
 
 from django.forms import ModelForm
 
-from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth
+from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, EmployerMonthInfo
 
 # disable deletion of records
 admin.site.disable_action('delete_selected')
@@ -87,6 +87,10 @@ class SectorAdmin(admin.ModelAdmin):
     list_editable = ['name']
     actions = [export_as_csv]
 
+class EmployerMonthInfoAdmin(admin.ModelAdmin):
+    list_display = ['employer_id', 'month', 'year']
+    actions = [export_as_csv]
+
 # add admin configuration for QOTM
 class QOTMAdmin(admin.ModelAdmin):
     list_display = ['id', 'wr_day_month', 'value']
@@ -101,3 +105,4 @@ admin.site.register(Mode, ModeAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Sector, SectorAdmin)
 admin.site.register(QuestionOfTheMonth, QOTMAdmin)
+admin.site.register(EmployerMonthInfo, EmployerMonthInfoAdmin)

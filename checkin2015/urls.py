@@ -56,7 +56,10 @@ urlpatterns = patterns(
     url(r'^retail/$', include('retail.urls', namespace='retail')),
 
     # Employer Information Page
-    url(r'^employers/(?P<secret_code>\w+)/(?P<year>[0-9]{4})/$', 'leaderboard.views.info', name="info")
+    url(r'^employers/(?P<secret_code>\w+)/(?P<year>[0-9]{4})/$', 'leaderboard.views.info', name="info"),
+
+    # Render data for all months for Employer Information Page
+    url(r'^render/(?P<employerid>[\w\.-]*)/$', 'leaderboard.views.render', name="render"),
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

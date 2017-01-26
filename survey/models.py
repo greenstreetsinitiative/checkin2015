@@ -110,7 +110,9 @@ class Employer(models.Model):
     def percent_participation(self, shortmonth, year):
         """Calculates and returns the percentage of employees participating"""
         surveys = get_surveys_by_employer(self, shortmonth, year)
-        return surveys.values('email').distinct().count() / self.nr_employees
+        if self.nr_employees > 0:
+            return surveys.values('email').distinct().count() / self.nr_employees
+        return 0
 
     def average_percent_participation(self, year):
         """Calculates and returns the percentage of employees participating"""
@@ -525,3 +527,9 @@ class QuestionOfTheMonth(models.Model):
 
     def __unicode__(self):
         return u"%s (%s)" % (self.value, self.wr_day_month)
+
+class EmployerMonthInfo(models.Model):
+    month = models.TextField(blank=False, default='00')
+    year = models.PositiveIntegerField(blank=False, default=0)
+    employer_id = models.TextField(blank=False, default='none')
+    dict_data = models.TextField(blank=True, default='')

@@ -1,6 +1,6 @@
 from __future__ import division
 from django.shortcuts import render
-from survey.models import Commutersurvey, Employer, Leg, Month, Team, Mode, Sector, get_surveys_by_employer, QuestionOfTheMonth
+from survey.models import Commutersurvey, Employer, Leg, Month, Team, Mode, Sector, get_surveys_by_employer, QuestionOfTheMonth, EmployerMonthInfo
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 # from django.db.models import Sum,Count
@@ -9,6 +9,9 @@ from aggregate_if import Count, Sum
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.contrib.auth.decorators import user_passes_test
+
+from data import calculate_metrics, get_month_data, save_all_data
 
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure, show, output_file
@@ -18,7 +21,6 @@ from bokeh.models import Legend
 from datetime import date, datetime
 from math import pi
 import datetime
-import hashlib
 import random, string, os
 
 #from django.core.mail import send_mail
@@ -58,31 +60,6 @@ def generate_keys():
             employer.secret_key_3 = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(15))
             employer.save()
 
-
-def calculate_metrics(company, selected_month, year):
-
-    months_dict = { 'all': 'all', 'january': '01', 'february': '02', 'march': '03', 'april': '04', 'may': '05', 'june': '06', 'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12' }
-    shortmonth = months_dict[selected_month]
-
-    percent_participants = 100*company.percent_participation(shortmonth, year)
-    percent_already_green = 100*company.percent_already_green(shortmonth, year)
-    percent_green_switch = 100*company.percent_green_switch(shortmonth, year)
-    percent_healthy_switch = 100*company.percent_healthy_switch(shortmonth, year)
-    percent_participants_average = 100*company.average_percent_participation(year)
-    count_checkins = company.count_checkins(shortmonth, year)
-    total_C02 = company.total_C02(shortmonth, year)
-    total_calories = company.total_calories(shortmonth, year)
-
-    return {
-        'participants': min(round(percent_participants,2), 100),
-        'already_green': min(round(percent_already_green,2), 100),
-        'green_switch': min(round(percent_green_switch,2), 100),
-        'healthy_switch': min(round(percent_healthy_switch,2), 100),
-        'avg_participation': min(round(percent_participants_average,2), 100),
-        'num_checkins': count_checkins,
-        'total_C02': total_C02,
-        'total_calories': total_calories
-        }
 
 
 def company(request, year=2016, employerid=None, teamid=None):
@@ -251,20 +228,20 @@ def company(request, year=2016, employerid=None, teamid=None):
 
                 info['legs_n'], info['legs_wr'] = legs_n, legs_wr
 
-                person_modes = set()
-
                 for legs, employer_legs in [(legs_n, employer_legs_n), (legs_wr, employer_legs_wr)]:
-                        for leg in legs:
-                            if leg['mode'] not in employer_legs:
-                                employer_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
+                    person_modes = set()
+                    for leg in legs:
+                        if leg['mode'] not in employer_legs:
+                            employer_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
+                            person_modes.add(leg['mode'])
+                        elif leg['mode'] in employer_legs:
+                            employer_legs[leg['mode']]['duration'] += leg['duration']
+                            employer_legs[leg['mode']]['calories'] += leg['calories']
+                            employer_legs[leg['mode']]['carbon'] += leg['carbon']
+                            if leg['mode'] not in person_modes:
+                                employer_legs[leg['mode']]['people'] += 1
                                 person_modes.add(leg['mode'])
-                            elif leg['mode'] in employer_legs:
-                                employer_legs[leg['mode']]['duration'] += leg['duration']
-                                employer_legs[leg['mode']]['calories'] += leg['calories']
-                                employer_legs[leg['mode']]['carbon'] += leg['carbon']
-                                if leg['mode'] not in person_modes:
-                                    employer_legs[leg['mode']]['people'] += 1
-                                    person_modes.add(leg['mode'])
+                    person_modes = set()
 
             all_months_modes[int_to_month_string[month]]['legs_n'] = employer_legs_n
             all_months_modes[int_to_month_string[month]]['legs_wr'] = employer_legs_wr
@@ -391,51 +368,32 @@ def cumulative(year, employer):  # calculate statistics for employer for the yea
     employer_info = calculate_metrics(employer, 'all', 2016)
     calories_wr = employer.total_calories('all', year)
     calories_n = employer.total_calories_n('all', year)
-    surveys = get_surveys_by_employer(employer, 'all', year)
     num_checkins = employer.count_checkins('all', year)
-    for survey in surveys:
-        person_modes = set()
-        legs_n, legs_wr = survey.get_legs()
-        for legs, all_legs in [(legs_n, all_legs_n), (legs_wr, all_legs_wr)]:
-            for leg in legs:
-                if leg['mode'] not in all_legs:
-                    all_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
-                    person_modes.add(leg['mode'])
-                elif leg['mode'] in all_legs:
-                    all_legs[leg['mode']]['duration'] += leg['duration']
-                    all_legs[leg['mode']]['calories'] += leg['calories']
-                    all_legs[leg['mode']]['carbon'] += leg['carbon']
-                if leg['mode'] not in person_modes:
-                    all_legs[leg['mode']]['people'] += 1
-                    person_modes.add(leg['mode'])
+
+    short_months = ['04','05','06','07','08','09','10']
+    for month in short_months:
+        month_data = get_month_data(employer, month, year)
+        if not month_data:
+            continue
+        for mode, leg in month_data['employer_legs_wr'].items():
+            if mode not in all_legs_wr:
+                all_legs_wr[mode] = leg
+            elif mode in all_legs_wr:
+                all_legs_wr[mode]['duration'] += leg['duration']
+                all_legs_wr[mode]['calories'] += leg['calories']
+                all_legs_wr[mode]['carbon'] += leg['carbon']
+                all_legs_wr[mode]['people'] += leg['people']
+        for mode, leg in month_data['employer_legs_n'].items():
+            if mode not in all_legs_n:
+                all_legs_n[mode] = leg
+            elif mode in all_legs_n:
+                all_legs_n[mode]['duration'] += leg['duration']
+                all_legs_n[mode]['calories'] += leg['calories']
+                all_legs_n[mode]['carbon'] += leg['carbon']
+                all_legs_n[mode]['people'] += leg['people']
+
     return {'num_checkins': num_checkins, 'calories_n': calories_n, 'calories_wr': calories_wr, 'carbon_n': carbon_n, 'carbon_wr': carbon_wr,
             'carbon_saved': carbon_saved, 'all_legs_n': all_legs_n, 'all_legs_wr': all_legs_wr}
-
-
-def line_graph(x, y, legend_labels, x_label, y_label, title):
-
-    TOOLS = "pan,wheel_zoom,box_zoom,reset,save,box_select"  #hover?
-
-    y_max = max(max(_ for _ in y))
-
-    p = figure(title=title, tools=TOOLS, x_range=x, y_range=[-2,y_max+5])
-
-    colors = ["green", "orange", "blue"]
-    legend_items = []
-
-    for i in xrange(len(legend_labels)):
-        c = p.circle(x, y[i], color=colors[i])
-        l = p.line(x, y[i], line_color=colors[i], line_width=2)
-        legend_items.append((legend_labels[i], [c, l]))
-
-    legend = Legend(items=legend_items, location=(30, 0))
-
-    p.add_layout(legend, 'above')
-    p.xaxis.major_label_orientation = pi/4
-    p.yaxis.axis_label = y_label
-    #output_file("graph.html", title="Example")
-    script, div = components(p)
-    return script, div
 
 def get_month_years(shortmonth, year):  # Gets past 7 months
     months = ['04', '05', '06', '07', '08', '09', '10']
@@ -457,7 +415,6 @@ def get_month_years(shortmonth, year):  # Gets past 7 months
         month_years.append(months_to_str[months[i]] + ' ' + str(year))
     return month_years_tuples, month_years  # month_years_tuples is a list of (shortmonth, year) and month_years is a list of "Jan 2016"
         
-
 def carbon_employer_graph(employer, shortmonth, year):  # Display for past 7 months
     month_years_tuples, month_years = get_month_years(shortmonth, year)
     legend_labels = ["Walk Ride Day", "Normal Day", "CO2 Emitted While Driving Alone"]
@@ -544,9 +501,33 @@ def make_change_line_graph(company, current_month, current_year):
     script, div = components(g)
     return script, div
 
+def line_graph(x, y, legend_labels, x_label, y_label, title):
 
-def info(request, secret_code, year):
+    TOOLS = "pan,wheel_zoom,box_zoom,reset,save,box_select"  #hover?
+
+    y_max = max(max(_ for _ in y))
+
+    p = figure(title=title, tools=TOOLS, x_range=x, y_range=[-2,y_max+5])
+
+    colors = ["green", "orange", "blue"]
+    legend_items = []
+
+    for i in xrange(len(legend_labels)):
+        c = p.circle(x, y[i], color=colors[i])
+        l = p.line(x, y[i], line_color=colors[i], line_width=2)
+        legend_items.append((legend_labels[i], [c, l]))
+
+    legend = Legend(items=legend_items, location=(30, 0))
+
+    p.add_layout(legend, 'above')
+    p.xaxis.major_label_orientation = pi/4
+    p.yaxis.axis_label = y_label
+    #output_file("graph.html", title="Example")
+    script, div = components(p)
+    return script, div
     
+#Employer Information Page
+def info(request, secret_code, year):    
     employer_id = None
     generate_keys()
 
@@ -576,163 +557,41 @@ def info(request, secret_code, year):
     all_months_data = {}
     long_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October']
     short_months = ['04','05','06','07','08','09','10']
-
     employees_totals = {}
-
     for month in short_months:
-        wr_month = int_to_month_string[month] + ' ' + str(year)
-        months = Month.objects.all()
-        month_class = None
-        for m in months:
-            if m.month == wr_month:
-                month_class = m
-                break
-        if QuestionOfTheMonth.objects.filter(wr_day_month=month_class).count() == 0:
-            question = ''
-        else:
-            question = QuestionOfTheMonth.objects.get(wr_day_month=month_class).value  
-
-        surveys = get_surveys_by_employer(employer, month, year)  #8, 2016
-
-        letters = [letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']  # For displaying ABCDE... tabs
-        comments = []
-        employees_by_letter = {}
-        for letter in letters:  # Group employees based on first letter of last name
-            employees_by_letter[letter] = []
-        employer_legs_n = {}  # totals for each mode
-        employer_legs_wr = {}
-        for survey in surveys:
-            name = survey.name.strip().split(" ")
-            if len(name) < 2:
-                continue
-            last = name.pop()
-            first = name[0]
-            last_name_starts_with = last[0]
-            if survey.comments != '':
-                comments.append(survey.comments)
-            legs_n, legs_wr = survey.get_legs()
-
-            [legs_n_objects, legs_wrd_objects] = survey.get_legs_objects()  # for tables
-
-            leg_dirs_n = []
-            leg_modes_n = []
-            leg_mins_n = []
-            leg_kcals_n = []
-            leg_carbon_n = []
-            leg_dirs_wrd = []
-            leg_modes_wrd = []
-            leg_mins_wrd = []
-            leg_kcals_wrd = []
-            leg_carbon_wrd = []
-
-            tw_fw = {'tw': "To Work", 'fw': "From Work"}
-
-            for leg in legs_n_objects:
-                leg_dirs_n.append(tw_fw[leg.direction])
-                leg_modes_n.append(leg.mode)
-                leg_mins_n.append(leg.duration)
-                leg_kcals_n.append(leg.calories)
-                leg_carbon_n.append(leg.carbon)
-            for leg in legs_wrd_objects:
-                leg_dirs_wrd.append(tw_fw[leg.direction])
-                leg_modes_wrd.append(leg.mode)
-                leg_mins_wrd.append(leg.duration)
-                leg_kcals_wrd.append(leg.calories)
-                leg_carbon_wrd.append(leg.carbon)
-
-            leg_dirs_n.append("Total")
-            leg_modes_n.append(" ")
-            leg_mins_n.append(sum(leg_mins_n))
-            leg_kcals_n.append(sum(leg_kcals_n))
-            leg_carbon_n.append(sum(leg_carbon_n))
-            leg_dirs_wrd.append("Total")
-            leg_modes_wrd.append(" ")
-            leg_mins_wrd.append(sum(leg_mins_wrd))
-            leg_kcals_wrd.append(sum(leg_kcals_wrd))
-            leg_carbon_wrd.append(sum(leg_carbon_wrd))
-
-            change_choices = {
-                'p': 'Positive change',
-                'g': 'Green change',
-                'h': 'Healthy change',
-                'n': 'No change'}
-
-            
-            info = {'first': first, 'last': last, 'email': survey.email, 'carbon_change': survey.carbon_change, 'calorie_change': survey.calorie_change, 'change_type': change_choices[survey.change_type]}
-            info['legs_n'], info['legs_wr'] = legs_n, legs_wr
-            info["leg_dirs_n"], info["leg_modes_n"], info["leg_mins_n"], info["leg_kcals_n"], info["leg_carbon_n"] = leg_dirs_n, leg_modes_n, leg_mins_n, leg_kcals_n, leg_carbon_n
-            info["leg_dirs_wrd"], info["leg_modes_wrd"], info["leg_mins_wrd"], info["leg_kcals_wrd"], info["leg_carbon_wrd"] = leg_dirs_wrd, leg_modes_wrd, leg_mins_wrd, leg_kcals_wrd, leg_carbon_wrd
-            if not survey.share:
-                people = employees_by_letter[info['last'][0].upper()]  # list of people already in totals_by_letter list starting with first letter of lastname
-                if len(people) == 0:
-                    people += [info]
-                else:
-                    added = False
-                    for i in range(len(people)):
-                        if info['last'] <= people[i]['last']:
-                            people.insert(i, info)
-                            added = True
-                            break
-                    if not added:
-                        people.append(info)
-    
-            if survey.email in employees_totals: # modes > duration, calories, co2 emitted
-                employees_totals[survey.email]["carbon_change"] += info["carbon_change"]
-                employees_totals[survey.email]["calorie_change"] += info["calorie_change"]
-
-            else:
-                employees_totals[survey.email] = {'first': first, 'last': last, 'email': survey.email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
-            for legs, legs_total in [(info['legs_n'], employees_totals[survey.email]['legs_n']), (info['legs_wr'], employees_totals[survey.email]['legs_wr'])]:
-                for leg in legs:
-                    added = False
-                    for leg_total in legs_total:
-                        if str(leg['mode']) == str(leg_total['mode']):
-                            leg_total['duration'] += leg['duration']
-                            leg_total['calories'] += leg['calories']
-                            leg_total['carbon'] += leg['carbon']
-                            added = True
-                            break
-                    if not added:
-                        legs_total.append(leg)
-
-            person_modes = set()
-            for legs, employer_legs in [(legs_n, employer_legs_n), (legs_wr, employer_legs_wr)]:
-                for leg in legs:
-                    if leg['mode'] not in employer_legs:
-                        employer_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
-                        person_modes.add(leg['mode'])
-                    elif leg['mode'] in employer_legs:
-                        employer_legs[leg['mode']]['duration'] += leg['duration']
-                        employer_legs[leg['mode']]['calories'] += leg['calories']
-                        employer_legs[leg['mode']]['carbon'] += leg['carbon']
-                        if leg['mode'] not in person_modes:
-                            employer_legs[leg['mode']]['people'] += 1
-                            person_modes.add(leg['mode'])
-            
-        int_to_str = {1: "january", 2: "february", 3: "march", 4: "april", 5: "may", 6: "june", 7: "july", 8: "august", 9: "september", 10: "october", 11: "november", 12: "december"}
-        word_month = int_to_str[int(month)]
-        employer_info = calculate_metrics(employer, word_month, year)  # change to current month instead of 'all' and year
-        employer_info['total_calories_n'] = employer.total_calories_n(month, year)
-        employer_info['total_carbon_n'] = employer.total_C02_n(month, year)
-        employer_info['total_carbon'] = employer.total_C02_wr(month, year)
-        employer_info['total_carbon_driving'] = employer.total_C02_driving(month, year)
-        employer_info['percent_participation'] = employer.percent_participation(month, year)*100
-
-        carbon_employer_script, carbon_employer_div = carbon_employer_graph(employer, month, year)
-        calories_employer_script, calories_employer_div = calories_employer_graph(employer, month, year)
-        change_script, change_div = make_change_line_graph(employer, int_month, year)
-        
-        month_data = {'surveys': surveys, 'employer_info': employer_info, 'employees_by_letter': employees_by_letter, 'comments': comments, 'employer_legs_n': employer_legs_n, \
-                            'employer_legs_wr': employer_legs_wr, 'question': question}
+        month_data = get_month_data(employer, month, year)
         all_months_data[int_to_month_string[month]] = month_data
+        if not month_data:
+            continue
+        for letter, employees in month_data['employees_by_letter'].items():
+            for info in employees: 
+                email = info['email']
+                if email in employees_totals: # modes > duration, calories, co2 emitted
+                    employees_totals[email]["carbon_change"] += info["carbon_change"]
+                    employees_totals[email]["calorie_change"] += info["calorie_change"]
+                else:
+                    employees_totals[email] = {'letter': letter, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': info['legs_n'], 'legs_wr': info['legs_wr']}
+
+                for legs, legs_total in [(info['legs_n'], employees_totals[email]['legs_n']), (info['legs_wr'], employees_totals[email]['legs_wr'])]:
+                    for leg in legs:
+                        added = False
+                        for leg_total in legs_total:
+                            if str(leg['mode']) == str(leg_total['mode']):
+                                leg_total['duration'] += leg['duration']
+                                leg_total['calories'] += leg['calories']
+                                leg_total['carbon'] += leg['carbon']
+                                added = True
+                                break
+                        if not added:
+                            legs_total.append(leg)
 
     employees_totals_by_letter = {}
     letters = [letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
     for letter in letters: 
         employees_totals_by_letter[letter] = []
-    #last_names = sorted([info['last'] for info in employees_totals.values()])
+    #Sort alphabetically by last name
     for info in employees_totals.values():
-        people = employees_totals_by_letter[info['last'][0].upper()]  # list of people already in totals_by_letter list starting with first letter of lastname
+        people = employees_totals_by_letter[info['letter']]  # list of people already in totals_by_letter list starting with first letter of lastname
         if len(people) == 0:
             people += [info]
         else:
@@ -744,6 +603,10 @@ def info(request, secret_code, year):
                     break
             if not added:
                 people.append(info)
+
+    carbon_employer_script, carbon_employer_div = carbon_employer_graph(employer, month, year)
+    calories_employer_script, calories_employer_div = calories_employer_graph(employer, month, year)
+    change_script, change_div = make_change_line_graph(employer, int(month), year)
 
     return render_to_response('employer.html', {
         'all_months_data': all_months_data,
@@ -762,3 +625,16 @@ def info(request, secret_code, year):
         'employees_totals_by_letter': employees_totals_by_letter
     })
 
+# Render data for all months for Employer Information Page
+@user_passes_test(lambda u: u.is_superuser)
+def render(request, employerid):
+    if employerid != 'all':
+        try:
+            employer = Employer.objects.get(id=employerid)
+            save_all_data(employer)
+            return HttpResponse('Data rendered for ' + employer.name)
+        except Employer.DoesNotExist:
+            return HttpResponse('Invalid employer ID')
+    elif employerid == 'all':
+        save_all_data()
+        return HttpResponse('Data rendered for all employers.')
