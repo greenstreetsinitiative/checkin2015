@@ -15,6 +15,16 @@ from datetime import datetime
 # CUSTOM WIDGETS
 # Move this to a widgets.py file if there are more than a couple
 
+
+from django.utils.safestring import mark_safe
+
+class HorizontalRadioRenderer(forms.RadioSelect.renderer):
+    def render(self):
+        return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
+
+
+
 class subteamSelectWidget(forms.Select):
     """
     Modification of Select widget: add the team's parent Employer
