@@ -208,33 +208,31 @@
       <div class="form-group {% if field.errors %}has-error{% endif %}">
 
 <style>
-ul
-{
+  ul
+  {
     padding: 0px;
     margin: 0px;
     list-style-type: none;
     margin-bottom: -8px ;
     margin-top: -4px;
-}
+  }
 
-.col-sm-7, .col-sm-5{
-  padding-left: 30px;
-  width: 49%;
-}
+  .col-sm-7, .col-sm-5{
+    padding-left: 30px;
+    width: 49%;
+  }
 
+  .col-sm-7{
+    margin-top: 5px;
+  }
 
-.col-sm-7{
-  margin-top: 5px;
-}
+  input {
+    padding-right: 10px;
+  }
 
-input {
-  padding-right: 10px;
-}
-
-
-.col-sm-7 label{
-  margin-right: 8px;
-}
+  .col-sm-7 label{
+    margin-right: 8px;
+  }
 
   .filler{
     height: 20px;
@@ -242,6 +240,13 @@ input {
     display: block;
     border: black;
     clear: both;
+  }
+
+  @media (max-width: 768px) {
+    .col-sm-7, .col-sm-5{
+      padding-left: 30px;
+      width: 98%;
+    }
   }
 </style>
         
