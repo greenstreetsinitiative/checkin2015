@@ -92,10 +92,7 @@ class Employer(models.Model):
 
     def total_C02_driving(self, shortmonth, year):
         surveys = get_surveys_by_employer(self, shortmonth, year)
-	total = 0
-	for survey in surveys:
-		total += survey.carbon_totalled_driving()
-        return total      
+        return surveys.aggregate(Sum('carbon_total_driving')).values()[0] or 0 
 
     def total_calories(self, shortmonth, year):
         """Calculates and returns total calories burned on WR Day"""
@@ -118,8 +115,8 @@ class Employer(models.Model):
         """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
             wr_day__year=year, open_checkin__lte=date.today())
-	if Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() == 0:
-		return 0
+        if Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() == 0:
+            return 0
         return Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() / \
             (self.nr_employees * elapsed_months.count())
 
@@ -142,7 +139,7 @@ class Employer(models.Model):
         """
         surveys = get_surveys_by_employer(self, shortmonth, year)
         already_green = surveys.filter(already_green=True).count()
-	return already_green
+        return already_green
 
     def percent_green_switch(self, shortmonth, year):
         """
@@ -178,12 +175,11 @@ class Employer(models.Model):
 
     def num_healthy_switch(self, shortmonth, year):
         """
-	the # of employees who made a healthy switch
-	"""
+        the # of employees who made a healthy switch
+        """
         surveys = get_surveys_by_employer(self, shortmonth, year)
         healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
         return healthy_switch
-	
 
 
 class Team(models.Model):
@@ -370,11 +366,11 @@ class Commutersurvey(models.Model):
         return wr_day_calories
 
     def calories_totalled_n(self):
-	"""Returns the total amount of calories burned on a normal day"""
-	n_day_calories = 0.000
-	n_day_calories = self.leg_set.only('calories').filter(
-	    day='n').aggregate(Sum('calories'))['calories__sum']
-	return n_day_calories
+        """Returns the total amount of calories burned on a normal day"""
+        n_day_calories = 0.000
+        n_day_calories = self.leg_set.only('calories').filter(
+            day='n').aggregate(Sum('calories'))['calories__sum']
+        return n_day_calories
 
     def carbon_totalled(self):
         """Returns the total amount of carbon (kg) emitted due to wrday"""
@@ -403,30 +399,30 @@ class Commutersurvey(models.Model):
         return driving_carbon
 
     def get_legs(self):
-	"""returns mode, calories, carbon, duration, direction for each leg"""
-	legs = self.leg_set.only('mode', 'calories', 'day', 'direction', 'carbon', 'duration').all()
-	n_legs = []
-	wr_legs = []
-	directions = {'tw': 'to work', 'fw': 'from work'}
-	for leg in legs:
-	    leg_info = {'mode': leg.mode.name, 'duration': leg.duration, 'calories': leg.calories, 'carbon': leg.carbon, 'direction': directions[leg.direction]}
-	    if leg.day == 'n':
-		n_legs.append(leg_info)
-	    if leg.day == 'w':
-		wr_legs.append(leg_info)
-	return n_legs, wr_legs
+        """returns mode, calories, carbon, duration, direction for each leg"""
+        legs = self.leg_set.all()
+        n_legs = []
+        wr_legs = []
+        directions = {'tw': 'to work', 'fw': 'from work'}
+        for leg in legs:
+            leg_info = {'mode': leg.mode.name, 'duration': leg.duration, 'calories': leg.calories, 'carbon': leg.carbon, 'direction': directions[leg.direction]}
+            if leg.day == 'n':
+                n_legs.append(leg_info)
+            if leg.day == 'w':
+                wr_legs.append(leg_info)
+        return n_legs, wr_legs
 
     def get_legs_objects(self):
-	"""used for tables"""
-	legs = self.leg_set.only().all()
-	n_legs_objects = []
-	w_legs_objects = []
-	for leg in legs:
-		if leg.day == "n":
-			n_legs_objects.append(leg)
-		elif leg.day == "w":
-			w_legs_objects.append(leg)
-	return [n_legs_objects, w_legs_objects]
+        """used for tables"""
+        legs = self.leg_set.only().all()
+        n_legs_objects = []
+        w_legs_objects = []
+        for leg in legs:
+            if leg.day == "n":
+                n_legs_objects.append(leg)
+            elif leg.day == "w":
+                w_legs_objects.append(leg)
+        return [n_legs_objects, w_legs_objects]
 
 
     def save(self, *args, **kwargs):
@@ -445,9 +441,9 @@ class Commutersurvey(models.Model):
         self.change_type = self.change_analysis()
         self.already_green = self.check_green()
         self.carbon_savings = sanely_rounded(self.carbon_saved())
-	self.carbon_total = self.carbon_totalled()
-	self.carbon_total_driving = self.carbon_totalled_driving()
-	self.carbon_total_n = self.carbon_totalled_n()
+        self.carbon_total = self.carbon_totalled()
+        self.carbon_total_driving = self.carbon_totalled_driving()
+        self.carbon_total_n = self.carbon_totalled_n()
         self.calories_total = self.calories_totalled()
         self.calories_total_n = self.calories_totalled_n()
         super(Commutersurvey, self).save(*args, **kwargs)

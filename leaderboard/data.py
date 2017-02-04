@@ -55,6 +55,7 @@ def render_month_data(employer, month, year):
         employees_by_letter[letter] = []
     employer_legs_n = {}  # totals for each mode
     employer_legs_wr = {}
+    info_id = 0
     for survey in surveys:
         name = survey.name.strip().split(" ")
         if len(name) == 0:
@@ -116,28 +117,24 @@ def render_month_data(employer, month, year):
             'g': 'Green change',
             'h': 'Healthy change',
             'n': 'No change'}
-
         
-        info = {'first': first, 'last': last, 'email': survey.email, 'carbon_change': survey.carbon_change, 'calorie_change': survey.calorie_change, 'change_type': change_choices[survey.change_type]}
+        info = {'first': first, 'last': last, 'email': survey.email, 'carbon_change': survey.carbon_change,
+                'calorie_change': survey.calorie_change, 'change_type': change_choices[survey.change_type],
+                'id': info_id}
+        info_id += 1
         info['legs_n'], info['legs_wr'] = legs_n, legs_wr
         info["leg_dirs_n"], info["leg_modes_n"], info["leg_mins_n"], info["leg_kcals_n"], info["leg_carbon_n"] = leg_dirs_n, leg_modes_n, leg_mins_n, leg_kcals_n, leg_carbon_n
         info["leg_dirs_wrd"], info["leg_modes_wrd"], info["leg_mins_wrd"], info["leg_kcals_wrd"], info["leg_carbon_wrd"] = leg_dirs_wrd, leg_modes_wrd, leg_mins_wrd, leg_kcals_wrd, leg_carbon_wrd
+
+        # Add to list of people to show in Individual Surveys if they allow their info to be shared
         if not survey.share:
             people = employees_by_letter[last_name_starts_with]  # list of people already in totals_by_letter list starting with first letter of lastname
-            if len(people) == 0:
-                people += [info]
-            else:
-                added = False
-                for i in range(len(people)):
-                    if info['last'] <= people[i]['last']:
-                        people.insert(i, info)
-                        added = True
-                        break
-                if not added:
-                    people.append(info)
+            people.append(info)
+            people.sort(key=lambda x: x['last'])
 
+        # Add to total statistics for all people (even those who don't want their info shared)
         for legs, employer_legs in [(legs_n, employer_legs_n), (legs_wr, employer_legs_wr)]:
-            person_modes = set()
+            person_modes = set()  # Keep track of whether or not we added that person to a mode's total # of ppl
             for leg in legs:
                 if leg['mode'] not in employer_legs:
                     employer_legs[leg['mode']] = {'duration': leg['duration'], 'calories': leg['calories'], 'carbon': leg['carbon'], 'people': 1}
@@ -159,7 +156,6 @@ def render_month_data(employer, month, year):
     employer_info['total_carbon'] = employer.total_C02_wr(month, year)
     employer_info['total_carbon_driving'] = employer.total_C02_driving(month, year)
     employer_info['percent_participation'] = employer.percent_participation(month, year)*100
-    
     month_data = {'employer_info': employer_info, 'employees_by_letter': employees_by_letter, 'comments': comments, 'employer_legs_n': employer_legs_n, \
                         'employer_legs_wr': employer_legs_wr, 'question': question}
     return month_data
@@ -185,18 +181,18 @@ def get_month_data(employer, month, year, replace=False):
         save_month_data(employer, month, year)
 
 # Takes a long time, only call this when database is empty.
-def save_all_data(employer=None):
+def save_all_data(employer=None, replace=False):
     now = datetime.datetime.now()
     short_months = ['04','05','06','07','08','09','10']
 
     if employer:
         for year in range(2015, now.year+1):
             for month in short_months:
-                get_month_data(employer, month, year, False)
+                get_month_data(employer, month, year, replace)
         return True
 
     employers = Employer.objects.all()
     for employer in employers:
         for year in range(2015, now.year+1):
             for month in short_months:
-                get_month_data(employer, month, year)
+                get_month_data(employer, month, year, replace)

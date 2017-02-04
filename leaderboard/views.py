@@ -570,7 +570,7 @@ def info(request, secret_code, year):
                     employees_totals[email]["carbon_change"] += info["carbon_change"]
                     employees_totals[email]["calorie_change"] += info["calorie_change"]
                 else:
-                    employees_totals[email] = {'letter': letter, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': info['legs_n'], 'legs_wr': info['legs_wr']}
+                    employees_totals[email] = {'letter': letter, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
 
                 for legs, legs_total in [(info['legs_n'], employees_totals[email]['legs_n']), (info['legs_wr'], employees_totals[email]['legs_wr'])]:
                     for leg in legs:
@@ -590,29 +590,23 @@ def info(request, secret_code, year):
     for letter in letters: 
         employees_totals_by_letter[letter] = []
     #Sort alphabetically by last name
+    info_id = 0
     for info in employees_totals.values():
+        info['id'] = info_id
+        info_id += 1
         people = employees_totals_by_letter[info['letter']]  # list of people already in totals_by_letter list starting with first letter of lastname
-        if len(people) == 0:
-            people += [info]
-        else:
-            added = False
-            for i in range(len(people)):
-                if info['last'] <= people[i]['last']:
-                    people.insert(i, info)
-                    added = True
-                    break
-            if not added:
-                people.append(info)
-
+        people.append(info)
+        people.sort(key=lambda x: x['last'])
     carbon_employer_script, carbon_employer_div = carbon_employer_graph(employer, month, year)
     calories_employer_script, calories_employer_div = calories_employer_graph(employer, month, year)
     change_script, change_div = make_change_line_graph(employer, int(month), year)
+    cumulative_data = cumulative(year, employer)
 
     return render_to_response('employer.html', {
         'all_months_data': all_months_data,
         'employer': employer,
         'letters': letters,
-        'cumulative': cumulative(year, employer),
+        'cumulative': cumulative_data,
         'carbon_employer_script': carbon_employer_script,
         'carbon_employer_div': carbon_employer_div,
         'calories_employer_script': calories_employer_script,
@@ -627,14 +621,17 @@ def info(request, secret_code, year):
 
 # Render data for all months for Employer Information Page
 @user_passes_test(lambda u: u.is_superuser)
-def render(request, employerid):
+def render(request, employerid, shouldreplace):
+    replace = False
+    if shouldreplace == 'replace':
+        replace = True
     if employerid != 'all':
         try:
             employer = Employer.objects.get(id=employerid)
-            save_all_data(employer)
+            save_all_data(employer, replace)
             return HttpResponse('Data rendered for ' + employer.name)
         except Employer.DoesNotExist:
             return HttpResponse('Invalid employer ID')
     elif employerid == 'all':
-        save_all_data()
+        save_all_data(replace=replace)
         return HttpResponse('Data rendered for all employers.')

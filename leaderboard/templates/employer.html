@@ -82,13 +82,14 @@
 
 				<div class="container">
 				  <h1>Statistics for {{month}}</h1>
-				  <h2>{{data.employer_info.num_checkins}}</h2><h4>Check-Ins ({{data.employer_info.percent_participation | floatformat:"0" }}% Participation)</h4><br>
+				  <h2>{{data.employer_info.num_checkins}}</h2><h4>Check-Ins ({{data.employer_info.percent_participation | floatformat:"0" }}% Participation)</h4>
 				  <h2>{{data.employer_info.total_calories | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on Walk-Ride Day</h4>
 				  <h2>{{data.employer_info.total_carbon | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>
 				  <h2>{{data.employer_info.total_C02 | floatformat:"0" }} kg</h2><h4>Total CO2 Saved On Walk-Ride Day </h4>(Compared to Only Driving Alone On a Normal Day)
 				  <h2>{{data.employer_info.total_calories_n | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on a Normal Day</h4>
 				  <h2>{{data.employer_info.total_carbon_n | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on a Normal Day</h4>
-				  <h4>Walk Ride Day</h4>
+          <br>
+				  <h4>Walk Ride Day Commute</h4>
 				  <table class="table table-hover table-bordered" style="width:40%">
 					<tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
 					{% for mode, leg in data.employer_legs_wr.items %}
@@ -115,14 +116,14 @@
 		  <div class="col-sm-6 column">
 		    <br>
 		    <h1>Cumulative Statistics for {{year}}</h1>
-		    <h2>{{cumulative.num_checkins}}</h2><h4>Check-Ins</h4><br>
+		    <h2>{{cumulative.num_checkins}}</h2><h4>Check-Ins</h4>
 		    <h2>{{cumulative.calories_wr | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on Walk-Ride Day</h4>
 		    <h2>{{cumulative.carbon_wr | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>
 		    <h2>{{cumulative.carbon_saved | floatformat:"0" }} kg</h2><h4>Total CO2 Saved On Walk-Ride Day </h4>(Compared to Only Driving Alone On a Normal Day)
 		    <h2>{{cumulative.calories_n | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on a Normal Day</h4>
 		    <h2>{{cumulative.carbon_n | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on a Normal Day</h4>
-
-		    <h4>Walk Ride Day</h4>
+        <br>
+		    <h4>Walk Ride Day Commute</h4>
 		    <table class="table table-hover table-bordered" style="width:40%">
 			  <tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
 			  {% for mode, leg in cumulative.all_legs_wr.items %}
@@ -191,13 +192,13 @@
 		     		<div class="tabbable">
 		       		  <ul class="nav nav-pills nav-stacked col-md-3">
 			 		  {% for employee in employees %}
-		         		<li><a href="#{{employee.last}}{{employee.first}}{{month}}" data-toggle="tab"><h3>{{employee.last}}, {{employee.first}}</h3></a></li>
+		         		<li><a href="#{{employee.id}}{{month}}" data-toggle="tab"><h3>{{employee.last}}, {{employee.first}}</h3></a></li>
 			 		  {% endfor %}
 					  </ul>
 
 		       		  <div class="tab-content col-md-9">
 			 	        {% for employee in employees %}
-		                <div class="tab-pane" id="{{employee.last}}{{employee.first}}{{month}}">
+		                <div class="tab-pane" id="{{employee.id}}{{month}}">
 			 			  <h3>{{employee.last}}, {{employee.first}}</h3>
 			 			  <table class="table">
                             <tr><th>Email</th><td>{{employee.email}}</td></tr>
@@ -292,7 +293,7 @@
                       <ul class="nav nav-pills nav-stacked col-md-3">
                       {% for letter, employees in data.employees_by_letter.items %}
                       {% for employee in employees %}
-                        <li><a href="#all{{employee.last}}{{employee.first}}{{month}}" data-toggle="tab"><h4>{{employee.last}}, {{employee.first}}</h4></a></li>
+                        <li><a href="#all{{employee.id}}{{month}}" data-toggle="tab"><h4>{{employee.last}}, {{employee.first}}</h4></a></li>
                       {% endfor %}
                       {% endfor %}
                       </ul>
@@ -300,7 +301,7 @@
                       <div class="tab-content col-md-9">
                       {% for letter, employees in data.employees_by_letter.items %}
                       {% for employee in employees %}
-                        <div class="tab-pane" id="all{{employee.last}}{{employee.first}}{{month}}">
+                        <div class="tab-pane" id="all{{employee.id}}{{month}}">
                           <h3>{{employee.last}}, {{employee.first}}</h3>
                           <table class="table">
                           <tr><th>Email</th><td>{{employee.email}}</td></tr>
@@ -417,13 +418,13 @@
 		     		<div class="tabbable">
 		       		  <ul class="nav nav-pills nav-stacked col-md-3">
 			 		  {% for employee in employees %}
-		         		<li><a href="#cumulative{{employee.last}}{{employee.first}}" data-toggle="tab"><h3>{{employee.last}}, {{employee.first}}</h3></a></li>
+		         		<li><a href="#cumulative{{employee.id}}" data-toggle="tab"><h3>{{employee.last}}, {{employee.first}}</h3></a></li>
 			 		  {% endfor %}
 					  </ul>
 
 		       		  <div class="tab-content col-md-9">
 			 	        {% for employee in employees %}
-		                <div class="tab-pane" id="cumulative{{employee.last}}{{employee.first}}">
+		                <div class="tab-pane" id="cumulative{{employee.id}}">
 			 			  <h3>{{employee.last}}, {{employee.first}}</h3>
 			 			  <table class="table">
                             <tr><th>Email</th><td>{{employee.email}}</td></tr>
@@ -459,7 +460,7 @@
                       <ul class="nav nav-pills nav-stacked col-md-3">
                       {% for letter, employees in employees_totals_by_letter.items %}
                       {% for employee in employees %}
-                        <li><a href="#cumulativeall{{employee.last}}{{employee.first}}" data-toggle="tab"><h4>{{employee.last}}, {{employee.first}}</h4></a></li>
+                        <li><a href="#cumulativeall{{employee.id}}" data-toggle="tab"><h4>{{employee.last}}, {{employee.first}}</h4></a></li>
                       {% endfor %}
                       {% endfor %}
                       </ul>
@@ -467,14 +468,14 @@
                       <div class="tab-content col-md-9">
                       {% for letter, employees in employees_totals_by_letter.items %}
                       {% for employee in employees %}
-                        <div class="tab-pane" id="cumulativeall{{employee.last}}{{employee.first}}">
+                        <div class="tab-pane" id="cumulativeall{{employee.id}}">
                           <h3>{{employee.last}}, {{employee.first}}</h3>
                           <table class="table">
                           <tr><th>Email</th><td>{{employee.email}}</td></tr>
                           <tr><th>Total Carbon Change</th><td>{{employee.carbon_change | floatformat:"0" }} kg</td></tr>
                           <tr><th>Total Calorie Change</th><td>{{employee.calorie_change | floatformat:"0" }} kcal</td></tr>
 			  </table>
-			    <h4>Walk Ride Day</h4>
+			    <h4>Walk Ride Day Commute</h4>
 			    <table class="table table-hover table-bordered">
 				  <tr><th>Mode</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
 				  {% for leg in employee.legs_wr %}

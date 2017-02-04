@@ -59,7 +59,7 @@ urlpatterns = patterns(
     url(r'^employers/(?P<secret_code>\w+)/(?P<year>[0-9]{4})/$', 'leaderboard.views.info', name="info"),
 
     # Render data for all months for Employer Information Page
-    url(r'^render/(?P<employerid>[\w\.-]*)/$', 'leaderboard.views.render', name="render"),
+    url(r'^render/(?P<employerid>[\w\.-]*)/(?P<shouldreplace>\w+)/$', 'leaderboard.views.render', name="render"),
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
