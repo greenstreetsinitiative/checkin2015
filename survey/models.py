@@ -115,7 +115,8 @@ class Employer(models.Model):
         """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
             wr_day__year=year, open_checkin__lte=date.today())
-        if Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() == 0:
+        if Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() == 0 or \
+                (self.nr_employees * elapsed_months.count()) == 0:
             return 0
         return Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() / \
             (self.nr_employees * elapsed_months.count())
