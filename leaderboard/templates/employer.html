@@ -152,6 +152,9 @@
       <div role="tabpanel" class="tab-pane" id="individual_surveys">
 
 		<div class="container">
+      <h3><font color="green">GREEN</font>: positive (healthy and/or green) change</h3>
+      <h3><font color="black">BLACK</font>: no change</h3>
+      <h3><font color="red">RED</font>: negative change</h3>
 
 		  <ul class="nav nav-tabs">
 			<li class="active">
@@ -192,7 +195,7 @@
 		     		<div class="tabbable">
 		       		  <ul class="nav nav-pills nav-stacked col-md-3">
 			 		  {% for employee in employees %}
-		         		<li><a href="#{{employee.id}}{{month}}" data-toggle="tab"><h3>{{employee.last}}, {{employee.first}}</h3></a></li>
+		         		<li><a href="#{{employee.id}}{{month}}" data-toggle="tab"><h3 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h3></a></li>
 			 		  {% endfor %}
 					  </ul>
 
@@ -293,7 +296,7 @@
                       <ul class="nav nav-pills nav-stacked col-md-3">
                       {% for letter, employees in data.employees_by_letter.items %}
                       {% for employee in employees %}
-                        <li><a href="#all{{employee.id}}{{month}}" data-toggle="tab"><h4>{{employee.last}}, {{employee.first}}</h4></a></li>
+                        <li><a href="#all{{employee.id}}{{month}}" data-toggle="tab"><h4 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h4></a></li>
                       {% endfor %}
                       {% endfor %}
                       </ul>
@@ -418,7 +421,7 @@
 		     		<div class="tabbable">
 		       		  <ul class="nav nav-pills nav-stacked col-md-3">
 			 		  {% for employee in employees %}
-		         		<li><a href="#cumulative{{employee.id}}" data-toggle="tab"><h3>{{employee.last}}, {{employee.first}}</h3></a></li>
+		         		<li><a href="#cumulative{{employee.id}}" data-toggle="tab"><h3 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h3></a></li>
 			 		  {% endfor %}
 					  </ul>
 
@@ -460,7 +463,7 @@
                       <ul class="nav nav-pills nav-stacked col-md-3">
                       {% for letter, employees in employees_totals_by_letter.items %}
                       {% for employee in employees %}
-                        <li><a href="#cumulativeall{{employee.id}}" data-toggle="tab"><h4>{{employee.last}}, {{employee.first}}</h4></a></li>
+                        <li><a href="#cumulativeall{{employee.id}}" data-toggle="tab"><h4 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h4></a></li>
                       {% endfor %}
                       {% endfor %}
                       </ul>

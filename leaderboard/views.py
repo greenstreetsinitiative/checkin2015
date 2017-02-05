@@ -570,7 +570,7 @@ def info(request, secret_code, year):
                     employees_totals[email]["carbon_change"] += info["carbon_change"]
                     employees_totals[email]["calorie_change"] += info["calorie_change"]
                 else:
-                    employees_totals[email] = {'letter': letter, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
+                    employees_totals[email] = {'home_address': info['home_address'], 'letter': letter, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
 
                 for legs, legs_total in [(info['legs_n'], employees_totals[email]['legs_n']), (info['legs_wr'], employees_totals[email]['legs_wr'])]:
                     for leg in legs:
@@ -594,6 +594,14 @@ def info(request, secret_code, year):
     for info in employees_totals.values():
         info['id'] = info_id
         info_id += 1
+        if info['carbon_change'] < 0 or info['calorie_change'] > 0:
+            color = "green"
+        else:
+            if info['carbon_change'] == 0 and info['calorie_change'] == 0:
+                color = "black"
+            else:
+                color = "red"
+        info['color'] = color
         people = employees_totals_by_letter[info['letter']]  # list of people already in totals_by_letter list starting with first letter of lastname
         people.append(info)
         people.sort(key=lambda x: x['last'])

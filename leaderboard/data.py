@@ -68,7 +68,9 @@ def render_month_data(employer, month, year):
             else:
                 continue
         else:
-            continue              
+            continue        
+        first = first.title()
+        last = last.title()      
         if survey.comments != '':
             comments.append(survey.comments)
         legs_n, legs_wr = survey.get_legs()
@@ -117,10 +119,18 @@ def render_month_data(employer, month, year):
             'g': 'Green change',
             'h': 'Healthy change',
             'n': 'No change'}
+
+        if survey.change_type == 'p' or survey.change_type == 'g' or survey.change_type == 'h':
+            color = "green"
+        else:
+            if survey.carbon_change == 0 and survey.calorie_change == 0:
+                color = "black"
+            else:
+                color = "red"
         
         info = {'first': first, 'last': last, 'email': survey.email, 'carbon_change': survey.carbon_change,
                 'calorie_change': survey.calorie_change, 'change_type': change_choices[survey.change_type],
-                'id': info_id}
+                'id': info_id, 'color': color, 'home_address': survey.home_address}
         info_id += 1
         info['legs_n'], info['legs_wr'] = legs_n, legs_wr
         info["leg_dirs_n"], info["leg_modes_n"], info["leg_mins_n"], info["leg_kcals_n"], info["leg_carbon_n"] = leg_dirs_n, leg_modes_n, leg_mins_n, leg_kcals_n, leg_carbon_n
