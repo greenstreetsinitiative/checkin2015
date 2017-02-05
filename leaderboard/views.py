@@ -597,10 +597,7 @@ def info(request, secret_code, year):
         if info['carbon_change'] < 0 or info['calorie_change'] > 0:
             color = "green"
         else:
-            if info['carbon_change'] == 0 and info['calorie_change'] == 0:
-                color = "black"
-            else:
-                color = "red"
+            color = "black"
         info['color'] = color
         people = employees_totals_by_letter[info['letter']]  # list of people already in totals_by_letter list starting with first letter of lastname
         people.append(info)

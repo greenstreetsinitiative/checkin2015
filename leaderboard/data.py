@@ -123,10 +123,7 @@ def render_month_data(employer, month, year):
         if survey.change_type == 'p' or survey.change_type == 'g' or survey.change_type == 'h':
             color = "green"
         else:
-            if survey.carbon_change == 0 and survey.calorie_change == 0:
-                color = "black"
-            else:
-                color = "red"
+            color = "black"
         
         info = {'first': first, 'last': last, 'email': survey.email, 'carbon_change': survey.carbon_change,
                 'calorie_change': survey.calorie_change, 'change_type': change_choices[survey.change_type],
