@@ -82,6 +82,8 @@
 
 				<div class="container">
 				  <h1>Statistics for {{month}}</h1>
+          {{data.employer_info.count}} individuals are not shown in Individual Surveys,<br>
+          but their data is used to compute overall statistics.
 				  <h2>{{data.employer_info.num_checkins}}</h2><h4>Check-Ins ({{data.employer_info.percent_participation | floatformat:"0" }}% Participation)</h4>
 				  <h2>{{data.employer_info.total_calories | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on Walk-Ride Day</h4>
 				  <h2>{{data.employer_info.total_carbon | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>
@@ -116,6 +118,8 @@
 		  <div class="col-sm-6 column">
 		    <br>
 		    <h1>Cumulative Statistics for {{year}}</h1>
+        {{all_count}} individuals are not shown in Individual Surveys,
+        <br>but their data is used to compute overall statistics.
 		    <h2>{{cumulative.num_checkins}}</h2><h4>Check-Ins</h4>
 		    <h2>{{cumulative.calories_wr | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on Walk-Ride Day</h4>
 		    <h2>{{cumulative.carbon_wr | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>

@@ -56,6 +56,7 @@ def render_month_data(employer, month, year):
     employer_legs_n = {}  # totals for each mode
     employer_legs_wr = {}
     info_id = 0
+    count = 0 # counts how many individuals don't want their info shared
     for survey in surveys:
         name = survey.name.strip().split(" ")
         if len(name) == 0:
@@ -134,10 +135,14 @@ def render_month_data(employer, month, year):
         info["leg_dirs_wrd"], info["leg_modes_wrd"], info["leg_mins_wrd"], info["leg_kcals_wrd"], info["leg_carbon_wrd"] = leg_dirs_wrd, leg_modes_wrd, leg_mins_wrd, leg_kcals_wrd, leg_carbon_wrd
 
         # Add to list of people to show in Individual Surveys if they allow their info to be shared
+
         if not survey.share:
             people = employees_by_letter[last_name_starts_with]  # list of people already in totals_by_letter list starting with first letter of lastname
             people.append(info)
             people.sort(key=lambda x: x['last'])
+        else:
+            count += 1
+
 
         # Add to total statistics for all people (even those who don't want their info shared)
         for legs, employer_legs in [(legs_n, employer_legs_n), (legs_wr, employer_legs_wr)]:
@@ -163,8 +168,10 @@ def render_month_data(employer, month, year):
     employer_info['total_carbon'] = employer.total_C02_wr(month, year)
     employer_info['total_carbon_driving'] = employer.total_C02_driving(month, year)
     employer_info['percent_participation'] = employer.percent_participation(month, year)*100
+    employer_info['count'] = count
     month_data = {'employer_info': employer_info, 'employees_by_letter': employees_by_letter, 'comments': comments, 'employer_legs_n': employer_legs_n, \
                         'employer_legs_wr': employer_legs_wr, 'question': question}
+    print count
     return month_data
 
 def save_month_data(employer, month, year,):

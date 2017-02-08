@@ -558,11 +558,13 @@ def info(request, secret_code, year):
     long_months = ['April', 'May', 'June', 'July', 'August', 'September', 'October']
     short_months = ['04','05','06','07','08','09','10']
     employees_totals = {}
+    count = 0
     for month in short_months:
         month_data = get_month_data(employer, month, year)
         all_months_data[int_to_month_string[month]] = month_data
         if not month_data:
             continue
+        count += month_data["employer_info"]["count"]
         for letter, employees in month_data['employees_by_letter'].items():
             for info in employees: 
                 email = info['email']
@@ -621,7 +623,8 @@ def info(request, secret_code, year):
         'current_month': current_month,
         'year': year,
         'months': long_months,
-        'employees_totals_by_letter': employees_totals_by_letter
+        'employees_totals_by_letter': employees_totals_by_letter,
+        'all_count': count,
     })
 
 # Render data for all months for Employer Information Page
