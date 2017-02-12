@@ -571,8 +571,9 @@ def info(request, secret_code, year):
                 if email in employees_totals: # modes > duration, calories, co2 emitted
                     employees_totals[email]["carbon_change"] += info["carbon_change"]
                     employees_totals[email]["calorie_change"] += info["calorie_change"]
+                    employees_totals[email]["num_checkins"] += 1
                 else:
-                    employees_totals[email] = {'home_address': info['home_address'], 'letter': letter, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
+                    employees_totals[email] = {'home_address': info['home_address'], 'letter': letter, 'num_checkins': 1, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
 
                 for legs, legs_total in [(info['legs_n'], employees_totals[email]['legs_n']), (info['legs_wr'], employees_totals[email]['legs_wr'])]:
                     for leg in legs:
@@ -596,7 +597,7 @@ def info(request, secret_code, year):
     for info in employees_totals.values():
         info['id'] = info_id
         info_id += 1
-        if info['carbon_change'] < 0 or info['calorie_change'] > 0:
+        if info['carbon_change'] < -0.5 or info['calorie_change'] > 0.5:
             color = "green"
         else:
             color = "black"
@@ -604,6 +605,7 @@ def info(request, secret_code, year):
         people = employees_totals_by_letter[info['letter']]  # list of people already in totals_by_letter list starting with first letter of lastname
         people.append(info)
         people.sort(key=lambda x: x['last'])
+
     carbon_employer_script, carbon_employer_div = carbon_employer_graph(employer, month, year)
     calories_employer_script, calories_employer_div = calories_employer_graph(employer, month, year)
     change_script, change_div = make_change_line_graph(employer, int(month), year)

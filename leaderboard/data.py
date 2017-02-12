@@ -121,13 +121,26 @@ def render_month_data(employer, month, year):
             'h': 'Healthy change',
             'n': 'No change'}
 
-        if survey.change_type == 'p' or survey.change_type == 'g' or survey.change_type == 'h':
+        # Gets rid of -0 carbon/calorie change and incorrect change types for past surveys
+        new_change_type = None
+        if survey.carbon_change < -0.5:
+            if survey.calorie_change > 0.5:
+                new_change_type = 'p' # positive change!
+            else:
+                new_change_type = 'g' # green change
+        else:
+            if survey.calorie_change > 0.5:
+                new_change_type = 'h' # healthy change
+            else:
+                new_change_type = 'n' # no change
+
+        if new_change_type == 'p' or new_change_type == 'g' or new_change_type == 'h':
             color = "green"
         else:
             color = "black"
         
         info = {'first': first, 'last': last, 'email': survey.email, 'carbon_change': survey.carbon_change,
-                'calorie_change': survey.calorie_change, 'change_type': change_choices[survey.change_type],
+                'calorie_change': survey.calorie_change, 'change_type': change_choices[new_change_type],
                 'id': info_id, 'color': color, 'home_address': survey.home_address}
         info_id += 1
         info['legs_n'], info['legs_wr'] = legs_n, legs_wr
