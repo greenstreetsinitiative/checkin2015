@@ -172,19 +172,23 @@ def render_month_data(employer, month, year):
                         employer_legs[leg['mode']]['people'] += 1
                         person_modes.add(leg['mode'])
             person_modes = set()
-        
+
+    employees_by_letter['all'] = []     
+    for letter, employees in employees_by_letter.items():
+        if letter != 'all':
+            employees_by_letter['all'].extend(employees)
+    employees_by_letter['all'].sort(key=lambda x: x['last'])
+
     int_to_str = {1: "january", 2: "february", 3: "march", 4: "april", 5: "may", 6: "june", 7: "july", 8: "august", 9: "september", 10: "october", 11: "november", 12: "december"}
     word_month = int_to_str[int(month)]
     employer_info = calculate_metrics(employer, word_month, year)  # change to current month instead of 'all' and year
     employer_info['total_calories_n'] = employer.total_calories_n(month, year)
     employer_info['total_carbon_n'] = employer.total_C02_n(month, year)
     employer_info['total_carbon'] = employer.total_C02_wr(month, year)
-    employer_info['total_carbon_driving'] = employer.total_C02_driving(month, year)
     employer_info['percent_participation'] = employer.percent_participation(month, year)*100
     employer_info['count'] = count
     month_data = {'employer_info': employer_info, 'employees_by_letter': employees_by_letter, 'comments': comments, 'employer_legs_n': employer_legs_n, \
                         'employer_legs_wr': employer_legs_wr, 'question': question}
-    print count
     return month_data
 
 def save_month_data(employer, month, year,):

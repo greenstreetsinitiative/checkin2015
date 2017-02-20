@@ -424,7 +424,7 @@ def carbon_employer_graph(employer, shortmonth, year):  # Display for past 7 mon
     for month, year in month_years_tuples:
         carbon_wr.append(employer.total_C02_wr(month, year))
         carbon_n.append(employer.total_C02_n(month, year))
-        carbon_driving.append(employer.total_C02_driving(month, year))
+        carbon_driving.append(employer.total_C02(month, year) + employer.total_C02_wr(month, year))
     return line_graph(month_years, [carbon_wr, carbon_n, carbon_driving], legend_labels, "Month", "Carbon Dioxide Emissions (kg)", "Your Company's Carbon Dioxide Emissions")
 
 def calories_employer_graph(employer, shortmonth, year):
@@ -566,27 +566,28 @@ def info(request, secret_code, year):
             continue
         count += month_data["employer_info"]["count"]
         for letter, employees in month_data['employees_by_letter'].items():
-            for info in employees: 
-                email = info['email']
-                if email in employees_totals: # modes > duration, calories, co2 emitted
-                    employees_totals[email]["carbon_change"] += info["carbon_change"]
-                    employees_totals[email]["calorie_change"] += info["calorie_change"]
-                    employees_totals[email]["num_checkins"] += 1
-                else:
-                    employees_totals[email] = {'home_address': info['home_address'], 'letter': letter, 'num_checkins': 1, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
+            if letter != 'all':
+                for info in employees: 
+                    email = info['email']
+                    if email in employees_totals: # modes > duration, calories, co2 emitted
+                        employees_totals[email]["carbon_change"] += info["carbon_change"]
+                        employees_totals[email]["calorie_change"] += info["calorie_change"]
+                        employees_totals[email]["num_checkins"] += 1
+                    else:
+                        employees_totals[email] = {'home_address': info['home_address'], 'letter': letter, 'num_checkins': 1, 'first': info['first'], 'last': info['last'], 'email': email, "carbon_change": info["carbon_change"], "calorie_change": info["calorie_change"], 'legs_n': [], 'legs_wr': []}
 
-                for legs, legs_total in [(info['legs_n'], employees_totals[email]['legs_n']), (info['legs_wr'], employees_totals[email]['legs_wr'])]:
-                    for leg in legs:
-                        added = False
-                        for leg_total in legs_total:
-                            if str(leg['mode']) == str(leg_total['mode']):
-                                leg_total['duration'] += leg['duration']
-                                leg_total['calories'] += leg['calories']
-                                leg_total['carbon'] += leg['carbon']
-                                added = True
-                                break
-                        if not added:
-                            legs_total.append(leg)
+                    for legs, legs_total in [(info['legs_n'], employees_totals[email]['legs_n']), (info['legs_wr'], employees_totals[email]['legs_wr'])]:
+                        for leg in legs:
+                            added = False
+                            for leg_total in legs_total:
+                                if str(leg['mode']) == str(leg_total['mode']):
+                                    leg_total['duration'] += leg['duration']
+                                    leg_total['calories'] += leg['calories']
+                                    leg_total['carbon'] += leg['carbon']
+                                    added = True
+                                    break
+                            if not added:
+                                legs_total.append(leg)
 
     employees_totals_by_letter = {}
     letters = [letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
@@ -605,6 +606,11 @@ def info(request, secret_code, year):
         people = employees_totals_by_letter[info['letter']]  # list of people already in totals_by_letter list starting with first letter of lastname
         people.append(info)
         people.sort(key=lambda x: x['last'])
+    employees_totals_by_letter['all'] = []     
+    for letter, employees in employees_totals_by_letter.items():
+        if letter != 'all':
+            employees_totals_by_letter['all'].extend(employees)
+    employees_totals_by_letter['all'].sort(key=lambda x: x['last'])
 
     carbon_employer_script, carbon_employer_div = carbon_employer_graph(employer, month, year)
     calories_employer_script, calories_employer_div = calories_employer_graph(employer, month, year)

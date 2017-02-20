@@ -202,7 +202,7 @@ $(document).ready(function () {
 				  <h2>{{data.employer_info.total_carbon | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>
 				  <h2>{{data.employer_info.total_C02 | floatformat:"0" }} kg</h2><h4>Total CO2 Saved On Walk-Ride Day </h4>(Compared to Only Driving Alone On a Normal Day)
 				  <h2>{{data.employer_info.total_calories_n | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on a Normal Day</h4>
-				  <h2>{{data.employer_info.total_carbon_n | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on a Normal Day</h4>
+          <h2>{{data.employer_info.total_carbon_n | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on a Normal Day</h4>
           <br>
 				  <h4>Walk Ride Day Commute</h4>
 				  <table class="table table-hover table-bordered" style="width:40%">
@@ -427,10 +427,8 @@ $(document).ready(function () {
             	  <div class="tab-pane active" id="show_all{{month}}">
 		            <div class="tabbable">
                       <ul class="nav nav-pills nav-stacked col-md-3">
-                      {% for letter, employees in data.employees_by_letter.items %}
-                      {% for employee in employees %}
+                      {% for employee in data.employees_by_letter.all %}
                         <li><a href="#all{{employee.id}}{{month}}" data-toggle="tab"><h4 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h4></a></li>
-                      {% endfor %}
                       {% endfor %}
                       </ul>
 
@@ -617,10 +615,8 @@ $(document).ready(function () {
             	  <div class="tab-pane active" id="show_all_cumulative">
 		            <div class="tabbable">
                       <ul class="nav nav-pills nav-stacked col-md-3">
-                      {% for letter, employees in employees_totals_by_letter.items %}
-                      {% for employee in employees %}
+                      {% for employee in employees_totals_by_letter.all %}
                         <li><a href="#cumulativeall{{employee.id}}" data-toggle="tab"><h4 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h4></a></li>
-                      {% endfor %}
                       {% endfor %}
                       </ul>
 
