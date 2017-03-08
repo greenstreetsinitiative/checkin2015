@@ -57,8 +57,7 @@ class CommutersurveyAdmin(admin.ModelAdmin):
             {'fields': ['home_address', 'work_address']})
     ]
     list_display = ('id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change' )
-    list_editable = ('employer', 'team')
-    list_filter = ['wr_day_month', 'employer', 'team', 'share', 'volunteer']
+    list_filter = ['wr_day_month', 'share', 'volunteer']
     search_fields = ['name', 'email', 'employer__name', 'team__name']
     actions = [export_as_csv]
 
