@@ -45,8 +45,8 @@ export_as_csv.short_description = "Export selected rows as csv file"
 class EmployerAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display_links = ['id']
-    list_display = ['id', 'name', 'sector', 'nochallenge', 'active2015', 'active2016', 'nr_employees']
-    list_editable = ['name', 'sector', 'nr_employees', 'nochallenge', 'active2016']
+    list_display = ['id', 'name', 'sector', 'nochallenge', 'active2015', 'active2016', 'active2017', 'nr_employees']
+    list_editable = ['name', 'sector', 'nr_employees', 'nochallenge', 'active2016', 'active2017']
     actions = [export_as_csv]
 
 class CommutersurveyAdmin(admin.ModelAdmin):
@@ -56,9 +56,8 @@ class CommutersurveyAdmin(admin.ModelAdmin):
         ('Commute',
             {'fields': ['home_address', 'work_address']})
     ]
-    list_display = ('id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change', 'questionOne', 'questionTwo', 'questionThree', 'questionFour', 'questionFive' )
-    list_editable = ('employer', 'team')
-    list_filter = ['wr_day_month', 'employer', 'team', 'share', 'volunteer']
+    list_display = ['id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change', 'questionOne', 'questionTwo', 'questionThree', 'questionFour', 'questionFive' ]
+    list_filter = ['wr_day_month', 'share', 'volunteer']
     search_fields = ['name', 'email', 'employer__name', 'team__name']
     actions = [export_as_csv]
 
