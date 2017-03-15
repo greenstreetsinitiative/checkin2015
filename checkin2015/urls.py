@@ -12,6 +12,11 @@ urlpatterns = patterns(
     # Home
     url(r'^$', TemplateView.as_view(template_name='survey/index.html'), name='home'),
 
+    url(r'^strings/$', 'utilities.views.randomString', name='randomString'),
+    url(r'^string/$', 'utilities.views.randomString', name='randomString2'),
+
+
+
     # Checkin page
     url(r'^checkin/$', 'survey.views.add_checkin', name='commuterform'),
     url(r'^chaining/', include('smart_selects.urls')),
