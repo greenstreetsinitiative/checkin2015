@@ -91,6 +91,10 @@ def add_checkin(request):
                 pass
 
 
+            # clear old data from session (e.g. old segments)
+            request.session.clear();
+
+
             # write form responses to cookie
             for attr in ['name', 'email', 'home_address', 'work_address']:
                 if attr in commute_form.cleaned_data:
