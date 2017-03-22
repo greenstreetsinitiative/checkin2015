@@ -20,6 +20,22 @@ from datetime import date
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 
+from checkin2015.settings import COMPETITION_END_DATE, COMPETITION_START_DATE
+
+
+# Create your views here.
+def index(request):
+    today = date.today()
+
+    if today >= COMPETITION_START_DATE and today <= COMPETITION_END_DATE:
+        competition_in_progress = True
+    else:
+        competition_in_progress = False
+
+    return render(request, 'survey/index.html', {
+        'competition_in_progress': competition_in_progress
+    })
+
 
 def add_checkin(request):
 
