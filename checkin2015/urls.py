@@ -10,7 +10,7 @@ urlpatterns = patterns(
     '',
 
     # Home
-    url(r'^$', TemplateView.as_view(template_name='survey/index.html'), name='home'),
+    url(r'^$', 'survey.views.index', name='home'),
 
     # Checkin page
     url(r'^checkin/$', 'survey.views.add_checkin', name='commuterform'),
