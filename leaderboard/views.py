@@ -545,7 +545,7 @@ def info(request, secret_code, year):
         int_month = 11
     else:
         int_month = now.month
-    int_month -= 1
+    # int_month -= 1
     int_to_intstr_month = {4: "04", 5: "05", 6: "06", 7: "07", 8: "08", 9: "09", 10: "10"}
     month = int_to_intstr_month[int_month]
 
