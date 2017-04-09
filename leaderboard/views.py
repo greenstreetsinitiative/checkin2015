@@ -536,7 +536,7 @@ def info(request, secret_code, year):
             employer_id = employer.id
     
     if employer_id is None:
-        return HttpResponse('Invalid key')
+        return HttpResponse('<html><head></head><body><b>Error</b><br/>The company keys have changed. We apologize for any inconvenience.</br>Please contact the GSI Director Janie at <span style="color:#339933"><b>jkatzchristy@gogreenstreets.org</b></span> to receive your new key.</body></html>')
 
     now = datetime.datetime.now()
     if year != now.year:
