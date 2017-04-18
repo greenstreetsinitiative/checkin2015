@@ -73,7 +73,7 @@ class CommuterForm(ModelForm):
             self.fields['employer'].label = "Employer"
         else:
             # we're in a challenge
-            companies = Employer.objects.filter(Q(nochallenge=True) | Q(active2016=True))
+            companies = Employer.objects.filter(Q(nochallenge=True) | Q(active2017=True))
             self.fields['employer'].queryset = companies
             self.fields['team'].queryset = Team.objects.filter(
                 parent__in=companies)
