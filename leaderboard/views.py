@@ -65,10 +65,8 @@ def calculate_metrics(company, selected_month, year):
         'total_calories': total_calories
         }
 
-def company(request, year, employerid=None, teamid=None):
+def company(request, year=datetime.datetime.now().year, employerid=None, teamid=None):
 #def company(request, year=2016, employerid=None, teamid=None):
-
-    year=datetime.datetime.now().year
 
     context = RequestContext(request)
 
@@ -206,9 +204,8 @@ def company(request, year, employerid=None, teamid=None):
                 'overall': overall
             }, context)
 
-def latest_leaderboard(request, year, sector='all', size='all', parentid=None, selected_month='all'):
+def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all', size='all', parentid=None, selected_month='all'):
 
-    year = datetime.datetime.now().year
 
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
