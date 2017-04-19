@@ -65,7 +65,11 @@ def calculate_metrics(company, selected_month, year):
         'total_calories': total_calories
         }
 
-def company(request, year=2016, employerid=None, teamid=None):
+def company(request, year, employerid=None, teamid=None):
+#def company(request, year=2016, employerid=None, teamid=None):
+
+    year=datetime.datetime.now().year
+
     context = RequestContext(request)
 
     # use the year to set filtering
@@ -109,7 +113,8 @@ def company(request, year=2016, employerid=None, teamid=None):
                     '{0}%'.format(calculate_metrics(company, 'april', '2015')['green_switch'])),
                 ('Percent of check-ins where commutes went healthier for Walk/Ride Day (April 2015)',
                     '{0}%'.format(calculate_metrics(company, 'april', '2015')['healthy_switch']))])
-        elif year == 2016:
+        elif year >= 2016:
+#       elif year == 2016:
             overall.extend([('Percent of check-ins where commutes went greener for Walk/Ride Day',
                     '{0}%'.format(allmetrics['green_switch'])),
                 ('Percent of check-ins where commutes went healthier for Walk/Ride Day',
@@ -165,7 +170,7 @@ def company(request, year=2016, employerid=None, teamid=None):
             data[2][2][1][1].append(
                 (month, metrics['participants'])
                 )
-            if year == '2015':
+            if year == 2015:
                 # april only!
                 data[1][2][1][1].append(
                     ('april', calculate_metrics(company, 'april', '2015')['green_switch'])
@@ -173,7 +178,7 @@ def company(request, year=2016, employerid=None, teamid=None):
                 data[1][2][2][1].append(
                     ('april', calculate_metrics(company, 'april', '2015')['healthy_switch'])
                     )
-            elif year == '2016':
+            elif year >= 2016:
                 data[1][2][1][1].append(
                     (month, metrics['green_switch'])
                     )
@@ -201,12 +206,15 @@ def company(request, year=2016, employerid=None, teamid=None):
                 'overall': overall
             }, context)
 
-def latest_leaderboard(request, year=2016, sector='all', size='all', parentid=None, selected_month='all'):
+def latest_leaderboard(request, year, sector='all', size='all', parentid=None, selected_month='all'):
+
+    year = datetime.datetime.now().year
+
     # Obtain the context from the HTTP request.
     context = RequestContext(request)
 
     if year is None:
-        return redirect('2016/')
+        return redirect('2017/')
 
     d = {}
 
