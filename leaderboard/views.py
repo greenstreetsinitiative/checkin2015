@@ -532,7 +532,10 @@ def info(request, secret_code, year):
     generate_keys()
 
     for employer in Employer.objects.all():
-        if secret_code == employer.secret_key_3:
+        
+        year_secret_key = secret_code + "-" + str(year)
+
+        if secret_code == employer.secret_key_3 or year_secret_key == employer.secret_key_3:
             employer_id = employer.id
     
     if employer_id is None:
