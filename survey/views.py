@@ -58,10 +58,38 @@ def add_checkin(request):
             if 'team' in commute_form.cleaned_data:
                 commutersurvey.team = commute_form.cleaned_data['team']
 
-            extra_commute_form.is_valid() # creates cleaned_data
-            if 'share' in extra_commute_form.cleaned_data:
-                commutersurvey.share = extra_commute_form.cleaned_data['share']
-            commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+            #extra_commute_form.is_valid() # creates cleaned_data
+
+            #if 'share' in extra_commute_form.cleaned_data:
+            commutersurvey.share = extra_commute_form['share'].value()
+            
+            #commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+
+            try:
+                commutersurvey.questionOne = extra_commute_form['questionOne'].value()
+            except:
+                pass
+
+            try:
+                commutersurvey.questionTwo = extra_commute_form['questionTwo'].value()
+            except:
+                pass                
+
+            try:
+                commutersurvey.questionThree = extra_commute_form['questionThree'].value()
+            except:
+                pass                
+
+            try:
+                commutersurvey.questionFour = extra_commute_form['questionFour'].value()
+            except:
+                pass                
+
+            try:
+                commutersurvey.questionFive = extra_commute_form['questionFive'].value()
+            except:
+                pass
+
 
             # write form responses to cookie
             for attr in ['name', 'email', 'home_address', 'work_address']:
@@ -73,8 +101,11 @@ def add_checkin(request):
                         # import pdb; pdb.set_trace()
                         request.session[attr] = commute_form.cleaned_data[attr].id
             for attr in ['share', 'volunteer']:
-                if attr in extra_commute_form.cleaned_data:
-                    request.session[attr] = extra_commute_form.cleaned_data[attr]
+                try:
+                    if attr in extra_commute_form:
+                        request.session[attr] = extra_commute_form[attr].value()
+                except:
+                    pass
 
             # This is just to generate cleaned_data. The radio button choices will be valid.
             wrday_copy.is_valid(); commute_copy.is_valid(); normal_copy.is_valid();
