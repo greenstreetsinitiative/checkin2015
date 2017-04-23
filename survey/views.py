@@ -17,8 +17,26 @@ from survey.forms import NormalFromWorkSameAsAboveForm, WalkRideFromWorkSameAsAb
 import json
 from datetime import date
 
+from django.utils.html import strip_tags
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.html import escape
+
+
+
+def sanitizeQOM(input):
+
+
+    if type(input) == type([]):
+        input = ', '.join(input)
+    
+    input = input.replace('\'', '')
+    input = input.replace('\"', '')
+    input = input.replace('&', '')
+    input = input.replace('<', '')
+    input = input.replace('>', '')
+    return input
+
 
 
 def add_checkin(request):
@@ -66,27 +84,28 @@ def add_checkin(request):
             #commutersurvey.comments = extra_commute_form.cleaned_data['comments']
 
             try:
-                commutersurvey.questionOne = extra_commute_form['questionOne'].value()
+
+                commutersurvey.questionOne = sanitizeQOM(strip_tags(extra_commute_form['questionOne'].value()))[0:499]
             except:
                 pass
 
             try:
-                commutersurvey.questionTwo = extra_commute_form['questionTwo'].value()
+                commutersurvey.questionTwo = sanitizeQOM(strip_tags(extra_commute_form['questionTwo'].value()))[0:499]
             except:
                 pass                
 
             try:
-                commutersurvey.questionThree = extra_commute_form['questionThree'].value()
+                commutersurvey.questionThree = sanitizeQOM(strip_tags(extra_commute_form['questionThree'].value()))[0:499]
             except:
                 pass                
 
             try:
-                commutersurvey.questionFour = extra_commute_form['questionFour'].value()
+                commutersurvey.questionFour = sanitizeQOM(strip_tags(extra_commute_form['questionFour'].value()))[0:499]
             except:
                 pass                
 
             try:
-                commutersurvey.questionFive = extra_commute_form['questionFive'].value()
+                commutersurvey.questionFive = sanitizeQOM(strip_tags(extra_commute_form['questionFive'].value()))[0:499]
             except:
                 pass
 
