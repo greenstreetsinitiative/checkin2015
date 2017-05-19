@@ -61,6 +61,7 @@ class Employer(models.Model):
     nr_employees = models.PositiveIntegerField(default=1)
     active2015 = models.BooleanField("2015 Challenge", default=False)
     active2016 = models.BooleanField("2016 Challenge", default=False)
+    active2017 = models.BooleanField("2017 Challenge", default=False)
     nochallenge = models.BooleanField("Not In Challenge", default=False)
     sector = models.ForeignKey('Sector', null=True, blank=True)
     secret_key_3 = models.CharField('Secret Key', max_length=200, default="None")
@@ -259,6 +260,13 @@ class Commutersurvey(models.Model):
     employer = models.ForeignKey('Employer')
     team = models.ForeignKey('Team', null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
+
+    questionOne = models.TextField( blank=True, default=None, null=True)
+    questionTwo = models.TextField(blank=True, default=None, null=True)
+    questionThree = models.TextField(blank=True, default=None, null=True)
+    questionFour = models.TextField(blank=True, default=None, null=True)
+    questionFive = models.TextField(blank=True, default=None, null=True)
+
     share = models.BooleanField(
         "Please don't share my identifying information with my employer",
         default=False)
@@ -512,3 +520,68 @@ class EmployerMonthInfo(models.Model):
     year = models.PositiveIntegerField(blank=False, default=0)
     employer_id = models.TextField(blank=False, default='none')
     dict_data = models.TextField(blank=True, default='')
+
+class MonthlyQuestion(models.Model):
+
+    wr_day_month = models.ForeignKey('Month', blank=True, null=True, default=0)
+
+    QOM_NUMBER = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+
+    questionNumber = models.PositiveIntegerField('Question Number', choices=QOM_NUMBER, default=1)
+
+
+    QOM_TYPES = (
+        (1, 'Select Menu'),
+        (2, 'Vertical Radio Buttons'),
+        (3, 'Horizontal Radio Buttons'),
+        (4, 'Checkboxes'),
+        (5, 'Extended Response'),
+    )
+
+    questionType = models.PositiveIntegerField('Type', choices=QOM_TYPES)
+
+    question = models.TextField('Question', default='')
+
+
+    answer_1 = models.CharField('Answer 1', null=True, max_length=500, blank=True)
+
+    answer_2 = models.CharField('Answer 2', null=True, max_length=500, blank=True)
+
+    answer_3 = models.CharField('Answer 3', null=True, max_length=500, blank=True)
+
+    answer_4 = models.CharField('Answer 4', null=True, max_length=500, blank=True)
+
+    answer_5 = models.CharField('Answer 5', null=True, max_length=500, blank=True)
+
+    answer_6 = models.CharField('Answer 6', null=True, max_length=500, blank=True)
+
+    answer_7 = models.CharField('Answer 7', null=True, max_length=500, blank=True)
+
+    answer_8 = models.CharField('Answer 8', null=True, max_length=500, blank=True)
+
+    answer_9 = models.CharField('Answer 9', null=True, max_length=500, blank=True)
+
+    answer_10 = models.CharField('Answer 10', null=True, max_length=500, blank=True)
+
+    answer_11 = models.CharField('Answer 11', null=True, max_length=500, blank=True)
+
+    answer_12 = models.CharField('Answer 12', null=True, max_length=500, blank=True)
+
+    answer_13 = models.CharField('Answer 13', null=True, max_length=500, blank=True)
+
+    answer_14 = models.CharField('Answer 14', null=True, max_length=500, blank=True)
+
+    answer_15 = models.CharField('Answer 15', null=True, max_length=500, blank=True)
+
+
+
+    class Meta:
+        ordering = ('wr_day_month','questionNumber')
+
+        unique_together = ("wr_day_month", "questionNumber")

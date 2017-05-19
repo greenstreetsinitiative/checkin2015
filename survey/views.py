@@ -17,8 +17,26 @@ from survey.forms import NormalFromWorkSameAsAboveForm, WalkRideFromWorkSameAsAb
 import json
 from datetime import date
 
+from django.utils.html import strip_tags
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.html import escape
+
+
+
+def sanitizeQOM(input):
+
+
+    if type(input) == type([]):
+        input = ', '.join(input)
+    
+    input = input.replace('\'', '')
+    input = input.replace('\"', '')
+    input = input.replace('&', '')
+    input = input.replace('<', '')
+    input = input.replace('>', '')
+    return input
+
 
 from checkin2015.settings import COMPETITION_END_DATE, COMPETITION_START_DATE
 
@@ -74,10 +92,39 @@ def add_checkin(request):
             if 'team' in commute_form.cleaned_data:
                 commutersurvey.team = commute_form.cleaned_data['team']
 
-            extra_commute_form.is_valid() # creates cleaned_data
-            if 'share' in extra_commute_form.cleaned_data:
-                commutersurvey.share = extra_commute_form.cleaned_data['share']
-            commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+            #extra_commute_form.is_valid() # creates cleaned_data
+
+            #if 'share' in extra_commute_form.cleaned_data:
+            commutersurvey.share = extra_commute_form['share'].value()
+            
+            #commutersurvey.comments = extra_commute_form.cleaned_data['comments']
+
+            try:
+
+                commutersurvey.questionOne = sanitizeQOM(strip_tags(extra_commute_form['questionOne'].value()))[0:499]
+            except:
+                pass
+
+            try:
+                commutersurvey.questionTwo = sanitizeQOM(strip_tags(extra_commute_form['questionTwo'].value()))[0:499]
+            except:
+                pass                
+
+            try:
+                commutersurvey.questionThree = sanitizeQOM(strip_tags(extra_commute_form['questionThree'].value()))[0:499]
+            except:
+                pass                
+
+            try:
+                commutersurvey.questionFour = sanitizeQOM(strip_tags(extra_commute_form['questionFour'].value()))[0:499]
+            except:
+                pass                
+
+            try:
+                commutersurvey.questionFive = sanitizeQOM(strip_tags(extra_commute_form['questionFive'].value()))[0:499]
+            except:
+                pass
+
 
             # write form responses to cookie
             for attr in ['name', 'email', 'home_address', 'work_address']:
@@ -89,8 +136,11 @@ def add_checkin(request):
                         # import pdb; pdb.set_trace()
                         request.session[attr] = commute_form.cleaned_data[attr].id
             for attr in ['share', 'volunteer']:
-                if attr in extra_commute_form.cleaned_data:
-                    request.session[attr] = extra_commute_form.cleaned_data[attr]
+                try:
+                    if attr in extra_commute_form:
+                        request.session[attr] = extra_commute_form[attr].value()
+                except:
+                    pass
 
             # This is just to generate cleaned_data. The radio button choices will be valid.
             wrday_copy.is_valid(); commute_copy.is_valid(); normal_copy.is_valid();
@@ -216,9 +266,9 @@ def send_email(commutersurvey):
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
-        'company is ranked in the 2016 Walk/Ride Day CORPORATE '
+        'company is ranked in the 2017 Walk/Ride Day CORPORATE '
         'CHALLENGE, <a href="http://'
-        'checkinapp-greenstreets.rhcloud.com/leaderboard/2016" '
+        'checkinapp-greenstreets.rhcloud.com/leaderboard/2017" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
         '<p>Thank you for being involved! By checking in and '

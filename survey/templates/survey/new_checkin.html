@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
@@ -206,7 +207,45 @@
     <hr class="green">
     <div class="row">
       <div class="form-group {% if field.errors %}has-error{% endif %}">
-        <div class="col-sm-5">
+
+<style>
+  ul
+  {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+    margin-bottom: -8px ;
+    margin-top: -4px;
+  }
+  .col-sm-7, .col-sm-5{
+    padding-left: 30px;
+    width: 49%;
+  }
+  .col-sm-7{
+    margin-top: 5px;
+  }
+  input {
+    padding-right: 10px;
+  }
+  .col-sm-7 label{
+    margin-right: 8px;
+  }
+  .filler{
+    height: 20px;
+    width:100%;
+    display: block;
+    border: black;
+    clear: both;
+  }
+  @media (max-width: 768px) {
+    .col-sm-7, .col-sm-5{
+      padding-left: 30px;
+      width: 98%;
+    }
+  }
+</style>
+        
+        <!--<div class="col-sm-5">
           {{ extra_form.comments.label_tag }}
         </div>
         <div class="col-sm-7">
@@ -218,7 +257,103 @@
             {% endfor %}
             </div>
           {% endif %}
-        </div>
+        </div>-->
+
+        {% if extra_form.questionOne %}
+          <div class="col-sm-5">
+            {{ extra_form.questionOne.label_tag }}
+          </div>
+
+          <div class="col-sm-7">
+            {{ extra_form.questionOne }}
+            {% if extra_form.questionOne.errors %}
+              <div class="help-block">
+                {% for error in extra_form.questionOne.errors %}
+                  {{ error|escape }}<br>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+
+        {% if extra_form.questionTwo %}
+          <div class="filler"></div>
+          <div class="col-sm-5">
+            {{ extra_form.questionTwo.label_tag }}
+          </div>
+
+          <div class="col-sm-7">
+            {{ extra_form.questionTwo }}
+            {% if extra_form.questionTwo.errors %}
+              <div class="help-block">
+                {% for error in extra_form.questionTwo.errors %}
+                  {{ error|escape }}<br>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+
+        {% if extra_form.questionThree %}
+          <div class="filler"></div>
+          <div class="col-sm-5">
+            {{ extra_form.questionThree.label_tag }}
+          </div>
+
+          <div class="col-sm-7">
+            {{ extra_form.questionThree }}
+            {% if extra_form.questionThree.errors %}
+              <div class="help-block">
+                {% for error in extra_form.questionThree.errors %}
+                  {{ error|escape }}<br>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+
+        {% if extra_form.questionFour %}
+          <div class="filler"></div>
+          <div class="col-sm-5">
+            {{ extra_form.questionFour.label_tag }}
+          </div>
+
+          <div class="col-sm-7">
+            {{ extra_form.questionFour }}
+            {% if extra_form.questionFour.errors %}
+              <div class="help-block">
+                {% for error in extra_form.questionFour.errors %}
+                  {{ error|escape }}<br>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+
+        {% if extra_form.questionFive %}
+          <div class="filler"></div>
+          <div class="col-sm-5">
+            {{ extra_form.questionFive.label_tag }}
+          </div>
+
+          <div class="col-sm-7">
+            {{ extra_form.questionFive }}
+            {% if extra_form.questionFive.errors %}
+              <div class="help-block">
+                {% for error in extra_form.questionFive.errors %}
+                  {{ error|escape }}<br>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+
+
       </div>
     </div>
 

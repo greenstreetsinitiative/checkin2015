@@ -9,7 +9,9 @@ from django.db.models import Sum, Count
 
 from django.forms import ModelForm
 
-from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, EmployerMonthInfo
+
+
+from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, MonthlyQuestion, EmployerMonthInfo
 
 # disable deletion of records
 admin.site.disable_action('delete_selected')
@@ -45,8 +47,8 @@ export_as_csv.short_description = "Export selected rows as csv file"
 class EmployerAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display_links = ['id']
-    list_display = ['id', 'name', 'sector', 'nochallenge', 'active2015', 'active2016', 'nr_employees', 'secret_key_3']
-    list_editable = ['name', 'sector', 'nr_employees', 'nochallenge', 'active2016', 'secret_key_3']
+    list_display = ['id', 'name', 'sector', 'nochallenge', 'active2015', 'active2016', 'active2017', 'nr_employees', 'secret_key_3']
+    list_editable = ['name', 'sector', 'nr_employees', 'nochallenge', 'active2016', 'active2017', 'secret_key_3']
     actions = [export_as_csv]
 
 class CommutersurveyAdmin(admin.ModelAdmin):
@@ -56,9 +58,8 @@ class CommutersurveyAdmin(admin.ModelAdmin):
         ('Commute',
             {'fields': ['home_address', 'work_address']})
     ]
-    list_display = ('id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change' )
-    list_editable = ('employer', 'team')
-    list_filter = ['wr_day_month', 'employer', 'team', 'share', 'volunteer']
+    list_display = ('id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change', 'questionOne', 'questionTwo', 'questionThree', 'questionFour', 'questionFive' )
+    list_filter = ['wr_day_month', 'share', 'volunteer']
     search_fields = ['name', 'email', 'employer__name', 'team__name']
     actions = [export_as_csv]
 
@@ -97,6 +98,13 @@ class QOTMAdmin(admin.ModelAdmin):
     list_editable = ['wr_day_month','value']
     actions = [export_as_csv]
 
+class MonthlyQuestionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'wr_day_month', 'questionNumber', 'questionType', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'answer_5', 'answer_6', 'answer_7', 'answer_8', 'answer_9', 'answer_10', 'answer_11','answer_12' ,'answer_13','answer_14','answer_15']
+    list_editable = ['wr_day_month', 'questionNumber', 'questionType', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'answer_5', 'answer_6', 'answer_7', 'answer_8', 'answer_9', 'answer_10', 'answer_11','answer_12' ,'answer_13','answer_14','answer_15']
+    actions = [export_as_csv, 'delete_selected']
+
+
+
 admin.site.register(Commutersurvey, CommutersurveyAdmin)
 admin.site.register(Employer, EmployerAdmin)
 admin.site.register(Month, MonthAdmin)
@@ -106,3 +114,4 @@ admin.site.register(Team, TeamAdmin)
 admin.site.register(Sector, SectorAdmin)
 admin.site.register(QuestionOfTheMonth, QOTMAdmin)
 admin.site.register(EmployerMonthInfo, EmployerMonthInfoAdmin)
+admin.site.register(MonthlyQuestion, MonthlyQuestionAdmin)
