@@ -38,8 +38,8 @@ def sanitizeQOM(input):
     return input
 
 
-from checkin2015.settings import COMPETITION_END_DATE, COMPETITION_START_DATE
-
+COMPETITION_START_DATE = date(2017, 4, 24)
+COMPETITION_END_DATE = date(2017, 10, 30)
 
 # Create your views here.
 def index(request):

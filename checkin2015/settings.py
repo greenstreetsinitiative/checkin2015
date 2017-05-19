@@ -41,6 +41,3 @@ DATABASES = {
     }
 }
 
-from datetime import date
-COMPETITION_START_DATE = date(2017, 4, 24)
-COMPETITION_END_DATE = date(2017, 10, 30)
