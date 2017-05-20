@@ -1,4 +1,4 @@
-from survey.models import Commutersurvey, Employer, Leg, Month, Team, Mode, Sector, get_surveys_by_employer, QuestionOfTheMonth, EmployerMonthInfo
+from survey.models import Commutersurvey, Employer, Leg, Month, Team, Mode, Sector, get_surveys_by_employer, QuestionOfTheMonth, EmployerMonthInfo, MonthlyQuestion
 
 from datetime import date, datetime
 from math import pi
@@ -41,10 +41,13 @@ def render_month_data(employer, month, year):
         if m.month == wr_month:
             month_class = m
             break
-    if QuestionOfTheMonth.objects.filter(wr_day_month=month_class).count() == 0:
-        question = ''
-    else:
-        question = QuestionOfTheMonth.objects.get(wr_day_month=month_class).value  
+
+
+    question = ''
+    questions = MonthlyQuestion.objects.filter(wr_day_month=month_class)
+    for q in questions:
+        question = question + ", " + q.question
+
 
     surveys = get_surveys_by_employer(employer, month, year)  #8, 2016
 
@@ -71,9 +74,20 @@ def render_month_data(employer, month, year):
         else:
             continue        
         first = first.title()
-        last = last.title()      
-        if survey.comments != '':
-            comments.append(survey.comments)
+        last = last.title()
+
+        answers = [ survey.questionOne,survey.questionTwo, survey.questionThree, survey.questionFour, survey.questionFive ]
+        commentString = ''
+        for answer in answers:
+            if answer != '' and answer != None:
+                if commentString != '':
+                    commentString += ", "
+                commentString += answer
+
+        comments.append(commentString)
+        
+
+
         legs_n, legs_wr = survey.get_legs()
 
         [legs_n_objects, legs_wrd_objects] = survey.get_legs_objects()  # for tables
