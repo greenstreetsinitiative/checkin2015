@@ -44,6 +44,10 @@ def render_month_data(employer, month, year):
 
 
     question = ''
+
+    if QuestionOfTheMonth.objects.filter(wr_day_month=month_class).count() != 0:
+        question = QuestionOfTheMonth.objects.get(wr_day_month=month_class).value 
+
     questions = MonthlyQuestion.objects.filter(wr_day_month=month_class)
     for q in questions:
         question = question + ", " + q.question
@@ -78,6 +82,10 @@ def render_month_data(employer, month, year):
 
         answers = [ survey.questionOne,survey.questionTwo, survey.questionThree, survey.questionFour, survey.questionFive ]
         commentString = ''
+
+        if survey.comments != '' and survey.comments != None:
+            commentString += survey.comments
+
         for answer in answers:
             if answer != '' and answer != None:
                 if commentString != '':
