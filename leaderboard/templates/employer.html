@@ -1,0 +1,705 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{company.name}} Info{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/cssplot.full.css' %}">
+<link rel="stylesheet" href="{% static 'css/employer.css' %}">
+<link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css"
+    rel="stylesheet" type="text/css">
+<link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.css"
+    rel="stylesheet" type="text/css">
+
+<script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
+<script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $(window).scroll(function(){
+
+        if($(document).scrollTop() > 700) {
+            var newPos = $(document).scrollTop() - 550;
+            $('.mSidebar').css( {top:newPos});
+        }
+
+        else {
+            $('.mSidebar').css( {top:0});
+        }
+    })
+})
+</script>
+<script type='text/javascript'>
+$(document).ready(function () {
+
+    console.log("HELLO")
+    function exportTableToCSV($table, filename) {
+        var $headers = $table.find('tr:has(th)')
+            ,$rows = $table.find('tr:has(td)')
+
+            // Temporary delimiter characters unlikely to be typed by keyboard
+            // This is to avoid accidentally splitting the actual contents
+            ,tmpColDelim = String.fromCharCode(11) // vertical tab character
+            ,tmpRowDelim = String.fromCharCode(0) // null character
+
+            // actual delimiter characters for CSV format
+            ,colDelim = '","'
+            ,rowDelim = '"\r\n"';
+
+            // Grab text from table into CSV formatted string
+            var csv = '"';
+            csv += formatRows($headers.map(grabRow));
+            csv += rowDelim;
+            csv += formatRows($rows.map(grabRow)) + '"';
+
+            // Data URI
+            var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+        // For IE (tested 10+)
+        if (window.navigator.msSaveOrOpenBlob) {
+            var blob = new Blob([decodeURIComponent(encodeURI(csv))], {
+                type: "text/csv;charset=utf-8;"
+            });
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            $(this)
+                .attr({
+                    'download': filename
+                    ,'href': csvData
+                    //,'target' : '_blank' //if you want it to open in a new window
+            });
+        }
+
+        //------------------------------------------------------------
+        // Helper Functions 
+        //------------------------------------------------------------
+        // Format the output so it has the appropriate delimiters
+        function formatRows(rows){
+            return rows.get().join(tmpRowDelim)
+                .split(tmpRowDelim).join(rowDelim)
+                .split(tmpColDelim).join(colDelim);
+        }
+        // Grab and format a row from the table
+        function grabRow(i,row){
+             
+            var $row = $(row);
+            //for some reason $cols = $row.find('td') || $row.find('th') won't work...
+            var $cols = $row.find('td'); 
+            if(!$cols.length) $cols = $row.find('th');  
+
+            return $cols.map(grabCol)
+                        .get().join(tmpColDelim);
+        }
+        // Grab and format a column from the table 
+        function grabCol(j,col){
+            var $col = $(col),
+                $text = $col.text();
+
+            return $text.replace('"', '""'); // escape double quotes
+
+        }
+    }
+
+
+    // This must be a hyperlink
+    $("#export").click(function (event) {
+        // var outputFile = 'export'
+        var month = window.prompt("Which month do you want to export data from? (Please give the full name of the month and capitalize the first letter of the month.)") || 'export';
+         
+        // CSV
+        exportTableToCSV.apply(this, [$('#csv' + month + ' > table'), month+'_employees.csv']);
+        
+        // IF CSV, don't do event.preventDefault() or return false
+        // We actually need this to be a typical hyperlink
+    });
+
+    $("#exportAll").click(function (event) {
+        // CSV
+        exportTableToCSV.apply(this, [$('#csvAll > table'), 'all_employees.csv']);
+        
+        // IF CSV, don't do event.preventDefault() or return false
+        // We actually need this to be a typical hyperlink
+    });
+});
+</script>
+
+
+{{carbon_employer_script|safe}}
+{{calories_employer_script|safe}}
+{{change_script|safe}}
+
+{% endblock %}
+
+{% block body %}
+
+{% load absolutely %}
+{% load humanize %}
+
+<div class="row clearfix">
+    <div class="col-sm-12 column">
+        <center>
+          <h1><strong>{{employer.name}}</strong></h1>
+          {% if company.nr_members %}
+          <p>{{company.nr_members | intcomma}} team members eligible to participate</p>
+          {% elif company.nr_employees %}
+          <p>{{company.nr_employees | intcomma}} employees eligible to participate</p>
+          {% endif %}
+        </center>
+    </div>
+</div>
+
+<div class="col-sm-12 column">
+  <div>
+
+    <!-- tabs -->
+    <ul class="nav nav-pills" role="tablist">
+      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="pill">Home</a></li>
+      <li role="presentation"><a href="#statistics" aria-controls="statistics" role="tab" data-toggle="pill">Statistics</a></li>
+      <li role="presentation"><a href="#individual_surveys" aria-controls="individual_surveys" role="tab" data-toggle="pill">Individual Surveys</a></li>
+      <li role="presentation"><a href="#comments" aria-controls="comments" role="tab" data-toggle="pill">Comments</a></li>
+    </ul>
+
+    <!-- data -->
+    <div class="tab-content">
+
+      <div role="tabpanel" class="tab-pane active" id="home">
+        <h1>Welcome, {{employer.name}}!</h1>
+	  <p style="font-size:160%">Here, you will find overall statistics on your company, as well as survey data from individual employees (if they chose to share with you). Thank you for participating in Walk/Ride Day!<p>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="statistics">
+	<div class="container">
+          <ul class="nav nav-tabs">
+			<li class="active">
+			  {% for month in months %}
+				{% if month = current_month %}
+				  <li class="active"><a href="#{{month}}" data-toggle="tab">{{month}}</a></li>
+				{% else %}
+				  <li><a href="#{{month}}" data-toggle="tab">{{month}}</a></li>
+				{% endif %}
+			  {% endfor %}
+			</li>
+		  </ul>
+
+		  <div class="col-sm-6 column">
+		    <div class="tab-content ">
+			  {% for month, data in all_months_data.items %}
+			  {% if month = current_month %}
+			  <div class="tab-pane active" id="{{month}}">
+		      {% else %}
+			  <div class="tab-pane" id="{{month}}">
+		      {% endif %}
+
+				<div class="container">
+				  <h1>Statistics for {{month}}</h1>
+          {{data.employer_info.count}} check-in(s) are not shown in Individual Surveys,<br>
+          but their data is used to compute overall statistics.
+				  <h2>{{data.employer_info.num_checkins}}</h2><h4>Check-Ins ({{data.employer_info.percent_participation | floatformat:"0" }}% Participation)</h4>
+				  <h2>{{data.employer_info.total_calories | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on Walk-Ride Day</h4>
+				  <h2>{{data.employer_info.total_carbon | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>
+				  <h2>{{data.employer_info.total_C02 | floatformat:"0" }} kg</h2><h4>Total CO2 Saved On Walk-Ride Day </h4>(Compared to Only Driving Alone On a Normal Day)
+				  <h2>{{data.employer_info.total_calories_n | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on a Normal Day</h4>
+          <h2>{{data.employer_info.total_carbon_n | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on a Normal Day</h4>
+          <br>
+				  <h4>Walk Ride Day Commute</h4>
+				  <table class="table table-hover table-bordered" style="width:40%">
+					<tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+					{% for mode, leg in data.employer_legs_wr.items %}
+					<tr><td>{{mode}}</td><td>{{leg.people}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+					  <td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+					{% endfor %}
+				  </table>
+				  <h4>Normal Commute</h4>
+				  <table class="table table-hover table-bordered" style="width:40%">
+					<tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+					{% for mode, leg in data.employer_legs_n.items %}
+		  			  <tr><td>{{mode}}</td><td>{{leg.people}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+						<td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+					{% endfor %}
+				  </table>
+				</div>
+
+			  </div>
+			  {% endfor %}
+
+		    </div>
+		  </div>
+
+		  <div class="col-sm-6 column">
+		    <br>
+		    <h1>Cumulative Statistics for {{year}}</h1>
+        {{all_count}} check-in(s) are not shown in Individual Surveys,
+        <br>but their data is used to compute overall statistics.
+		    <h2>{{cumulative.num_checkins}}</h2><h4>Check-Ins</h4>
+		    <h2>{{cumulative.calories_wr | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on Walk-Ride Day</h4>
+		    <h2>{{cumulative.carbon_wr | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on Walk-Ride Day</h4>
+		    <h2>{{cumulative.carbon_saved | floatformat:"0" }} kg</h2><h4>Total CO2 Saved On Walk-Ride Day </h4>(Compared to Only Driving Alone On a Normal Day)
+		    <h2>{{cumulative.calories_n | floatformat:"0" }} kcal</h2><h4>Total Calories Burned on a Normal Day</h4>
+		    <h2>{{cumulative.carbon_n | floatformat:"0" }} kg</h2><h4>Total CO2 Emitted on a Normal Day</h4>
+        <br>
+		    <h4>Walk Ride Day Commute</h4>
+		    <table class="table table-hover table-bordered" style="width:40%">
+			  <tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+			  {% for mode, leg in cumulative.all_legs_wr.items %}
+			  <tr><td>{{mode}}</td><td>{{leg.people}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+				  <td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+			  {% endfor %}
+		    </table>
+		    <h4>Normal Commute</h4>
+		    <table class="table table-hover table-bordered" style="width:40%">
+			  <tr><th>Mode</th><th>Number of People</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+			  {% for mode, leg in cumulative.all_legs_n.items %}
+			    <tr><td>{{mode}}</td><td>{{leg.people}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+					<td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+			  {% endfor %}
+		    </table>
+		  </div>
+	    </div>
+
+	    <div class="container">
+	      {{carbon_employer_div|safe}}<br>
+		  {{calories_employer_div|safe}}<br>
+	      {{change_div|safe}}
+	    </div>
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="individual_surveys">
+
+		<div class="container">
+      <h3><font color="green">GREEN</font>: positive (healthy and/or green) change</h3><br>
+
+		  <ul class="nav nav-tabs">
+			<li class="active">
+			  {% for month in months %}
+				{% if month = current_month %}
+				<li class="active"><a href="#{{month}}survey" data-toggle="tab">{{month}}</a></li>
+				{% else %}
+				<li><a href="#{{month}}survey" data-toggle="tab">{{month}}</a></li>
+				{% endif %}
+			  {% endfor %}
+				<li><a href="#cumulativesurvey" data-toggle="tab">All Months for {{year}}</a></li>
+			</li>
+		  </ul>
+
+		  <div class="tab-content ">
+			{% for month, data in all_months_data.items %}
+
+	        {% if month = current_month %}
+	        <div class="tab-pane active" id="{{month}}survey">
+	        {% else %}
+	        <div class="tab-pane" id="{{month}}survey">
+	        {% endif %}
+
+            <div id="csv{{month}}">
+              <div class="button">
+                  <a href="#" id ="export" role="button">Export names, emails, and change type of all participants for this month into a CSV File</a>
+              </div>
+              <br>
+              <table id="employeeTable" style="display:none">
+                <tr><th>Last Name</th><th>First Name</th><th>Email</th><th>Change Type</th></tr>
+                  {% for letter, employees in data.employees_by_letter.items %}
+                  {% for employee in employees %}
+                    <tr><td>{{employee.last}}</td><td>{{employee.first}}</td><td>{{employee.email}}</td><td>{{employee.change_type}}</td></tr>
+                  {% endfor %}
+                  {% endfor %}
+                <tr></tr>
+              </table>
+            </div>
+
+            {{data.employer_info.count}} check-in(s) are not shown in Individual Surveys, but their data is used to compute overall statistics.
+
+	          <div id="letters" class="container">
+	      		<ul class="nav nav-tabs">
+				  <li class="active">
+		  			{% for letter in letters %}
+		  			<li><a href="#{{letter}}{{month}}" data-toggle="tab">{{letter}}</a></li>
+		  			{% endfor %}
+		  			<li class="active"><a href="#show_all{{month}}" data-toggle="tab">Show All</a></li>
+		 		  </li>
+	       		</ul>
+
+	       		<div class="tab-content ">
+		
+	         	  {% for letter, employees in data.employees_by_letter.items %}
+		   		  <div class="tab-pane" id="{{letter}}{{month}}">
+		     		<div class="tabbable">
+		       		  <ul class="nav nav-pills nav-stacked col-md-3">
+			 		  {% for employee in employees %}
+		         		<li><a href="#{{employee.id}}{{month}}" data-toggle="tab"><h3 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h3></a></li>
+			 		  {% endfor %}
+					  </ul>
+
+		       		  <div class="tab-content col-md-9 minHeight">
+			 	        {% for employee in employees %}
+		                <div class="tab-pane mSidebar" id="{{employee.id}}{{month}}">
+			 			  <h3>{{employee.last}}, {{employee.first}}</h3>
+			 			  <table class="table">
+                            <tr><th>Email</th><td>{{employee.email}}</td></tr>
+                            <tr><th>Total Carbon Change</th><td>{{employee.carbon_change | floatformat:"0" }} kg</td></tr>
+                            <tr><th>Total Calorie Change</th><td>{{employee.calorie_change | floatformat:"0" }} kcal</td></tr>
+                            <tr><th>Change Type</th><td>{{employee.change_type}}</td></tr>
+                          </table>
+                          <h4>Walk Ride Day Commute</h4>
+                          <table class="table table-hover table-bordered">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                {% for dir in employee.leg_dirs_wrd %}
+                                <th>{{dir}}</th>
+                                {% endfor %}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <th scope="row">Mode</th>
+                                {% for mode in employee.leg_modes_wrd %}
+                                <td>{{mode}}</td>
+                                {% endfor %}
+                              </tr>
+                              <tr>
+                                <th scope="row">Duration</th>
+                                {% for min in employee.leg_mins_wrd %}
+                                <td>{{min | floatformat:"0" }} min</td>
+                                {% endfor %}
+                              </tr>
+                              <tr>
+                              <th scope="row">Calories Burned</th>
+                              {% for cal in employee.leg_kcals_wrd %}
+                              <td>{{cal | floatformat:"0" }} kcal</td>
+                              {% endfor %}
+                              </tr>
+                              <tr>
+                              <th scope="row">Carbon Dioxide Emitted</th>
+                              {% for carb in employee.leg_carbon_wrd %}
+                              <td>{{carb | floatformat:"0" }} kg</td>
+                              {% endfor %}
+                              </tr>
+                            </tbody>
+                          </table>
+                          <h4>Normal Commute</h4>
+                          <table class="table table-hover table-bordered">
+                            <thead>
+                            <tr>
+                            <th></th>
+                            {% for dir in employee.leg_dirs_n %}
+                              <th>{{dir}}</th>
+                            {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                              <th scope="row">Mode</th>
+                              {% for mode in employee.leg_modes_n %}
+                            <td>{{mode}}</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Duration</th>
+                              {% for min in employee.leg_mins_n %}
+                            <td>{{min | floatformat:"0" }} min</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Calories Burned</th>
+                              {% for cal in employee.leg_kcals_n %}
+                            <td>{{cal | floatformat:"0" }} kcal</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Carbon Dioxide Emitted</th>
+                              {% for carb in employee.leg_carbon_n %}
+                            <td>{{carb | floatformat:"0" }} kg</td>
+                              {% endfor %}
+                            </tr>
+                            </tbody>
+                          </table>
+            			  <hr>
+			            </div>
+			            {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+		          {% endfor %}
+
+            	  <div class="tab-pane active" id="show_all{{month}}">
+		            <div class="tabbable">
+                      <ul class="nav nav-pills nav-stacked col-md-3">
+                      {% for employee in data.employees_by_letter.all %}
+                        <li><a href="#all{{employee.id}}{{month}}" data-toggle="tab"><h4 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h4></a></li>
+                      {% endfor %}
+                      </ul>
+
+                      <div class="tab-content col-md-9 minHeight">
+                      {% for letter, employees in data.employees_by_letter.items %}
+                      {% for employee in employees %}
+                        <div class="tab-pane mSidebar" id="all{{employee.id}}{{month}}">
+                          <h3>{{employee.last}}, {{employee.first}}</h3>
+                          <table class="table">                       
+                          <tr><th>Email</th><td>{{employee.email}}</td></tr>
+                          <tr><th>Total Carbon Change</th><td>{{employee.carbon_change | floatformat:"0" }} kg</td></tr>
+                          <tr><th>Total Calorie Change</th><td>{{employee.calorie_change | floatformat:"0" }} kcal</td></tr>
+                          <tr><th>Change Type</th><td>{{employee.change_type}}</td></tr>
+                          </table>
+			              <h4>Walk Ride Day Commute</h4>
+                          <table class="table table-hover table-bordered">
+                          <thead>
+                            <tr>
+                            <th></th>
+                            {% for dir in employee.leg_dirs_wrd %}
+                              <th>{{dir}}</th>
+                            {% endfor %}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th scope="row">Mode</th>
+                              {% for mode in employee.leg_modes_wrd %}
+                            <td>{{mode}}</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Duration</th>
+                              {% for min in employee.leg_mins_wrd %}
+                            <td>{{min | floatformat:"0" }} min</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Calories Burned</th>
+                              {% for cal in employee.leg_kcals_wrd %}
+                            <td>{{cal | floatformat:"0" }} kcal</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Carbon Dioxide Emitted</th>
+                              {% for carb in employee.leg_carbon_wrd %}
+                            <td>{{carb | floatformat:"0" }} kg</td>
+                              {% endfor %}
+                            </tr>
+                          </tbody>
+                          </table>
+			              <h4>Normal Commute</h4>
+                          <table class="table table-hover table-bordered">
+                          <thead>
+                            <tr>
+                            <th></th>
+                            {% for dir in employee.leg_dirs_n %}
+                              <th>{{dir}}</th>
+                            {% endfor %}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th scope="row">Mode</th>
+                              {% for mode in employee.leg_modes_n %}
+                            <td>{{mode}}</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Duration</th>
+                              {% for min in employee.leg_mins_n %}
+                            <td>{{min | floatformat:"0" }} min</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Calories Burned</th>
+                              {% for cal in employee.leg_kcals_n %}
+                            <td>{{cal | floatformat:"0" }} kcal</td>
+                              {% endfor %}
+                            </tr>
+                            <tr>
+                              <th scope="row">Carbon Dioxide Emitted</th>
+                              {% for carb in employee.leg_carbon_n %}
+                            <td>{{carb | floatformat:"0" }} kg</td>
+                              {% endfor %}
+                            </tr>
+                          </tbody>
+                          </table>
+			              <hr>
+			            </div>
+			            {% endfor %}
+			            {% endfor %}
+                      </div>
+		            </div>
+                  </div>  <!-- ends show all div -->
+            	  
+		        </div>  <!-- ends div class="tab-content "> -->
+
+              </div>
+	        </div>
+            {% endfor %}
+
+
+
+	        <div class="tab-pane" id="cumulativesurvey">
+
+            <div id="csvAll">
+              <div class="button">
+                  <a href="#" id ="exportAll" role="button">Export names, emails, and change type of all participants for all months into a CSV File</a>
+              </div>
+              <br>
+              <table id="employeeTable" style="display:none">
+                <tr><th>Last Name</th><th>First Name</th><th>Email</th><th>Change Type</th></tr>
+                  {% for letter, employees in employees_totals_by_letter.items %}
+                  {% for employee in employees %}
+                    {% if employee.color == "green" %}
+                      <tr><td>{{employee.last}}</td><td>{{employee.first}}</td><td>{{employee.email}}</td><td>Positive</td></tr>
+                    {% else %}
+                      <tr><td>{{employee.last}}</td><td>{{employee.first}}</td><td>{{employee.email}}</td><td>None/Negative</td></tr>
+                    {% endif %}
+                  {% endfor %}
+                  {% endfor %}
+                <tr></tr>
+              </table>
+            </div>
+
+        {{all_count}} check-in(s) are not shown in Individual Surveys, but their data is used to compute overall statistics.
+
+	          <div id="letters" class="container">
+	      		<ul class="nav nav-tabs">
+				  <li class="active">
+		  			{% for letter in letters %}
+		  			<li><a href="#{{letter}}cumulative" data-toggle="tab">{{letter}}</a></li>
+		  			{% endfor %}
+		  			<li class="active"><a href="#show_all_cumulative" data-toggle="tab">Show All</a></li>
+		 		  </li>
+	       		</ul>
+
+	       		<div class="tab-content ">
+		
+	         	  {% for letter, employees in employees_totals_by_letter.items %}
+		   		  <div class="tab-pane" id="{{letter}}cumulative">
+		     		<div class="tabbable">
+		       		  <ul class="nav nav-pills nav-stacked col-md-3">
+			 		  {% for employee in employees %}
+		         		<li><a href="#cumulative{{employee.id}}" data-toggle="tab"><h3 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h3></a></li>
+			 		  {% endfor %}
+					  </ul>
+
+		       		  <div class="tab-content col-md-9 minHeight">
+			 	        {% for employee in employees %}
+		                <div class="tab-pane mSidebar" id="cumulative{{employee.id}}">
+                      <h3>{{employee.last}}, {{employee.first}}</h3>
+			 			  <table class="table">
+                          <tr><th>Number of Check-ins This Year</th><td>{{employee.num_checkins}}</td></tr>   
+                          <tr><th>Email</th><td>{{employee.email}}</td></tr>
+                          <tr><th>Total Carbon Change</th><td>{{employee.carbon_change | floatformat:"0" }} kg</td></tr>
+                          <tr><th>Total Calorie Change</th><td>{{employee.calorie_change | floatformat:"0" }} kcal</td></tr>
+			    </table>
+			    <h4>Walk Ride Day</h4>
+			    <table class="table table-hover table-bordered">
+				  <tr><th>Mode</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+				  {% for leg in employee.legs_wr %}
+				  <tr><td>{{leg.mode}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+					  <td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+				  {% endfor %}
+			    </table>
+			    <h4>Normal Commute</h4>
+			    <table class="table table-hover table-bordered">
+				  <tr><th>Mode</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+				  {% for leg in employee.legs_n %}
+				    <tr><td>{{leg.mode}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+						<td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+				  {% endfor %}
+			    </table>
+            			  <hr>
+			            </div>
+			            {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+		          {% endfor %}
+
+            	  <div class="tab-pane active" id="show_all_cumulative">
+		            <div class="tabbable">
+                      <ul class="nav nav-pills nav-stacked col-md-3">
+                      {% for employee in employees_totals_by_letter.all %}
+                        <li><a href="#cumulativeall{{employee.id}}" data-toggle="tab"><h4 style="color: {{employee.color}}">{{employee.last}}, {{employee.first}}</h4></a></li>
+                      {% endfor %}
+                      </ul>
+
+                      <div class="tab-content col-md-9 minHeight">
+                      {% for letter, employees in employees_totals_by_letter.items %}
+                      {% for employee in employees %}
+                        <div class="tab-pane mSidebar" id="cumulativeall{{employee.id}}">
+                          <h3>{{employee.last}}, {{employee.first}}</h3>
+                          <table class="table">
+                          <tr><th>Number of Check-ins This Year</th><td>{{employee.num_checkins}}</td></tr>   
+                          <tr><th>Email</th><td>{{employee.email}}</td></tr>
+                          <tr><th>Total Carbon Change</th><td>{{employee.carbon_change | floatformat:"0" }} kg</td></tr>
+                          <tr><th>Total Calorie Change</th><td>{{employee.calorie_change | floatformat:"0" }} kcal</td></tr>
+			  </table>
+			    <h4>Walk Ride Day Commute</h4>
+			    <table class="table table-hover table-bordered">
+				  <tr><th>Mode</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+				  {% for leg in employee.legs_wr %}
+				  <tr><td>{{leg.mode}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+					  <td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+				  {% endfor %}
+			    </table>
+			    <h4>Normal Commute</h4>
+			    <table class="table table-hover table-bordered">
+				  <tr><th>Mode</th><th>Duration</th><th>Calories Burned</th><th>Carbon Dioxide Emitted</th></tr>
+				  {% for leg in employee.legs_n %}
+				    <tr><td>{{leg.mode}}</td><td>{{leg.duration | floatformat:"0" }} min</td>
+						<td>{{leg.calories | floatformat:"0" }} kcal</td><td>{{leg.carbon | floatformat:"0" }} kg</td></tr>
+				  {% endfor %}
+			    </table>
+			              <hr>
+			            </div>
+			            {% endfor %}
+			            {% endfor %}
+                      </div>
+		            </div>
+                  </div>  <!-- ends show all div for cumulative -->
+
+	  </div>
+	  </div> 
+	  </div> 
+        </div>
+        </div>
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="comments">
+
+	<div class="container">
+
+		  <ul class="nav nav-tabs">
+			<li class="active">
+			  {% for month in months %}
+				{% if month = current_month %}
+				<li class="active"><a href="#{{month}}question" data-toggle="tab">{{month}}</a></li>
+				{% else %}
+				<li><a href="#{{month}}question" data-toggle="tab">{{month}}</a></li>
+				{% endif %}
+			  {% endfor %}
+			</li>
+		  </ul>
+
+		  <div class="tab-content ">
+			{% for month, data in all_months_data.items %}
+
+	        {% if month = current_month %}
+	        <div class="tab-pane active" id="{{month}}question">
+	        {% else %}
+	        <div class="tab-pane" id="{{month}}question">
+	        {% endif %}
+
+        <h1>Question of the Month: <i>{{data.question}}</i></h1>
+        <br><br>
+        {% for comment in data.comments %}
+            {{comment}} <hr>
+        {% endfor %}
+	</div>
+       {% endfor %}
+      </div>
+      </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

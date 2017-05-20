@@ -1,0 +1,8 @@
+.mSidebar {
+  position: absolute;
+  top: 0px;
+}
+
+.minHeight {
+	min-height: 1000px;
+}

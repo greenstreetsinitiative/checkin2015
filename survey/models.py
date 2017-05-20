@@ -7,6 +7,8 @@ import datetime
 from datetime import date
 from smart_selects.db_fields import ChainedForeignKey
 from survey.utils import sanely_rounded
+import random, string, os
+
 
 def get_surveys_by_employer(employer, chosenmonth, year):
     if chosenmonth != 'all':
@@ -62,6 +64,8 @@ class Employer(models.Model):
     active2017 = models.BooleanField("2017 Challenge", default=False)
     nochallenge = models.BooleanField("Not In Challenge", default=False)
     sector = models.ForeignKey('Sector', null=True, blank=True)
+    secret_key_3 = models.CharField('Secret Key', max_length=200, default="None")
+
 
     class Meta(object):
         ordering = ['name']
@@ -79,20 +83,38 @@ class Employer(models.Model):
         surveys = get_surveys_by_employer(self, shortmonth, year)
         return surveys.aggregate(Sum('carbon_savings')).values()[0] or 0
 
+    def total_C02_wr(self, shortmonth, year):
+        surveys = get_surveys_by_employer(self, shortmonth, year)
+        return surveys.aggregate(Sum('carbon_total')).values()[0] or 0  
+
+    def total_C02_n(self, shortmonth, year):
+        surveys = get_surveys_by_employer(self, shortmonth, year)
+        return surveys.aggregate(Sum('carbon_total_n')).values()[0] or 0   
+
     def total_calories(self, shortmonth, year):
         """Calculates and returns total calories burned on WR Day"""
         surveys = get_surveys_by_employer(self, shortmonth, year)
         return surveys.aggregate(Sum('calories_total')).values()[0] or 0
 
+    def total_calories_n(self, shortmonth, year):
+        """Calculates and returns total calories burned on N Day"""
+        surveys = get_surveys_by_employer(self, shortmonth, year)
+        return surveys.aggregate(Sum('calories_total_n')).values()[0] or 0
+
     def percent_participation(self, shortmonth, year):
         """Calculates and returns the percentage of employees participating"""
         surveys = get_surveys_by_employer(self, shortmonth, year)
-        return surveys.values('email').distinct().count() / self.nr_employees
+        if self.nr_employees > 0:
+            return surveys.values('email').distinct().count() / self.nr_employees
+        return 0
 
     def average_percent_participation(self, year):
         """Calculates and returns the percentage of employees participating"""
         elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
             wr_day__year=year, open_checkin__lte=date.today())
+        if Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() == 0 or \
+                (self.nr_employees * elapsed_months.count()) == 0:
+            return 0
         return Commutersurvey.objects.filter(employer=self, wr_day_month__in=elapsed_months).count() / \
             (self.nr_employees * elapsed_months.count())
 
@@ -109,6 +131,14 @@ class Employer(models.Model):
             percent = 0.0
         return percent
 
+    def num_already_green(self, shortmonth, year):
+        """Calculates and returns the # of employees who
+        already have a green commute
+        """
+        surveys = get_surveys_by_employer(self, shortmonth, year)
+        already_green = surveys.filter(already_green=True).count()
+        return already_green
+
     def percent_green_switch(self, shortmonth, year):
         """
         Calculates and returns the % of employees who made a green switch
@@ -121,6 +151,14 @@ class Employer(models.Model):
             percent = 0.0
         return percent
 
+    def num_green_switch(self, shortmonth, year):
+        """
+        Calculates and returns the # of employees who made a green switch
+        """
+        surveys = get_surveys_by_employer(self, shortmonth, year)
+        green_switch = surveys.filter(change_type__in=['g', 'p']).count()
+        return green_switch
+
     def percent_healthy_switch(self, shortmonth, year):
         """
         Calculates and returns the % of employees who made a healthy switch
@@ -132,6 +170,14 @@ class Employer(models.Model):
         else:
             percent = 0.0
         return percent
+
+    def num_healthy_switch(self, shortmonth, year):
+        """
+        the # of employees who made a healthy switch
+        """
+        surveys = get_surveys_by_employer(self, shortmonth, year)
+        healthy_switch = surveys.filter(change_type__in=['h', 'p']).count()
+        return healthy_switch
 
 
 class Team(models.Model):
@@ -246,6 +292,12 @@ class Commutersurvey(models.Model):
     carbon_savings = models.FloatField(blank=True, null=True, default=0.0)
     # calories burned on w/r day
     calories_total = models.FloatField(blank=True, null=True, default=0.0)
+    # carbon emitted on wrd
+    carbon_total = models.FloatField(blank=True, null=True, default=0.0)
+    # carbon emitted on normal day
+    carbon_total_n = models.FloatField(blank=True, null=True, default=0.0)
+    # calories burned on a normal day
+    calories_total_n = models.FloatField(blank=True, null=True, default=0.0)
 
     class Meta:
         unique_together = ("email", "wr_day_month")
@@ -307,6 +359,7 @@ class Commutersurvey(models.Model):
             elif leg.day == 'w':
                 wr_day_carbon += leg.carbon
         carbon_saved = normal_car_carbon - wr_day_carbon
+        print normal_car_carbon
         return sanely_rounded(carbon_saved)
 
     def calories_totalled(self):
@@ -315,6 +368,53 @@ class Commutersurvey(models.Model):
         wr_day_calories = self.leg_set.only('calories').filter(
             day='w').aggregate(Sum('calories'))['calories__sum']
         return wr_day_calories
+
+    def calories_totalled_n(self):
+        """Returns the total amount of calories burned on a normal day"""
+        n_day_calories = 0.000
+        n_day_calories = self.leg_set.only('calories').filter(
+            day='n').aggregate(Sum('calories'))['calories__sum']
+        return n_day_calories
+
+    def carbon_totalled(self):
+        """Returns the total amount of carbon (kg) emitted due to wrday"""
+        wr_day_carbon = 0.000
+        wr_day_carbon = self.leg_set.only('carbon').filter(
+            day='w').aggregate(Sum('carbon'))['carbon__sum']
+        return wr_day_carbon
+
+    def carbon_totalled_n(self):
+        """Returns the total amount of carbon emitted due on a normal day"""
+        n_day_carbon = 0.000
+        n_day_carbon = self.leg_set.only('carbon').filter(
+            day='n').aggregate(Sum('carbon'))['carbon__sum']
+        return n_day_carbon
+
+    def get_legs(self):
+        """returns mode, calories, carbon, duration, direction for each leg"""
+        legs = self.leg_set.all()
+        n_legs = []
+        wr_legs = []
+        directions = {'tw': 'to work', 'fw': 'from work'}
+        for leg in legs:
+            leg_info = {'mode': leg.mode.name, 'duration': leg.duration, 'calories': leg.calories, 'carbon': leg.carbon, 'direction': directions[leg.direction]}
+            if leg.day == 'n':
+                n_legs.append(leg_info)
+            if leg.day == 'w':
+                wr_legs.append(leg_info)
+        return n_legs, wr_legs
+
+    def get_legs_objects(self):
+        """used for tables"""
+        legs = self.leg_set.only().all()
+        n_legs_objects = []
+        w_legs_objects = []
+        for leg in legs:
+            if leg.day == "n":
+                n_legs_objects.append(leg)
+            elif leg.day == "w":
+                w_legs_objects.append(leg)
+        return [n_legs_objects, w_legs_objects]
 
 
     def save(self, *args, **kwargs):
@@ -333,7 +433,10 @@ class Commutersurvey(models.Model):
         self.change_type = self.change_analysis()
         self.already_green = self.check_green()
         self.carbon_savings = sanely_rounded(self.carbon_saved())
+        self.carbon_total = self.carbon_totalled()
+        self.carbon_total_n = self.carbon_totalled_n()
         self.calories_total = self.calories_totalled()
+        self.calories_total_n = self.calories_totalled_n()
         super(Commutersurvey, self).save(*args, **kwargs)
 
 
@@ -412,6 +515,11 @@ class QuestionOfTheMonth(models.Model):
     def __unicode__(self):
         return u"%s (%s)" % (self.value, self.wr_day_month)
 
+class EmployerMonthInfo(models.Model):
+    month = models.TextField(blank=False, default='00')
+    year = models.PositiveIntegerField(blank=False, default=0)
+    employer_id = models.TextField(blank=False, default='none')
+    dict_data = models.TextField(blank=True, default='')
 
 class MonthlyQuestion(models.Model):
 

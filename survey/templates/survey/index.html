@@ -18,7 +18,7 @@
 
         <p>Walk/Ride Days take place on the last Friday of each month, and provide a shared day for everyone in the community to celebrate, try out, or just think about healthy, environmentally sustainable commuting options.</p>
 
-        <p>Don’t work on Fridays? Check in your commute for another day! You can check in as early as the Monday prior or as late as the Monday after Walk/Ride Day.</p>
+        <p>Don’t work on Fridays? Check in another day! You can check in as early as the Monday prior or as late as the Monday after Walk/Ride Day.</p>
 
         <hr class="lite">
 
@@ -26,15 +26,16 @@
 
         <hr class="lite">
 
-        <p>Your completion of this month's Walk/Ride Day check-in helps us see the greater impact of our initiative, and it only takes a few steps! After you submit your check-in, you will get a confirmation email that you can use to pick up rewards at our <a href="http://checkinapp-greenstreets.rhcloud.com/retail/">local Retail Partners</a> and also be automatically entered into <a href="http://gogreenstreets.org/months-raffle-prizes">this month's raffle</a>!</p>
+        <p>Your completion of this month's Walk/Ride Day check-in helps us see the greater impact of our initiative, and it only takes a few steps! After completion, you will get a confirmation email you can show when picking up rewards at our <a href="http://checkinapp-greenstreets.rhcloud.com/retail/">local Retail Partners.</a> You’ll also be automatically entered into <a href="http://gogreenstreets.org/months-raffle-prizes">this month's raffle!</a></p>
 
-        <p>And, if your company is participating in the <a href="http://gogreenstreets.org/2016-walkride-day-corporate-challenge">Corporate Challenge</a>, your monthly Walk/Ride Day check-ins from April through October will count towards your company's standings.</p>
+        {% if competition_in_progress %}
+          <p>If your company is participating in this year’s <a href="http://gogreenstreets.org/walkride-day-corporate-challenge">Corporate Challenge</a>, make sure you list them as your employer. Your monthly check-ins will count towards your company's standings!</p>
+        {% else %}
+          <p><i>Your monthly check-ins will count towards your company's standings.</i></p>
+        {% endif %}
 
-        <p>For background on Walk/Ride Day and the Green Streets Initiative, visit <a href="http://www.gogreenstreets.org/">www.gogreenstreets.org</a>.</p>
-
-        <p>Your check-ins will be faster if you use the same web browser and device for your monthly check-ins.</p>
-        <p>Thank you for checking in and for advancing sustainable transportation.</p>
-
+        <p>Checking in will be faster if you use the same web browser and device each month.</p>
+        <p>Thank you for checking in and for advancing sustainable transportation!</p>
       </div>
     </div>
   </section>

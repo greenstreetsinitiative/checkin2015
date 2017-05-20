@@ -10,7 +10,8 @@ from django.db.models import Sum, Count
 from django.forms import ModelForm
 
 
-from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, MonthlyQuestion
+
+from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, MonthlyQuestion, EmployerMonthInfo
 
 # disable deletion of records
 admin.site.disable_action('delete_selected')
@@ -46,8 +47,8 @@ export_as_csv.short_description = "Export selected rows as csv file"
 class EmployerAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_display_links = ['id']
-    list_display = ['id', 'name', 'sector', 'nochallenge', 'active2015', 'active2016', 'active2017', 'nr_employees']
-    list_editable = ['name', 'sector', 'nr_employees', 'nochallenge', 'active2016', 'active2017']
+    list_display = ['id', 'name', 'sector', 'nochallenge', 'active2015', 'active2016', 'active2017', 'nr_employees', 'secret_key_3']
+    list_editable = ['name', 'sector', 'nr_employees', 'nochallenge', 'active2016', 'active2017', 'secret_key_3']
     actions = [export_as_csv]
 
 class CommutersurveyAdmin(admin.ModelAdmin):
@@ -87,6 +88,10 @@ class SectorAdmin(admin.ModelAdmin):
     list_editable = ['name']
     actions = [export_as_csv]
 
+class EmployerMonthInfoAdmin(admin.ModelAdmin):
+    list_display = ['employer_id', 'month', 'year']
+    actions = [export_as_csv]
+
 # add admin configuration for QOTM
 class QOTMAdmin(admin.ModelAdmin):
     list_display = ['id', 'wr_day_month', 'value']
@@ -108,4 +113,5 @@ admin.site.register(Mode, ModeAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Sector, SectorAdmin)
 admin.site.register(QuestionOfTheMonth, QOTMAdmin)
+admin.site.register(EmployerMonthInfo, EmployerMonthInfoAdmin)
 admin.site.register(MonthlyQuestion, MonthlyQuestionAdmin)

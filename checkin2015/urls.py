@@ -10,7 +10,7 @@ urlpatterns = patterns(
     '',
 
     # Home
-    url(r'^$', TemplateView.as_view(template_name='survey/index.html'), name='home'),
+    url(r'^$', 'survey.views.index', name='home'),
 
     # Checkin page
     url(r'^checkin/$', 'survey.views.add_checkin', name='commuterform'),
@@ -53,7 +53,13 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 
     # Retail Partners
-    url(r'^retail/$', include('retail.urls', namespace='retail'))
+    url(r'^retail/$', include('retail.urls', namespace='retail')),
+
+    # Employer Information Page
+    url(r'^employers/(?P<secret_code>\w+)/(?P<year>[0-9]{4})/$', 'leaderboard.views.info', name="info"),
+
+    # Render data for all months for Employer Information Page
+    url(r'^render/(?P<employerid>[\w\.-]*)/(?P<shouldreplace>\w+)/$', 'leaderboard.views.render', name="render"),
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
