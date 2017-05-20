@@ -50,7 +50,11 @@ def render_month_data(employer, month, year):
 
     questions = MonthlyQuestion.objects.filter(wr_day_month=month_class)
     for q in questions:
-        question = question + ", " + q.question
+        if q.question.strip() == '':
+            continue
+        if question != '':
+            question += ", "
+        question += q.question
 
 
     surveys = get_surveys_by_employer(employer, month, year)  #8, 2016
