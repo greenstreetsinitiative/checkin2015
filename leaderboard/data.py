@@ -230,7 +230,7 @@ def get_month_data(employer, month, year, replace=False):
     now = datetime.datetime.now()
     try:
         month_info = EmployerMonthInfo.objects.get(employer_id=employer.id, month=month, year=year)
-        if year==now.year and (int(month)==now.month or int(month)==now.month-1):
+        if int(year)==now.year and (int(month)==now.month or int(month)==now.month-1):
             return save_month_data(employer, month, year)
         else:
             return json.loads(month_info.dict_data)
