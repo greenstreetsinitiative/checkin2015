@@ -235,11 +235,11 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
         # Filtering the results by size
         if size == 'small':
-            companies = companies.filter(nr_employees__lte=37)
+            companies = companies.filter(nr_employees__lte=39)
         elif size == 'medium':
-            companies = companies.filter(nr_employees__gt=37,nr_employees__lte=80)
+            companies = companies.filter(nr_employees__gt=39,nr_employees__lte=100)
         elif size == 'large':
-            companies = companies.filter(nr_employees__gt=80,nr_employees__lte=800)
+            companies = companies.filter(nr_employees__gt=100,nr_employees__lte=800)
         elif size == 'largest':
             companies = companies.filter(nr_employees__gt=800)
 
@@ -286,9 +286,9 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     sectors_dict = dict(Sector.objects.values_list('short','name'))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
     sizes_arr = [
-      ('small', 'Small (fewer than 38)'),
-      ('medium', 'Medium (38 to 80)'),
-      ('large', 'Large (81 to 800)'),
+      ('small', 'Small (fewer than 40)'),
+      ('medium', 'Medium (40 to 100)'),
+      ('large', 'Large (101 to 800)'),
       ('largest', 'Largest (800+ employees)')
     ]
 
