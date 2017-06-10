@@ -235,13 +235,13 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
         # Filtering the results by size
         if size == 'small':
-            companies = companies.filter(nr_employees__lte=50)
+            companies = companies.filter(nr_employees__lte=37)
         elif size == 'medium':
-            companies = companies.filter(nr_employees__gt=50,nr_employees__lte=300)
+            companies = companies.filter(nr_employees__gt=37,nr_employees__lte=80)
         elif size == 'large':
-            companies = companies.filter(nr_employees__gt=300,nr_employees__lte=2000)
+            companies = companies.filter(nr_employees__gt=80,nr_employees__lte=800)
         elif size == 'largest':
-            companies = companies.filter(nr_employees__gt=2000)
+            companies = companies.filter(nr_employees__gt=800)
 
         # Filtering the results by sector
         if sector != 'all':
@@ -286,10 +286,10 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     sectors_dict = dict(Sector.objects.values_list('short','name'))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
     sizes_arr = [
-      ('small', 'Small (fewer than 50)'),
-      ('medium', 'Medium (51 to 300)'),
-      ('large', 'Large (301 to 2000)'),
-      ('largest', 'Largest (2001+ employees)')
+      ('small', 'Small (fewer than 38)'),
+      ('medium', 'Medium (38 to 80)'),
+      ('large', 'Large (81 to 800)'),
+      ('largest', 'Largest (800+ employees)')
     ]
 
     return render_to_response('leaderboard/leaderboard_new.html',
