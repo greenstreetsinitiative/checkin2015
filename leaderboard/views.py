@@ -207,6 +207,22 @@ def company(request, year=datetime.datetime.now().year, employerid=None, teamid=
                 'overall': overall
             }, context)
 
+
+def getBoundaries(year):
+
+    if int(year) == 2017:
+        return 39, 100, 800
+
+    return 50, 300, 2000
+
+def getLabels(year):
+
+    if int(year) == 2017:
+        return 'Small (fewer than 40)', 'Medium (40 to 100)', 'Large (101 to 800)', 'Largest (800+ employees)'
+
+    return 'Small (fewer than 50)', 'Medium (51 to 300)', 'Large (301 to 2000)', 'Largest (2001+ employees)'
+
+
 def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all', size='all', parentid=None, selected_month='all'):
 
 
@@ -233,15 +249,19 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     else: # this is a bunch of companies
         companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(**{activeFilter: True})
 
+
+        lower, middle, upper = getBoundaries(year)
+
+
         # Filtering the results by size
         if size == 'small':
-            companies = companies.filter(nr_employees__lte=39)
+            companies = companies.filter(nr_employees__lte=lower)
         elif size == 'medium':
-            companies = companies.filter(nr_employees__gt=39,nr_employees__lte=100)
+            companies = companies.filter(nr_employees__gt=lower,nr_employees__lte=middle)
         elif size == 'large':
-            companies = companies.filter(nr_employees__gt=100,nr_employees__lte=800)
+            companies = companies.filter(nr_employees__gt=middle,nr_employees__lte=upper)
         elif size == 'largest':
-            companies = companies.filter(nr_employees__gt=800)
+            companies = companies.filter(nr_employees__gt=upper)
 
         # Filtering the results by sector
         if sector != 'all':
@@ -283,13 +303,15 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
     ranks = calculate_rankings(d)
 
+    labelOne, labelTwo, labelThree, labelFour = getLabels(year)
+
     sectors_dict = dict(Sector.objects.values_list('short','name'))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
     sizes_arr = [
-      ('small', 'Small (fewer than 40)'),
-      ('medium', 'Medium (40 to 100)'),
-      ('large', 'Large (101 to 800)'),
-      ('largest', 'Largest (800+ employees)')
+      ('small', labelOne),
+      ('medium', labelTwo),
+      ('large', labelThree),
+      ('largest', labelFour)
     ]
 
     return render_to_response('leaderboard/leaderboard_new.html',
