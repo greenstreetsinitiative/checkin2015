@@ -223,6 +223,20 @@ def getLabels(year):
     return 'Small (fewer than 50)', 'Medium (51 to 300)', 'Large (301 to 2000)', 'Largest (2001+ employees)'
 
 
+def getOldSectorNames():
+    sectors_dict = {}
+
+    sectors_dict['bb'] = 'Biotech and Banking'
+    sectors_dict['hu'] = 'Hospital and University'
+    sectors_dict['pm'] = 'Public and Municipal'
+    sectors_dict['st'] = 'Sm Technology Co\'s'
+    sectors_dict['ae'] = 'Architecture and Engineering'
+    sectors_dict['ld'] = 'Legal and Development/Education'
+    sectors_dict['tm'] = 'Technology, Energy, Media, Co-Working'
+
+    return sectors_dict
+
+
 def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all', size='all', parentid=None, selected_month='all'):
 
 
@@ -313,6 +327,11 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
       ('large', labelThree),
       ('largest', labelFour)
     ]
+
+
+    if int(year) <= 2016:
+        sectors_dict = getOldSectorNames()
+
 
     return render_to_response('leaderboard/leaderboard_new.html',
         {
