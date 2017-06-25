@@ -192,7 +192,7 @@ def add_checkin(request):
                     initial_commute['team'] = ''
 
         commute_form = CommuterForm(initial=initial_commute)
-        extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute)
+        extra_commute_form = ExtraCommuterForm(initial=initial_extra_commute, label_suffix="")
 
         # TODO: use request session to instantiate the formsets with initial=[{},{},{}...] for each formset
 
