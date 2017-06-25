@@ -279,11 +279,19 @@ class ExtraCommuterForm(forms.Form):
                     choices=questionAnswers,
                 )      
 
-            else:
+            elif(questionType == 5):
                 self.fields[arr[index - 1]] = forms.MultipleChoiceField(
                     label=questionText,
                     required=False,
                     widget=forms.Textarea,
+                    choices=questionAnswers,
+                )
+
+            else:
+                self.fields[arr[index - 1]] = forms.MultipleChoiceField(
+                    label=questionText,
+                    required=False,
+                    widget=forms.HiddenInput,
                     choices=questionAnswers,
                 )
 

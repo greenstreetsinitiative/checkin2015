@@ -433,7 +433,8 @@ class MonthlyQuestion(models.Model):
         (2, 'Vertical Radio Buttons'),
         (3, 'Horizontal Radio Buttons'),
         (4, 'Checkboxes'),
-        (5, 'Extended Response'),
+        (5, 'Extended Text Response'),
+        (6, 'No Response'),
     )
 
     questionType = models.PositiveIntegerField('Type', choices=QOM_TYPES)
