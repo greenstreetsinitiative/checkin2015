@@ -53,7 +53,9 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 
     # Retail Partners
-    url(r'^retail/$', include('retail.urls', namespace='retail'))
+    url(r'^retail/$', include('retail.urls', namespace='retail')),
+
+    url(r'^dashboards/links/prototype$', 'survey.views.c_dash_links', name='dashboardlinks'),
 
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

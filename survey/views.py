@@ -321,3 +321,10 @@ def get_formset_cookies(request):
             legInfo[legset][attr] = [item[1] for item in sorted(legInfo[legset][attr])]
 
     return legInfo
+
+
+def c_dash_links(request):
+                return render_to_response(
+                    'survey/employers.html',
+                    {})
+
