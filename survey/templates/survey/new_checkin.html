@@ -37,7 +37,26 @@
 </div>
 <hr class="green-big">
 {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
-  <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your checkin.</center></div>
+  <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your checkin.</center>
+
+{% if form.errors %}
+  {% for key in form.errors.values %}
+    <br/>
+    <center>
+    {{ key }}
+    </center>
+  {% endfor %}
+{% endif %}
+
+{% if form.errors|length < 1 %}
+    <br/>
+    <center>
+    Please fill in the commute segments.
+    </center>
+{%endif%}
+
+
+  </div>
 {% endif %}
 
 <form name="form" method="post" action="{{request.path}}" class="form-horizontal">
