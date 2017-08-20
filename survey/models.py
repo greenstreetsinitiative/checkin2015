@@ -423,6 +423,7 @@ class MonthlyQuestion(models.Model):
         (3, 3),
         (4, 4),
         (5, 5),
+        (6, 6),
     )
 
     questionNumber = models.PositiveIntegerField('Question Number', choices=QOM_NUMBER, default=1)
@@ -435,6 +436,7 @@ class MonthlyQuestion(models.Model):
         (4, 'Checkboxes'),
         (5, 'Extended Text Response'),
         (6, 'No Response'),
+        (7, 'Single Line Text Response'),
     )
 
     questionType = models.PositiveIntegerField('Type', choices=QOM_TYPES)

@@ -287,14 +287,20 @@ class ExtraCommuterForm(forms.Form):
                     choices=questionAnswers,
                 )
 
-            else:
+            elif(questionType == 6):
                 self.fields[arr[index - 1]] = forms.MultipleChoiceField(
                     label=questionText,
                     required=False,
                     widget=forms.HiddenInput,
                     choices=questionAnswers,
                 )
-
+            else:
+                self.fields[arr[index - 1]] = forms.MultipleChoiceField(
+                    label=questionText,
+                    required=False,
+                    widget=forms.TextInput(attrs={'size': 40}), 
+                    choices=questionAnswers,
+                )
 
 
 
