@@ -226,7 +226,18 @@
       </div>
 
     </div>
+
     <hr class="green">
+
+    {% if extra_form.questionOne %}
+    <div class="row normal-day">
+      <div class="headingthing">
+      <h2>Question of the Month</h2>
+      </div>
+      <p class="opt-out">(Responses are completely anonymous. While answering is optional, your feedback is invaluable, so we encourage you to respond.)</p>
+    </div>
+    {% endif %}
+
     <div class="row">
       <div class="form-group {% if field.errors %}has-error{% endif %}">
 

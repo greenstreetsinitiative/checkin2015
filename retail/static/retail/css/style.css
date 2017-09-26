@@ -2,7 +2,7 @@ body { /* helps not screw up the map */
 	padding: 0;
 	padding-top: 50px;
 	height: 100%; 
-	margin: 0; 
+	margin: 0;
 }
 
 html { /* helps not screw up the map */
@@ -252,12 +252,13 @@ html { /* helps not screw up the map */
 
 @media screen and (orientation:portrait){
 	#map {
-		visibility: hidden;
-		width: 0;
-		height: 0;
+		width:100%;
+		height:45%;
 	}
 	#rightbar {
-		width: 100%;
-		float: left;
+		height:50%;
+		position: absolute;
+		bottom: 10px;
+		overflow:scroll;
 	}
 }

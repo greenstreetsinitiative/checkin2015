@@ -8,10 +8,10 @@
 	<link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-	{% if not isMobile %}
+
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.0/leaflet.awesome-markers.css">
-	{% endif %}
+
 	<link rel="stylesheet" href="{% static 'css/fonts.css' %}" type="text/css" charset="utf-8" />
 	<link rel="stylesheet" href="{% static 'retail/css/style.css' %}">
 	<noscript><style type="text/css">
@@ -27,11 +27,11 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
  	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
  	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	{% if not isMobile %}
+
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 		<script src="http://open.mapquestapi.com/sdk/leaflet/v1.s/mq-map.js?key=Fmjtd%7Cluur2h68n9%2C7x%3Do5-9w2wdz"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.0/leaflet.awesome-markers.min.js"></script>
-	{% endif %}
+
 	{% include 'retail/partnerdata.html' %}
 	<script type="text/javascript" src="{% static 'retail/js/main.js' %}"></script>
 {% endblock %}
