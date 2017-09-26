@@ -404,7 +404,7 @@ class Leg(models.Model):
     def __unicode__(self):
         return u"%s, %s, %s" % (self.mode, self.day, self.direction)
 
-# Model for QuestionOfTheMonth
+# Legacy Model used from 2016 to March 2017. Replaced by MonthlyQuestion
 class QuestionOfTheMonth(models.Model):
     wr_day_month = models.ForeignKey('Month', blank=True, null=True, default=0)
     value = models.TextField(blank=True, null=True, default='')
@@ -412,7 +412,7 @@ class QuestionOfTheMonth(models.Model):
     def __unicode__(self):
         return u"%s (%s)" % (self.value, self.wr_day_month)
 
-
+# This is replacement for QuestionOfTheMonth from April 2017 onwards
 class MonthlyQuestion(models.Model):
 
     wr_day_month = models.ForeignKey('Month', blank=True, null=True, default=0)
@@ -479,3 +479,11 @@ class MonthlyQuestion(models.Model):
         ordering = ('wr_day_month','questionNumber')
 
         unique_together = ("wr_day_month", "questionNumber")
+
+class DonationOrganization(models.Model):
+    wr_day_month = models.ForeignKey("survey.month", unique=True, blank=False, null=False)
+    organization_name = models.TextField(blank=False, null=False, default='')
+    website = models.URLField("Website", blank=True, null=True, default='')
+
+    def __unicode__(self):
+        return u"%s (%s)" % (self.organization_name, self.wr_day_month)

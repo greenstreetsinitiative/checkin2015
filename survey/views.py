@@ -4,7 +4,8 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
-from survey.models import Commutersurvey, Employer, Leg, Month, Team
+from survey.utils import *
+from survey.models import Commutersurvey, Employer, Leg, Month, Team, DonationOrganization
 from survey.forms import CommuterForm, ExtraCommuterForm
 from survey.forms import MakeLegs_NormalTW, MakeLegs_NormalFW, MakeLegs_WRTW, MakeLegs_WRFW
 from survey.forms import NormalFromWorkSameAsAboveForm, WalkRideFromWorkSameAsAboveForm, NormalIdenticalToWalkrideForm
@@ -157,6 +158,14 @@ def add_checkin(request):
 
                 write_formset_cookies(request, leg_formset_WRTW, leg_formset_WRFW, leg_formset_NormalTW, leg_formset_NormalFW)
                 send_email(commutersurvey)
+
+                try:
+                    donation_organization = DonationOrganization.objects.get(wr_day_month=current_or_next_month())
+                except DonationOrganization.DoesNotExist:
+                    donation_organization = None
+
+                month = current_or_next_month()
+
                 return render_to_response(
                     'survey/thanks.html',
                     {
@@ -165,6 +174,8 @@ def add_checkin(request):
                         'calorie_change': commutersurvey.calorie_change,
                         'carbon_savings': commutersurvey.carbon_savings,
                         'change_type': commutersurvey.change_type,
+                        'donation_organization':donation_organization,
+                        'month':month
                     })
             else:
                 pass

@@ -171,6 +171,8 @@ function coordinateDistance(latitude1, longitude1, latitude2, longitude2) {
  *		the user is on a mobile device, list of cities and cateogires.
  */
 var retailPartnerData = function(data, isMobile, isTablet){
+	//Show map for mobile	
+	isMobile = false;
 	var retailPartners = data.concat([]);
 
 	// Create map

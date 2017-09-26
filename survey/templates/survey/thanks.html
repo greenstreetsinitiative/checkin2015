@@ -31,17 +31,35 @@
             <a id="checkin-another" class="btn btn-large btn-primary" href="{% url 'commuterform' %}">Check in another person</a>
             <br><span>Open in an incognito or private window if <strong>on a public computer</strong>. <a href="http://www.wikihow.com/Activate-Incognito-Mode" target="_blank">See how</a>.</span>
           </div>
-          <div>
-            <a class="btn btn-large btn-warning" href="/leaderboard/2017/">View Leaderboard</a>
-            <br>
-          </div>
         </div>
         <hr>
-        <!-- Information about retail partners rewards. Personal codes here? -->
 
-        <p class="lead"><strong>Celebrate with our <a href="{% url 'retail:index' %}">retail partners</a> offering special discounts for Walk/Ride Day participants.</strong></p>
-        <br>
-        <a href="{% url 'retail:index' %}" target="_blank">View our retail map for discounts!</a>
+      <div><a class="btn btn-large btn-success" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRSJK56HBUFPA">DONATE FOR WALK RIDE DAY</a></div>
+
+      {% if donation_organization != None %}
+          {% if donation_organization.website != None and donation_organization.website != "" %}
+            <div>50% of your {{ month }} Walk/Ride Day donation to Green Streets Initiative will  be donated to <a href= {{ donation_organization.website }}>{{ donation_organization.organization_name }}</a></div>
+          {% else %}
+            <div>50% of your {{ month }} Walk/Ride Day donation to Green Streets Initiative will  be donated to {{ donation_organization.organization_name }} </div>
+          {% endif %}
+      {% endif %}
+
+      <hr>
+
+      <div>
+          <div style="display: inline-block">
+          <figure>
+            <a href="/leaderboard/2017/" onclick="ga('send', 'event', 'Leaderboard', 'Action label', 'Action Value');"><img height="200" width="250" src="{% static 'img/Leaderboard.png' %}"></a>
+            <figcaption>Go to Leaderboard</figcaption>
+          </figure>
+          </div>
+          <div style="display: inline-block">
+          <figure>
+            <a href="{% url 'retail:index' %}" onclick="ga('send', 'event', 'Retail Coupon', 'Action label', 'Action Value');"><img height="200" width="250" src="{% static 'img/Coupon.png' %}"></a>
+              <figcaption>Go to Retail Rewards</figcaption>
+          </figure>
+          </div>
+      </div>
       </div>
     </div>
 </section>

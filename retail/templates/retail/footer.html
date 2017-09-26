@@ -7,6 +7,13 @@
 	<p class="footer-link"><a class="modal-link" href="../" target="_blank">Check-In!</a></p>
 	<p class="footer-copyright footer-copyright-desktop">© <a href="http://gogreenstreets.org">Green Streets Initiative</a> {% now "Y" %}<p>
 </div>
+{% else %}
+<div class="footer">
+<p data-toggle="modal" data-target="#joinretailpartners-modal" class="footer-link">Become a retail partner!</p>
+<p class="footer-separator"></p>
+<p class="footer-copyright footer-copyright-mobile">© <a href="http://gogreenstreets.org">Green Streets Initiative</a> {% now "Y" %}<p>
+</div>
+{% endif %}
 
 <!-- Become Retail Partner form -->
 <div class="modal fade" id="joinretailpartners-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -34,7 +41,7 @@
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
@@ -47,7 +54,7 @@
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
@@ -62,12 +69,12 @@
 									<b>2. Spread the Word</b><br>
 									Green Streets will provide you with window decals, business cards, and a flyer template to help advertise your business’s involvement as a Walk/Ride Day retail partner. Please position these materials prominently in your retail location to demonstrate your support for Green Streets and draw customers to your business on Walk/Ride Days. Other methods of promotion are also encouraged.<br><br>
 									<b>3. Reward Participants</b><br>
-									On the last Friday of every month, reward Walk/Ride Day participants with your business’s incentive. In order to qualify, Walk/Ride Day participants will identify themselves as such by showing you a print out of their check-in confirmation; many also stand out from the crowd by wearing green clothing or accessories to mark the occasion, but wearing green isn't actually required! 
+									On the last Friday of every month, reward Walk/Ride Day participants with your business’s incentive. In order to qualify, Walk/Ride Day participants will identify themselves as such by showing you a print out of their check-in confirmation; many also stand out from the crowd by wearing green clothing or accessories to mark the occasion, but wearing green isn't actually required!
 								</div>
 							</div>
 						</div>
 					</div>
-					
+
 					<!-- Contact Information -->
 					<p class="form-control-static"><b>Contact Information</b></p>
 					<p class="form-control-static">This is the information we need to be able to contact you (or your business).</p>
@@ -85,7 +92,7 @@
 						<input type="email" class="form-control" id="contactphone" placeholder="Enter phone number">
 					</div>
 
-					<!-- Business Information -->	
+					<!-- Business Information -->
 					<p class="form-control-static"><b>Business Information</b></p>
 					<p class="form-control-static">This is the information that will be displayed on the retail partners page.</p>
 
@@ -108,7 +115,7 @@
 					<div class="form-group">
 						<label for="exampleInputEmail1">Discount or incentive you're offering</label>
 						<input type="email" class="form-control" id="businessoffer" placeholder="Enter offer">
-					</div>						
+					</div>
 				</form>	<!-- END FORM -->
 			</div>
 			<div class="modal-footer">
@@ -118,10 +125,9 @@
 			</div>
 		</div>
 	</div>
-</div><!-- End Bootstrap Modal -->
-{% else %}
-<p class="footer-copyright footer-copyright-mobile">© <a href="http://gogreenstreets.org">Green Streets Initiative</a> {% now "Y" %}<p>
-{% endif %}
+</div>
+<!-- End Bootstrap Modal -->
+
 <!-- Discount information modal -->
 <div class="modal fade" id="discountinfo-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
   <div class="modal-dialog">

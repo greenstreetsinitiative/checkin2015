@@ -10,7 +10,7 @@ from django.db.models import Sum, Count
 from django.forms import ModelForm
 
 
-from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, MonthlyQuestion
+from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sector, QuestionOfTheMonth, MonthlyQuestion, DonationOrganization
 
 # disable deletion of records
 admin.site.disable_action('delete_selected')
@@ -98,7 +98,10 @@ class MonthlyQuestionAdmin(admin.ModelAdmin):
     list_editable = ['wr_day_month', 'questionNumber', 'questionType', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'answer_5', 'answer_6', 'answer_7', 'answer_8', 'answer_9', 'answer_10', 'answer_11','answer_12' ,'answer_13','answer_14','answer_15']
     actions = [export_as_csv, 'delete_selected']
 
-
+class DonationOrganizationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'wr_day_month', 'organization_name','website']
+    list_editable = ['wr_day_month','organization_name', 'website']
+    actions = [export_as_csv]
 
 admin.site.register(Commutersurvey, CommutersurveyAdmin)
 admin.site.register(Employer, EmployerAdmin)
@@ -109,3 +112,4 @@ admin.site.register(Team, TeamAdmin)
 admin.site.register(Sector, SectorAdmin)
 admin.site.register(QuestionOfTheMonth, QOTMAdmin)
 admin.site.register(MonthlyQuestion, MonthlyQuestionAdmin)
+admin.site.register(DonationOrganization, DonationOrganizationAdmin)
