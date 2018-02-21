@@ -260,14 +260,14 @@ def send_email(commutersurvey):
         '<p>Dear {name},</p><p>Thank you for checking'
         ' in your Walk/Ride Day commute! This email confirms your'
         ' participation in {survey_date}\'s Walk/Ride Day! Feel '
-        'free to show it to our <a href="http://checkinapp'
-        '-greenstreets.rhcloud.com/retail" style="color:'
+        'free to show it to our <a href="http://dashboards'
+        '-greenstreets-app.b9ad.pro-us-east-1.openshiftapps.com/retail/" style="color:'
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
         'company is ranked in the 2017 Walk/Ride Day CORPORATE '
         'CHALLENGE, <a href="http://'
-        'checkinapp-greenstreets.rhcloud.com/leaderboard/2017" '
+        'dashboards-greenstreets-app.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/2017/" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
         '<p>Thank you for being involved! By checking in and '
@@ -279,7 +279,7 @@ def send_email(commutersurvey):
         '-Christy, Director <br>Green Streets Initiative</span><br> '
         '<span class="mobile_link">617-299-1872 (office)</span></p>'
         '<p>Share with your friends and colleagues! '
-        '<a href="http://checkinapp-greenstreets.rhcloud.com/" '
+        '<a href="http://dashboards-greenstreets-app.b9ad.pro-us-east-1.openshiftapps.com/" '
         'style="color: #2ba6cb;text-decoration: none;">Make sure'
         ' they get a chance to check in</p>'.format(
             name=name,
@@ -297,7 +297,7 @@ def send_email(commutersurvey):
     recipient_list = [commutersurvey.email,]
     from_email = 'checkin@gogreenstreets.org'
     send_mail(subject, message_plain, from_email, recipient_list,
-              html_message=message_html, fail_silently=True)
+              html_message=message_html, fail_silently=False)
 
 def write_formset_cookies(request, *args):
     # takes a list of formsets and writes them to the session
