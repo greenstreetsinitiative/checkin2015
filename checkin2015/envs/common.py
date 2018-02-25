@@ -5,6 +5,7 @@ import os
 from django.conf import settings
 from django.conf.urls.static import static
 import django.conf.global_settings as DEFAULT_SETTINGS
+import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -51,7 +52,8 @@ INSTALLED_APPS = (
     'leaderboard',
     'retail',
     'smart_selects',  # for the subteams dropdown functionality
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'raven.contrib.django.raven_compat',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -126,3 +128,7 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 
 USE_DJANGO_JQUERY = False
 JQUERY_URL = 'static/libs/jquery-1.11.0.min.js'
+
+RAVEN_CONFIG = {
+    'dsn': 'https://d2733cbc705d4e3c85982908b480f169:c7c3eb0d9f8d4f788b6fe38a07c86315@sentry.io/294086',
+}
