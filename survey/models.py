@@ -60,6 +60,7 @@ class Employer(models.Model):
     active2015 = models.BooleanField("2015 Challenge", default=False)
     active2016 = models.BooleanField("2016 Challenge", default=False)
     active2017 = models.BooleanField("2017 Challenge", default=False)
+    active2018 = models.BooleanField("2018 Challenge", default=False)
     nochallenge = models.BooleanField("Not In Challenge", default=False)
     sector = models.ForeignKey('Sector', null=True, blank=True)
 
