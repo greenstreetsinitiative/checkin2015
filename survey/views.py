@@ -297,7 +297,7 @@ def send_email(commutersurvey):
     recipient_list = [commutersurvey.email,]
     from_email = 'checkin@gogreenstreets.org'
     send_mail(subject, message_plain, from_email, recipient_list,
-              html_message=message_html, fail_silently=False)
+              html_message=message_html, fail_silently=True)
 
 def write_formset_cookies(request, *args):
     # takes a list of formsets and writes them to the session
