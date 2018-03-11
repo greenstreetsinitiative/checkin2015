@@ -18,11 +18,8 @@ if ON_OPENSHIFT:
     DB_NAME = os.environ['OPENSHIFT_APP_NAME']
     DB_USER = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
     DB_PASSWORD = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
-    #New environment variables used by Openshift 3
-    DB_HOST = os.environ['POSTGRESQL_SERVICE_HOST']
-    DB_PORT = os.environ['POSTGRESQL_SERVICE_PORT']
-    #DB_HOST = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
-    #DB_PORT = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+    DB_HOST = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
+    DB_PORT = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
 else:
     DB_NAME = os.environ['DB_NAME']
     DB_USER = os.environ['DB_USER']
