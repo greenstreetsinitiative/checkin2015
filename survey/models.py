@@ -301,10 +301,7 @@ class Commutersurvey(models.Model):
         legs = self.leg_set.only('carbon', 'day').all()
         for leg in legs:
             if leg.day == 'n':
-                car_speed = Mode.objects.get(name="Driving alone").speed
-                car_carbon = Mode.objects.get(name="Driving alone").carb/1000
-                carbon = car_carbon * car_speed * leg.duration/60
-                normal_car_carbon += carbon
+                normal_car_carbon += leg.carbon
             elif leg.day == 'w':
                 wr_day_carbon += leg.carbon
         carbon_saved = normal_car_carbon - wr_day_carbon

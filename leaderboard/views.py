@@ -244,7 +244,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     context = RequestContext(request)
 
     if year is None:
-        return redirect('2017/')
+        return redirect('2018/')
 
     d = {}
 
@@ -262,7 +262,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
     else: # this is a bunch of companies
         companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(**{activeFilter: True})
-
+        sectorsforyear = set([c.sector_id for c in companies])
 
         lower, middle, upper = getBoundaries(year)
 
@@ -319,7 +319,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
     labelOne, labelTwo, labelThree, labelFour = getLabels(year)
 
-    sectors_dict = dict(Sector.objects.values_list('short','name'))
+    sectors_dict = dict(Sector.objects.values_list('short','name').filter(id__in=sectorsforyear))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
     sizes_arr = [
       ('small', labelOne),
