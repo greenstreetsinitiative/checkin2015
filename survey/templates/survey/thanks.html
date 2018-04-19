@@ -15,7 +15,7 @@
 
         {% if calories_burned > 0.01 %}
             <br>
-            <p class="lead">On Walk/Ride Day you burned (or will burn) {{ calories_burned }} calories. {% if calorie_change > 0 %} That's a {{ calorie_change }} calorie difference from your normal commute!{% endif %} For comparison, spending 30 minutes at the gym burns about 136 calories (<a href="http://www.livestrong.com/article/548348-how-many-calories-are-burned-in-one-hour-of-mixed-exercise/">Livestrong</a>).</p>
+            <p class="lead">On Walk/Ride Day you burned (or will burn) {{ calories_burned|floatformat:0 }} calories. {% if calorie_change > 0 %} That's a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute!{% endif %} For comparison, spending 30 minutes at the gym burns about 136 calories (<a href="http://www.livestrong.com/article/548348-how-many-calories-are-burned-in-one-hour-of-mixed-exercise/">Livestrong</a>).</p>
             <br>
             <p>Your calories burned is calculated by using your mode of transportation along with the number of minutes you specified on that mode. We  associate each mode (walking, biking, running) with a Metabolic Equivalent of Task (MET), which is a physiological measure expressing the energy cost of physical activities [<a href="https://en.wikipedia.org/wiki/Metabolic_equivalent">read more about it on Wikipedia</a>]. To simplify the calculation of your calories burned, we estimate based on a typical North American weight (150 lb), and MET values from the <a href="https://sites.google.com/site/compendiumofphysicalactivities/Activity-Categories">Compendium of Physical Activites</a> assuming a walking speed of 3.5 mph, a running/jogging speed of 5 mph, and a biking speed of 11 mph.</p>
         {% endif %}
