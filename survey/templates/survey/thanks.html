@@ -20,8 +20,11 @@
             <p>Your calories burned is calculated by using your mode of transportation along with the number of minutes you specified on that mode. We  associate each mode (walking, biking, running) with a Metabolic Equivalent of Task (MET), which is a physiological measure expressing the energy cost of physical activities [<a href="https://en.wikipedia.org/wiki/Metabolic_equivalent">read more about it on Wikipedia</a>]. To simplify the calculation of your calories burned, we estimate based on a typical North American weight (150 lb), and MET values from the <a href="https://sites.google.com/site/compendiumofphysicalactivities/Activity-Categories">Compendium of Physical Activites</a> assuming a walking speed of 3.5 mph, a running/jogging speed of 5 mph, and a biking speed of 11 mph.</p>
         {% endif %}
             <br>
-        {% if carbon_savings > 0.01 %}
-            <p class="lead">You saved an estimated {{ carbon_savings }} kilograms of carbon dioxide on Walk/Ride Day by avoiding driving alone. Every kilogram of carbon dioxide emissions is like burning an entire pound of coal! (<a href="http://www.epa.gov/">epa.gov</a>)</p>
+        {% if car_carbon_savings > 0.01 or normal_carbon_savings > 0.01 %}
+            <p class="lead">
+                {% if car_carbon_savings > 0.01 %} You saved an estimated {{ car_carbon_savings|floatformat:1 }} kilograms of carbon dioxide on Walk/Ride Day by avoiding driving alone. {% endif %}
+                {% if normal_carbon_savings > 0.01 %} You saved {{ normal_carbon_savings|floatformat:1 }} kilograms of carbon dioxide on Walk/Ride Day compared to your normal day. {% endif %}
+                Every kilogram of carbon dioxide emissions is like burning an entire pound of coal! (<a href="http://www.epa.gov/">epa.gov</a>)</p>
             <br>
             <p>This special "savings" number is based on a normal commute of driving to work. For all modes of transportation, we calculate carbon dioxide emissions by taking your time spent on a mode and multiplying by an estimated carbon dioxide output for that mode at an estimated average speed for that mode. These estimations are derived from findings by the <a href="http://www.apta.com/resources/statistics/Documents/FactBook/2013-APTA-Fact-Book.pdf">American Public Transportation Association</a>, the <a href="http://www.buses.org/files/ComparativeEnergy.pdf">American Bus Association</a>, and the <a href="http://nhts.ornl.gov/2009/pub/stt.pdf">Federal Highway Administration</a>.</p>
         {% endif %}
@@ -49,7 +52,7 @@
       <div>
           <div style="display: inline-block">
           <figure>
-            <a href="/leaderboard/2017/" onclick="ga('send', 'event', 'Leaderboard', 'Action label', 'Action Value');"><img height="200" width="250" src="{% static 'img/Leaderboard.png' %}"></a>
+            <a href="/leaderboard/2018/" onclick="ga('send', 'event', 'Leaderboard', 'Action label', 'Action Value');"><img height="200" width="250" src="{% static 'img/Leaderboard.png' %}"></a>
             <figcaption>Go to Leaderboard</figcaption>
           </figure>
           </div>

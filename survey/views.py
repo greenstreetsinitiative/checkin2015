@@ -172,7 +172,8 @@ def add_checkin(request):
                         'person': commutersurvey.name,
                         'calories_burned': commutersurvey.calories_total,
                         'calorie_change': commutersurvey.calorie_change,
-                        'carbon_savings': commutersurvey.carbon_savings,
+                        'normal_carbon_savings': -commutersurvey.carbon_change,
+                        'car_carbon_savings': commutersurvey.carbon_savings,
                         'change_type': commutersurvey.change_type,
                         'donation_organization':donation_organization,
                         'month':month
@@ -265,9 +266,9 @@ def send_email(commutersurvey):
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
-        'company is ranked in the 2017 Walk/Ride Day CORPORATE '
+        'company is ranked in the 2018 Walk/Ride Day CORPORATE '
         'CHALLENGE, <a href="http://'
-        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/2017/" '
+        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/2018/" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
         '<p>Thank you for being involved! By checking in and '
