@@ -210,12 +210,18 @@ def company(request, year=datetime.datetime.now().year, employerid=None, teamid=
 
 def getBoundaries(year):
 
+    if int(year) == 2018:
+        return 99, 1199, 1199
+
     if int(year) == 2017:
         return 39, 100, 800
 
     return 50, 300, 2000
 
 def getLabels(year):
+
+    if int(year) == 2018:
+        return  'Small (few than 99)', 'Medium (100 to 1199)', 'Large (1200+ employees)',''
 
     if int(year) == 2017:
         return 'Small (fewer than 40)', 'Medium (40 to 100)', 'Large (101 to 800)', 'Largest (800+ employees)'
@@ -273,7 +279,10 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
         elif size == 'medium':
             companies = companies.filter(nr_employees__gt=lower,nr_employees__lte=middle)
         elif size == 'large':
-            companies = companies.filter(nr_employees__gt=middle,nr_employees__lte=upper)
+            if int(year) == 2018:
+                companies = companies.filter(nr_employees__gt=upper)
+            else:
+                companies = companies.filter(nr_employees__gt=middle,nr_employees__lte=upper)
         elif size == 'largest':
             companies = companies.filter(nr_employees__gt=upper)
 
@@ -321,12 +330,20 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
     sectors_dict = dict(Sector.objects.values_list('short','name').filter(id__in=sectorsforyear))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
-    sizes_arr = [
-      ('small', labelOne),
-      ('medium', labelTwo),
-      ('large', labelThree),
-      ('largest', labelFour)
-    ]
+
+    if int(year) == 2018:
+        sizes_arr = [
+          ('small', labelOne),
+          ('medium', labelTwo),
+          ('large', labelThree)
+          ]
+    else:
+        sizes_arr = [
+          ('small', labelOne),
+          ('medium', labelTwo),
+          ('large', labelThree),
+          ('largest', labelFour)
+        ]
 
 
     if int(year) <= 2016:
