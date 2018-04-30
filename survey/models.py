@@ -13,7 +13,10 @@ def get_surveys_by_employer(employer, chosenmonth, year):
         month_model = Month.objects.filter(wr_day__year=year, wr_day__month=chosenmonth)
         surveys = Commutersurvey.objects.filter(wr_day_month=month_model, employer=employer)
     else:
-        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year=year, employer=employer)
+        elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(
+            wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
+            wr_day__year=year, open_checkin__lte=date.today())
+        surveys = Commutersurvey.objects.filter(wr_day_month__in=elapsed_months, employer=employer)
     return surveys
 
 def get_surveys_by_team(team, chosenmonth, year):
@@ -21,7 +24,10 @@ def get_surveys_by_team(team, chosenmonth, year):
         month_model = Month.objects.filter(wr_day__year=year, wr_day__month=chosenmonth)
         surveys = Commutersurvey.objects.filter(wr_day_month=month_model, team=team)
     else:
-        surveys = Commutersurvey.objects.filter(wr_day_month__wr_day__year=year, team=team)
+        elapsed_months = Month.objects.exclude(wr_day__month='01').exclude(wr_day__month='02').exclude(
+            wr_day__month='03').exclude(wr_day__month='11').exclude(wr_day__month='12').filter(
+            wr_day__year=year, open_checkin__lte=date.today())
+        surveys = Commutersurvey.objects.filter(wr_day_month__in=elapsed_months, team=team)
     return surveys
 
 

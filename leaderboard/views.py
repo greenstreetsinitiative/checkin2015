@@ -259,6 +259,10 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     # use the year to set filtering on Employer, Commutersurvey, etc.
     activeFilter = "active{0}".format(year)
 
+    companies = Employer.objects.only('id', 'name').exclude(id__in=[32, 33, 34, 38, 39, 40]).filter(
+        **{activeFilter: True})
+    sectorsforyear = set([c.sector_id for c in companies])
+
     if parentid: # this is a bunch of subteams
         parent = Employer.objects.filter(**{activeFilter: True}).get(id=parentid)
 
@@ -267,8 +271,6 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
         survey_data = teams
 
     else: # this is a bunch of companies
-        companies = Employer.objects.only('id','name').exclude(id__in=[32,33,34,38,39,40]).filter(**{activeFilter: True})
-        sectorsforyear = set([c.sector_id for c in companies])
 
         lower, middle, upper = getBoundaries(year)
 
