@@ -36,10 +36,16 @@ def export_as_csv(modeladmin, request, queryset):
     # Write data rows
     for obj in queryset:
         try:
-            writer.writerow([getattr(obj, field) for field in field_names])
+            writer.writerow([encode(getattr(obj, field)) for field in field_names])
         except UnicodeEncodeError:
             print "Could not export data row."
     return response
+
+def encode(s):
+    if isinstance(s, unicode):
+        return s.encode('utf-8')
+    else:
+        return s
 
 export_as_csv.short_description = "Export selected rows as csv file"
 
