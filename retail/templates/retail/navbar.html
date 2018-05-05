@@ -25,6 +25,10 @@
 			<option value="distance">Distance to me</option>
 			<option value="address">Address</option>
 	</select>
+	<p class="navbar-text"><b>Print</b></p>
+	<button type="button" class="btn btn-default" onclick="myFunction()" style="margin:8px;">
+		<span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print Selected Coupons
+	</button>
 </nav>
 {% else %}
 <!-- Mobile navbar -->
@@ -58,15 +62,44 @@
 					<button type="button" class="btn btn-default mobile-btn" id="mobile-button" data-toggle="modal" data-target="#discountinfo-modal">How to get offers</button>
 				</li>
 				{% endif %}
+				<li class="dropdown-li">
+					<button type="button" class="btn btn-default mobile-btn" id="mobile-print-button" onclick="myFunction()">Print Selected Coupons</button>
+				</li>
 			</ul>
 		</li>
 	</ul>
-	<div>
+	</div>
 
 	<div class="navbar-right brand"><a href="http://gogreenstreets.org"><img src="{% static 'retail/images/logo.png' %}"></a></div>
-
-	<!--<a class="brand navbar-right nav-logo" href="http://gogreenstreets.org"><img src="{% static 'retail/images/logo.png' %}"></a>-->
-
 </nav>
 {% include 'retail/mobile-modals.html' %}
 {% endif %}
+
+<script type="text/javascript">
+function myFunction() {
+    var items=document.getElementsByName('acs');
+	var win = window.open();
+    win.document.write('<head></head>');
+	win.document.querySelector('head').innerHTML += '<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css"/>';
+	{% for r in partners %}
+	var i = {{ forloop.counter0 }}
+	if(items[i].type=='checkbox' && items[i].checked==true)
+	{
+		var name = "{{ r.name }}";
+		var address = "{{ r.address }}";
+		var offer = "{{ r.offer }}";
+
+		win.document.write("<div class=\"coupon\">");
+		win.document.write("<img src=\"/static/img/coupon-background.png\">");
+		win.document.write("<div class=\"center\">");
+		win.document.write("<p>" + name + "<p>");
+		win.document.write("<p>Offer: " + offer + "</p>");
+		win.document.write("<p>Address: " + address + "</p>");
+		win.document.write("</div>");
+		win.document.write("</div>");
+	}
+	{% endfor %}
+	win.document.close();
+	win.focus();
+}
+</script>
