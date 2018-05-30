@@ -81,24 +81,37 @@ function myFunction() {
 	var win = window.open();
     win.document.write('<head></head>');
 	win.document.querySelector('head').innerHTML += '<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css"/>';
-	{% for r in partners %}
-	var i = {{ forloop.counter0 }}
-	if(items[i].type=='checkbox' && items[i].checked==true)
-	{
-		var name = "{{ r.name }}";
-		var address = "{{ r.address }}";
-		var offer = "{{ r.offer }}";
 
-		win.document.write("<div class=\"coupon\">");
-		win.document.write("<img src=\"/static/img/coupon-background.png\">");
-		win.document.write("<div class=\"center\">");
-		win.document.write("<p>" + name + "<p>");
-		win.document.write("<p>Offer: " + offer + "</p>");
-		win.document.write("<p>Address: " + address + "</p>");
-		win.document.write("</div>");
-		win.document.write("</div>");
+	for (i = 0; i < items.length; i++)
+	{
+		if(items[i].type=='checkbox' && items[i].checked==true)
+		{
+			var name = items[i].value;
+			var address = "";
+			var offer = "";
+
+			{% for r in partners %}
+
+			if (items[i].value == "{{ r.name|safe }}")
+			{
+				name = "{{ r.name }}";
+				address = "{{ r.address }}";
+				offer = "{{ r.offer }}";
+			}
+
+			{% endfor %}
+
+			win.document.write("<div class=\"coupon\">");
+			win.document.write("<img src=\"/static/img/coupon-background.png\">");
+			win.document.write("<div class=\"center\">");
+			win.document.write("<p>" + name + "<p>");
+			win.document.write("<p>Offer: " + offer + "</p>");
+			win.document.write("<p>Address: " + address + "</p>");
+			win.document.write("</div>");
+			win.document.write("</div>");
+		}
 	}
-	{% endfor %}
+
 	win.document.close();
 	win.focus();
 }
