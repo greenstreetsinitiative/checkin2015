@@ -67,7 +67,7 @@
   {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <p class="opt-out">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="http://gogreenstreets.org/2016-walkride-day-corporate-challenge">Corporate Challenge</a> (from April through October). <strong>You may opt out of sharing your information with your employer by clicking this checkbox:</strong> {{ extra_form.share }}</p>
+    <p class="opt-out">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="https://www.gogreenstreets.org/corporatechallenge">Corporate Challenge</a> (from April through October). <strong>You may opt out of sharing your information with your employer by clicking this checkbox:</strong> {{ extra_form.share }}</p>
     {% for field in form %}
     {% if forloop.counter|divisibleby:2 %}<div class="row">{% endif %}
       <div class="col-sm-6 form-group {% if field.errors %}has-error{% endif %}">
