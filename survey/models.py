@@ -253,8 +253,6 @@ class Commutersurvey(models.Model):
 
     # walk/ride day information that will be calculated
     already_green = models.BooleanField(default=False) # if normal day was green
-    #carbon savings assumes a normal day is driving
-    carbon_savings = models.FloatField(blank=True, null=True, default=0.0)
     # calories burned on w/r day
     calories_total = models.FloatField(blank=True, null=True, default=0.0)
 
@@ -267,21 +265,23 @@ class Commutersurvey(models.Model):
     def calculate_difference(self):
         """
         Calculates the difference in terms of calories burned and
-            carbon emmitted between the commute of this check-in and that
-            of an average (driving) commute.
+            carbon emmitted between the commute of this check-in 
+            on Walk/Ride Day versus their declared normal commute.
         Returns results as a dict, with 'carbon' and 'calories' keyed to
             their changes
         """
-        legs = self.leg_set.only('carbon', 'calories', 'day').all()
+        legs = self.leg_set.only('mode','duration','carbon', 'calories', 'day').all()
         difference = {'carbon': 0.000, 'calories': 0.000}
         for leg in legs:
+            leg_carbon = leg.carbon * leg.mode.speed * leg.duration/60
+            leg_calories = leg.calories
             if leg.day == 'w':
-                difference["carbon"] += sanely_rounded(leg.carbon)
-                difference["calories"] += sanely_rounded(leg.calories)
+                difference["carbon"] += sanely_rounded(leg_carbon)
+                difference["calories"] += sanely_rounded(leg_calories)
             elif leg.day == 'n':
-                difference["carbon"] -= sanely_rounded(leg.carbon)
-                difference["calories"] -= sanely_rounded(leg.calories)
-        # import pdb; pdb.set_trace()
+                difference["carbon"] -= sanely_rounded(leg_carbon)
+                difference["calories"] -= sanely_rounded(leg_calories)
+
         return difference
 
     def change_analysis(self):
@@ -304,21 +304,6 @@ class Commutersurvey(models.Model):
         """returns true if any leg on a normal day commute is green."""
         return self.leg_set.filter(day='n', mode__green=True).exists()
 
-    def carbon_saved(self):
-        """returns the total carbon saved from all legs in kg"""
-        normal_car_carbon = 0.0
-        wr_day_carbon = 0.0
-        legs = self.leg_set.only('carbon', 'day').all()
-        for leg in legs:
-            if leg.day == 'n':
-                car_speed = Mode.objects.get(name="Driving alone").speed
-                car_carbon = Mode.objects.get(name="Driving alone").carb/1000
-                carbon = car_carbon * car_speed * leg.duration/60
-                normal_car_carbon += carbon
-            elif leg.day == 'w':
-                wr_day_carbon += leg.carbon
-        carbon_saved = normal_car_carbon - wr_day_carbon
-        return sanely_rounded(carbon_saved)
 
     def calories_totalled(self):
         """Returns the total amount of calories burned due to wrday"""
@@ -343,7 +328,6 @@ class Commutersurvey(models.Model):
         self.calorie_change = sanely_rounded(changes["calories"])
         self.change_type = self.change_analysis()
         self.already_green = self.check_green()
-        self.carbon_savings = sanely_rounded(self.carbon_saved())
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
 
