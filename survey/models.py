@@ -272,17 +272,17 @@ class Commutersurvey(models.Model):
         Returns results as a dict, with 'carbon' and 'calories' keyed to
             their changes
         """
-        legs = self.leg_set.only('mode','duration','carbon', 'calories', 'day').all()
+        legs = self.leg_set.only('carbon', 'calories', 'day').all()
         difference = {'carbon': 0.000, 'calories': 0.000}
         for leg in legs:
-            leg_carbon = leg.carbon * leg.mode.speed * leg.duration/60
+            leg_carbon = leg.carbon
             leg_calories = leg.calories
             if leg.day == 'w':
-                difference["carbon"] += sanely_rounded(leg_carbon)
-                difference["calories"] += sanely_rounded(leg_calories)
+                difference["carbon"] += leg_carbon
+                difference["calories"] += leg_calories
             elif leg.day == 'n':
-                difference["carbon"] -= sanely_rounded(leg_carbon)
-                difference["calories"] -= sanely_rounded(leg_calories)
+                difference["carbon"] -= leg_carbon
+                difference["calories"] -= leg_calories
 
         return difference
 
@@ -395,7 +395,7 @@ class Leg(models.Model):
             if kcal > 0.0:
                 #kcal burned by leg using average weight of 81 kg,
                 #based on duration in minutes
-                calories = kcal * (self.duration/60) * 81
+                calories = kcal * (self.duration/60) * 80.7
             #grams carbon dioxide per passenger-mile on this mode
             coo = float(carb)
             #grn = self.mode.green
