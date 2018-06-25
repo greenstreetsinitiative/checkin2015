@@ -275,8 +275,8 @@ class Commutersurvey(models.Model):
         legs = self.leg_set.only('carbon', 'calories', 'day').all()
         difference = {'carbon': 0.000, 'calories': 0.000}
         for leg in legs:
-            leg_carbon = leg.carbon
-            leg_calories = leg.calories
+            leg_carbon = leg.carbon*1000 # grams
+            leg_calories = leg.calories # kcal
             if leg.day == 'w':
                 difference["carbon"] += leg_carbon
                 difference["calories"] += leg_calories
@@ -310,17 +310,17 @@ class Commutersurvey(models.Model):
         """returns the total carbon saved from all legs in kg"""
         normal_car_carbon = 0.0
         wr_day_carbon = 0.0
-        legs = self.leg_set.only('carbon', 'day').all()
+        legs = self.leg_set.all()
         for leg in legs:
             if leg.day == 'n':
-                car_speed = Mode.objects.get(name="Driving alone").speed
-                car_carbon = Mode.objects.get(name="Driving alone").carb/1000
-                carbon = car_carbon * car_speed * leg.duration/60
-                normal_car_carbon += carbon
+                leg_distance = leg.duration/60 * leg.mode.speed # hr * mph = miles
+                car_carbon = Mode.objects.get(name="Driving alone").carb/1000 # kilograms carbon per passenger-mile
+                leg_car_carbon = car_carbon * leg_distance # kilograms
+                normal_car_carbon += leg_car_carbon
             elif leg.day == 'w':
-                wr_day_carbon += leg.carbon
+                wr_day_carbon += leg.carbon # kilograms
         carbon_saved = normal_car_carbon - wr_day_carbon
-        return sanely_rounded(carbon_saved)
+        return carbon_saved*1000 # grams
 
     def calories_totalled(self):
         """Returns the total amount of calories burned due to wrday"""
@@ -409,8 +409,8 @@ class Leg(models.Model):
     def save(self, *args, **kwargs):
         """save carbon change"""
         metrics = self.calc_metrics()
-        self.carbon = metrics['carbon']
-        self.calories = metrics['calories']
+        self.carbon = metrics['carbon'] # kilograms
+        self.calories = metrics['calories'] # kcal
         super(Leg, self).save(*args, **kwargs)
         #resave the related survey (recalculates carbon and calories)
         self.checkin.save()
