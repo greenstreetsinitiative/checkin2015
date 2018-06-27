@@ -21,9 +21,9 @@
             <br>
         {% if carbon_change > 0.001 %}
           <p class="lead">
-              You saved an estimated {{ carbon_change|floatformat:1 }} grams of carbon dioxide on Walk/Ride Day compared to your normal day commute. 
+              You saved an estimated {{ carbon_change|floatformat:1 }} kilograms of carbon dioxide on Walk/Ride Day compared to your normal day commute. 
               {% if car_carbon_savings > 0.0001 %} 
-              For a normal day commute equal in distance to yours, not driving alone saves an estimated {{ car_carbon_savings|floatformat:1 }} grams of carbon dioxide on Walk/Ride Day!
+              Compared to a drive alone commute you saved an estimated {{ car_carbon_savings|floatformat:1 }} kilograms of carbon dioxide.
               {% endif %}
             </p>
           <p>For all modes of transportation, we calculate carbon dioxide emissions by taking your time spent on a mode and multiplying by an estimated carbon dioxide output for that mode at an estimated average speed for that mode. These estimations are derived from findings by the <a href="http://www.apta.com/resources/statistics/Documents/FactBook/2013-APTA-Fact-Book.pdf">American Public Transportation Association</a>, the <a href="http://www.buses.org/files/ComparativeEnergy.pdf">American Bus Association</a>, and the <a href="http://nhts.ornl.gov/2009/pub/stt.pdf">Federal Highway Administration</a>. Every kilogram of carbon dioxide emissions is like burning an entire pound of coal! (<a href="http://www.epa.gov/">epa.gov</a>)</p>
@@ -59,7 +59,6 @@
           </figure>
           </div>
       </div>
-
        {% if calories_burned > 0.01 %}
         <br>
 

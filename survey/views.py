@@ -172,8 +172,8 @@ def add_checkin(request):
                         'person': commutersurvey.name,
                         'calories_burned': commutersurvey.calories_total,
                         'calorie_change': commutersurvey.calorie_change,
-                        'car_carbon_savings': commutersurvey.carbon_savings,
-                        'carbon_change': -commutersurvey.carbon_change,
+                        'car_carbon_savings': commutersurvey.carbon_savings/1000,
+                        'carbon_change': -commutersurvey.carbon_change/1000,
                         'change_type': commutersurvey.change_type,
                         'donation_organization':donation_organization,
                         'month':month
