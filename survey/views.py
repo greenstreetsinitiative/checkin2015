@@ -166,13 +166,18 @@ def add_checkin(request):
 
                 month = current_or_next_month()
 
+                if commutersurvey.carbon_savings:
+                    savings = commutersurvey.carbon_savings/1000
+                else:
+                    savings = None
+
                 return render_to_response(
                     'survey/thanks.html',
                     {
                         'person': commutersurvey.name,
                         'calories_burned': commutersurvey.calories_total,
                         'calorie_change': commutersurvey.calorie_change,
-                        'car_carbon_savings': commutersurvey.carbon_savings/1000,
+                        'car_carbon_savings': savings,
                         'carbon_change': -commutersurvey.carbon_change/1000,
                         'change_type': commutersurvey.change_type,
                         'donation_organization':donation_organization,

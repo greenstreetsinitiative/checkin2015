@@ -311,6 +311,9 @@ class Commutersurvey(models.Model):
         normal_car_carbon = 0.0
         wr_day_carbon = 0.0
         legs = self.leg_set.all()
+        # don't calculate if all the legs are driving alone.
+        if legs.filter(day='n').count() == legs.filter(day='n', mode__name="Driving alone").count():
+            return None
         for leg in legs:
             if leg.day == 'n':
                 leg_distance = leg.duration/60 * leg.mode.speed # hr * mph = miles
@@ -320,7 +323,7 @@ class Commutersurvey(models.Model):
             elif leg.day == 'w':
                 wr_day_carbon += leg.carbon # kilograms
         carbon_saved = normal_car_carbon - wr_day_carbon
-        return carbon_saved*1000 # grams
+        return sanely_rounded(carbon_saved*1000) # grams
 
     def calories_totalled(self):
         """Returns the total amount of calories burned due to wrday"""
@@ -345,7 +348,7 @@ class Commutersurvey(models.Model):
         self.calorie_change = sanely_rounded(changes["calories"])
         self.change_type = self.change_analysis()
         self.already_green = self.check_green()
-        self.carbon_savings = sanely_rounded(self.carbon_saved())
+        self.carbon_savings = self.carbon_saved()
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
 
