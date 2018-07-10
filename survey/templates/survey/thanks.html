@@ -13,9 +13,10 @@
       <div class="span12">
         <h1 class="thanks-page">Thank you, {{ person }}, for checking in for <span class="nowrap">Walk/Ride Day</span> <span class="nowrap">{{ month }}</span>!</h1>
 
+        <p>By logging your commute you are automatically entered into our <a href="https://www.gogreenstreets.org/monthlyraffle">monthly raffle</a></p>
+
         <p class="lead">On Walk/Ride Day you burned (or will burn) {{ calories_burned|floatformat:0 }} calories. {% if calorie_change > 0 %} That's
-          a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute!{% endif %} For comparison,
-          spending 30 minutes at the gym burns about 136 calories (<a href="http://www.livestrong.com/article/548348-how-many-calories-are-burned-in-one-hour-of-mixed-exercise/">Livestrong</a>).</p>
+          a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute!{% endif %}</p>
             <br>
         {% if carbon_change > 0 or car_carbon_savings %}
           <p class="lead">
@@ -66,7 +67,7 @@
           on that mode. We associate each mode (walking, biking, running) with a Metabolic Equivalent of Task (MET), which
           is a physiological measure expressing the energy cost of physical activities [<a href="https://en.wikipedia.org/wiki/Metabolic_equivalent">read more about it on Wikipedia</a>].
           To simplify the calculation of your calories burned, we estimate based on a typical North American weight (150 lb),
-          and MET values from the <a href="https://sites.google.com/site/compendiumofphysicalactivities/Activity-Categories">Compendium of Physical Activites</a>        assuming a walking speed of 3.5 mph, a running/jogging speed of 5 mph, and a biking speed of 11 mph.</p>
+          and MET values from the <a href="https://sites.google.com/site/compendiumofphysicalactivities/Activity-Categories">Compendium of Physical Activites</a>        assuming a walking speed of 2.5 mph, a running/jogging speed of 5 mph, and a biking speed of 10 mph.</p>
         {% endif %}
 
         <div class="center-block thanks-actions">
