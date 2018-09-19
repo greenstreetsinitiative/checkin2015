@@ -51,7 +51,7 @@ def calculate_metrics(company, selected_month, year):
     percent_healthy_switch = 100*company.percent_healthy_switch(shortmonth, year)
     percent_participants_average = 100*company.average_percent_participation(year)
     count_checkins = company.count_checkins(shortmonth, year)
-    total_C02 = company.total_C02(shortmonth, year)
+    total_C02 = company.total_C02(shortmonth, year) / 1000
     total_calories = company.total_calories(shortmonth, year)
 
     return {
