@@ -15,6 +15,11 @@ from survey.models import Commutersurvey, Employer, Leg, Month, Mode, Team, Sect
 # disable deletion of records
 admin.site.disable_action('delete_selected')
 
+# Use for resaving surveys if saving logic is changed
+def resave(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.save()
+
 def export_as_csv(modeladmin, request, queryset):
     """
     Generic csv export admin action.
@@ -66,7 +71,7 @@ class CommutersurveyAdmin(admin.ModelAdmin):
     list_display = ('id', 'wr_day_month', 'email', 'name', 'employer', 'team', 'home_address', 'work_address', 'carbon_change', 'calorie_change', 'questionOne', 'questionTwo', 'questionThree', 'questionFour', 'questionFive' )
     list_filter = ['wr_day_month', 'share', 'volunteer']
     search_fields = ['name', 'email', 'employer__name', 'team__name']
-    actions = [export_as_csv]
+    actions = [export_as_csv, resave]
 
 class LegAdmin(admin.ModelAdmin):
     list_display = ['id', 'direction', 'day', 'checkin', 'mode', 'duration', 'carbon', 'calories']
