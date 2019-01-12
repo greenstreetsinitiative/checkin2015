@@ -279,7 +279,7 @@ def send_email(commutersurvey):
         '<p>Thank you for being involved! By checking in and '
         'sharing your commuting information, you are helping improve'
         ' the livability and health of our shared community. Please '
-        'mark your calendar to remember to check-in for next '
+        'mark your calendar to remember to checkin for next '
         'month\'s Walk/Ride Day!</p><p>Warmly,<br>'
         '<span style="color:#006600;font-weight:bold;">Janie Katz'
         '-Christy, Director <br>Green Streets Initiative</span><br> '
