@@ -16,8 +16,9 @@
         <p>By logging your commute you are automatically entered into our <a href="https://www.gogreenstreets.org/monthlyraffle">monthly raffle</a></p>
 
         <p class="lead">On Walk/Ride Day you burned (or will burn) {{ calories_burned|floatformat:0 }} calories. {% if calorie_change > 0 %} That's
-          a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute!{% endif %}</p>
-            <br>
+          a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute!{% endif %} *
+        </p>
+
         {% if carbon_change > 0 or car_carbon_savings %}
           <p class="lead">
             {% if carbon_change > 0 %}
@@ -25,14 +26,10 @@
             {% endif %}
             {% if car_carbon_savings %} 
             Compared to a drive alone commute you saved an estimated {{ car_carbon_savings|floatformat:1 }} kilograms of carbon dioxide.
-            {% endif %}
+            {% endif %} **
           </p>
-          <p>For all modes of transportation, we calculate carbon dioxide emissions by taking your time spent on a mode and multiplying by an estimated carbon dioxide output for that mode at an estimated average speed for that mode. These estimations are derived from findings by the <a href="http://www.apta.com/resources/statistics/Documents/FactBook/2013-APTA-Fact-Book.pdf">American Public Transportation Association</a>, the <a href="http://www.buses.org/files/ComparativeEnergy.pdf">American Bus Association</a>, and the <a href="http://nhts.ornl.gov/2009/pub/stt.pdf">Federal Highway Administration</a>. Every kilogram of carbon dioxide emissions is like burning an entire pound of coal! (<a href="http://www.epa.gov/">epa.gov</a>)</p>
+
         {% endif %}
-        
-        
-
-
 
       <div><a class="btn btn-large btn-success" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRSJK56HBUFPA">DONATE FOR WALK RIDE DAY</a></div>
 
@@ -59,15 +56,24 @@
               <figcaption>Go to Retail Rewards</figcaption>
           </figure>
           </div>
+          <div style="display: inline-block">
+          <figure>
+            <a href="https://www.gogreenstreets.org/share-your-story" onclick="ga('send', 'event', 'Share Your Story', 'Action label', 'Action Value');"><img height="200" width="250" src="{% static 'img/ShareYourStory.png' %}"></a>
+              <figcaption>Share your story</figcaption>
+          </figure>
+          </div>
       </div>
-       {% if calories_burned > 0.01 %}
+
         <br>
 
-        <p>Your calories burned is calculated by using your mode of transportation along with the number of minutes you specified
+        <p>*Your calories burned is calculated by using your mode of transportation along with the number of minutes you specified
           on that mode. We associate each mode (walking, biking, running) with a Metabolic Equivalent of Task (MET), which
           is a physiological measure expressing the energy cost of physical activities [<a href="https://en.wikipedia.org/wiki/Metabolic_equivalent">read more about it on Wikipedia</a>].
           To simplify the calculation of your calories burned, we estimate based on a typical North American weight (150 lb),
           and MET values from the <a href="https://sites.google.com/site/compendiumofphysicalactivities/Activity-Categories">Compendium of Physical Activites</a>        assuming a walking speed of 2.5 mph, a running/jogging speed of 5 mph, and a biking speed of 10 mph.</p>
+
+        {% if carbon_change > 0 or car_carbon_savings %}
+            <p>**For all modes of transportation, we calculate carbon dioxide emissions by taking your time spent on a mode and multiplying by an estimated carbon dioxide output for that mode at an estimated average speed for that mode. These estimations are derived from findings by the <a href="http://www.apta.com/resources/statistics/Documents/FactBook/2013-APTA-Fact-Book.pdf">American Public Transportation Association</a>, the <a href="http://www.buses.org/files/ComparativeEnergy.pdf">American Bus Association</a>, and the <a href="http://nhts.ornl.gov/2009/pub/stt.pdf">Federal Highway Administration</a>. Every kilogram of carbon dioxide emissions is like burning an entire pound of coal! (<a href="http://www.epa.gov/">epa.gov</a>)</p>
         {% endif %}
 
         <div class="center-block thanks-actions">
