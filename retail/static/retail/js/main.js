@@ -229,6 +229,12 @@ var retailPartnerData = function(data, isMobile, isTablet){
 				prefix: 'fa',
 				markerColor: 'darkgreen'
 			}),
+			"Transportation": L.AwesomeMarkers.icon({
+				icon: 'bus',
+				iconColor: 'white',
+				prefix: 'fa',
+				markerColor: 'gray'
+			}),
 			"Unused": L.AwesomeMarkers.icon({
 				icon: 'shopping-cart',
 				iconColor: 'white',
