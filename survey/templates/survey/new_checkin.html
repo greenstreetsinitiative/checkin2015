@@ -37,7 +37,7 @@
 </div>
 <hr class="green-big">
 {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
-  <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your checkin.</center>
+  <div class="alert alert-danger" role="alert"><center>Oops! Please finish completing your check-in.</center>
 
 {% if form.errors %}
   {% for key in form.errors.values %}
@@ -67,7 +67,7 @@
   {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <p class="opt-out">FGreen Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="https://www.gogreenstreets.org/corporate-challenge">Corporate Challenge</a> (from April through October). <strong>You may opt out of sharing your information with your employer by clicking this checkbox:</strong> {{ extra_form.share }}</p>
+    <p class="opt-out">Green Streets Initiative will not share identifying information with any organization, other than with your employer if participating in the <a href="https://www.gogreenstreets.org/corporate-challenge">Corporate Challenge</a> (from April through October). <strong>You may opt out of sharing your information with your employer by clicking this checkbox:</strong> {{ extra_form.share }}</p>
     {% for field in form %}
     {% if forloop.counter|divisibleby:2 %}<div class="row">{% endif %}
       <div class="col-sm-6 form-group {% if field.errors %}has-error{% endif %}">
@@ -394,11 +394,11 @@
 
     <center>
     {% if form.errors or WRFW_formset.errors or WRTW_formset.errors or NormalFW_formset.errors or NormalTW_formset.errors %}
-      <div class="alert alert-danger" role="alert">Oops! Please finish completing your checkin.</div>
+      <div class="alert alert-danger" role="alert">Oops! Please finish completing your check-in.</div>
     {% endif %}
     <hr class="green-big">
     <button class="cool-button" type="submit" name="action" value="action">
-      Submit your checkin!
+      Submit your check-in!
     </button>
     </center>
 
