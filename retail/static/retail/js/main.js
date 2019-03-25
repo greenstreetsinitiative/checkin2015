@@ -290,6 +290,11 @@ var retailPartnerData = function(data, isMobile, isTablet){
 	categories = categories.filter( function( item, index, inputArray ) { // Filters out duplicates & sorts alphabetically
 		   return inputArray.indexOf(item) == index;
 	}).sort();
+	var otherIndex = categories.indexOf("Other"); // we want to put "Other" at end
+	if (categories.indexOf("Other") !== -1) {
+		categories.splice(otherIndex,1);
+		categories.push("Other");
+	}
 
 	this.isMobile = isMobile;
 	this.isTablet = isTablet;
