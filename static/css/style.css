@@ -18,6 +18,9 @@ body {
   width: 80%;
 }
 
+.thanks-nav figcaption {
+  font-weight: bold;
+}
 .thanks-actions div {
   display: inline-block;
   width: 48%;
