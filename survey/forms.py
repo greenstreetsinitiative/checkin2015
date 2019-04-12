@@ -12,6 +12,8 @@ from django.db.models import Q
 from django.forms.util import ErrorList
 from django.forms.widgets import HiddenInput
 
+from django.conf import settings
+
 from datetime import datetime
 
 # CUSTOM WIDGETS
@@ -84,7 +86,9 @@ class CommuterForm(ModelForm):
             self.fields['employer'].label = "Employer"
         else:
             # we're in a challenge
-            companies = Employer.objects.filter(Q(nochallenge=True) | Q(active2018=True))
+            year_column = 'active' + str(settings.YEAR)
+            Q_kwargs = {year_column: True}
+            companies = Employer.objects.filter(Q(nochallenge=True) | Q(**Q_kwargs))
             self.fields['employer'].queryset = companies
             self.fields['team'].queryset = Team.objects.filter(
                 parent__in=companies)
