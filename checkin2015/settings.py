@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 from envs.common import *
+from datetime import date
 
 
 # Private settings
@@ -57,3 +58,7 @@ LOGGING = {
         },
     },
 }
+
+# Application settings
+
+YEAR = str(date.today().year)

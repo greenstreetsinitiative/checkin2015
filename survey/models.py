@@ -67,8 +67,10 @@ class Employer(models.Model):
     active2016 = models.BooleanField("2016 Challenge", default=False)
     active2017 = models.BooleanField("2017 Challenge", default=False)
     active2018 = models.BooleanField("2018 Challenge", default=False)
+    active2019 = models.BooleanField("2019 Challenge", default=False)
     nochallenge = models.BooleanField("Not In Challenge", default=False)
     sector = models.ForeignKey('Sector', null=True, blank=True)
+
 
     class Meta(object):
         ordering = ['name']
@@ -258,8 +260,14 @@ class Commutersurvey(models.Model):
     # calories burned on w/r day
     calories_total = models.FloatField(blank=True, null=True, default=0.0)
 
+# Not sure how this constraint was being applied to the data.
+# The data does not conform.  I am removing it.  In looking at the production
+# data it seems that multiple identical records were created at the same time
+# Other than through the id field there doesn't seem to be a way to uniquely
+# identify duplicate rows. (Gautam, 4/5/2019)
+
     class Meta:
-        unique_together = ("email", "wr_day_month")
+       unique_together = ("name","email","home_address","work_address", "wr_day_month")
 
     def __unicode__(self):
         return unicode(self.id)
@@ -267,7 +275,7 @@ class Commutersurvey(models.Model):
     def calculate_difference(self):
         """
         Calculates the difference in terms of calories burned and
-            carbon emmitted between the commute of this check-in 
+            carbon emmitted between the commute of this check-in
             on Walk/Ride Day versus their declared normal commute.
         Returns results as a dict, with 'carbon' and 'calories' keyed to
             their changes
@@ -311,9 +319,10 @@ class Commutersurvey(models.Model):
         normal_car_carbon = 0.0
         wr_day_carbon = 0.0
         legs = self.leg_set.all()
+
         # don't calculate if all the legs are driving alone.
-        if legs.filter(day='n').count() == legs.filter(day='n', mode__name="Driving alone").count():
-            return None
+#        if legs.filter(day='n').count() == legs.filter(day='n', mode__name="Driving alone").count():
+#            return None
         for leg in legs:
             if leg.day == 'n':
                 leg_distance = leg.duration/60 * leg.mode.speed # hr * mph = miles
@@ -351,6 +360,7 @@ class Commutersurvey(models.Model):
         self.carbon_savings = self.carbon_saved()
         self.calories_total = self.calories_totalled()
         super(Commutersurvey, self).save(*args, **kwargs)
+
 
 
 class Mode(models.Model):

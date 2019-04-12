@@ -316,7 +316,10 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
         total_carbon=Sum('saved_carbon'),
         total_calories=Sum('overall_calories'),
         total_checkins=Sum('num_checkins')
+
     )
+
+    totals['total_carbon'] = int (round(totals['total_carbon']/1000))
 
     for company in survey_data:
         # links is company id, then optionally team id
@@ -350,6 +353,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
 
     if int(year) <= 2016:
         sectors_dict = getOldSectorNames()
+
 
 
     return render_to_response('leaderboard/leaderboard_new.html',

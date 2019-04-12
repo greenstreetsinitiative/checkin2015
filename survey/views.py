@@ -181,7 +181,8 @@ def add_checkin(request):
                         'carbon_change': -commutersurvey.carbon_change/1000,
                         'change_type': commutersurvey.change_type,
                         'donation_organization':donation_organization,
-                        'month':month
+                        'month':month,
+                        'year':settings.YEAR
                     })
             else:
                 pass
@@ -271,9 +272,9 @@ def send_email(commutersurvey):
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
-        'company is ranked in the 2018 Walk/Ride Day CORPORATE '
+        'company is ranked in the' + settings.YEAR + 'Walk/Ride Day CORPORATE '
         'CHALLENGE, <a href="http://'
-        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/2018/" '
+        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/' + settings.YEAR + '/" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
         '<p>Thank you for being involved! By checking in and '

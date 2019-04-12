@@ -15,18 +15,26 @@
 
         <p>By logging your commute you are automatically entered into our <a href="https://www.gogreenstreets.org/monthlyraffle">monthly raffle</a></p>
 
-        <p class="lead">On Walk/Ride Day you burned (or will burn) {{ calories_burned|floatformat:0 }} calories. {% if calorie_change > 0 %} That's
-          a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute!{% endif %} *
+        {% if calorie_change > 0 %}
+
+        <p class="lead">On Walk/Ride Day you burned (or will burn) {{ calories_burned|floatformat:0 }} calories.  That's
+          a {{ calorie_change|floatformat:0 }} calorie difference from your normal commute! *
         </p>
 
-        {% if carbon_change > 0 or car_carbon_savings %}
+        {% endif %}
+
+
+        {% if carbon_change > 0 %}
           <p class="lead">
-            {% if carbon_change > 0 %}
-            You saved an estimated {{ carbon_change|floatformat:1 }} kilograms of carbon dioxide on Walk/Ride Day compared to your normal day commute. 
-            {% endif %}
-            {% if car_carbon_savings %} 
+
+            You saved an estimated {{ carbon_change|floatformat:1 }} kilograms of carbon dioxide on Walk/Ride Day compared to your normal day commute.
+
+        {% endif %}
+
+        {% if car_carbon_savings > 0 %}
+
             Compared to a drive alone commute you saved an estimated {{ car_carbon_savings|floatformat:1 }} kilograms of carbon dioxide.
-            {% endif %} **
+
           </p>
 
         {% endif %}
@@ -47,7 +55,7 @@
           <div style="display: inline-block">
           <figure>
             <figcaption>Go to Leaderboard</figcaption>
-            <a href="/leaderboard/2018/" onclick="ga('send', 'event', 'Leaderboard', 'Action label', 'Action Value');"><img height="160" width="200" src="{% static 'img/Leaderboard.png' %}"></a>
+            <a href="/leaderboard/{{year}}/" onclick="ga('send', 'event', 'Leaderboard', 'Action label', 'Action Value');"><img height="160" width="200" src="{% static 'img/Leaderboard.png' %}"></a>
           </figure>
           </div>
           <div style="display: inline-block">

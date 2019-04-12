@@ -130,12 +130,13 @@
     <p class="total">{{ totals.total_checkins|floatformat:0|default:"0"|intcomma}}</p>
   </div>
   <div class="col-sm-4">
-    <p class="lead">Total CO<sub>2</sub> Saved</p>
-    <p class="total">{{ totals.total_carbon|absolutely|floatformat:0|default:"0"|intcomma }} kg</p>
+        <p class="lead">Total CO<sub>2</sub> Saved</p>
+        <p class="total"> {{ totals.total_carbon|floatformat:0|intcomma}} kg</p>
   </div>
-  <div class="col-sm-4">
+
+    <div class="col-sm-4">
     <p class="lead">Total Calories Burned</p>
-    <p class="total">{{ totals.total_calories|floatformat:0|default:"0"|intcomma}} kcal</p>
+    <p class="total">{{ totals.total_calories|floatformat:0|default:"0"|intcomma}} cal</p>
   </div>
 </div>
 
