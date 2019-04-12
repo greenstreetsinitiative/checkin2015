@@ -88,12 +88,20 @@ a[data-toggle="pill"] {
    list-style-type: none;
 }
 
-.headingthing {
+.headingthing, .commute-log-header {
   text-align: center;
   background-color: rgb(227, 240, 227);
   margin-bottom: 20px;
 }
 
+.commute-log-header h2 {
+  margin-bottom: 0;
+}
+
+.commute-log-header h4 {
+  margin-top: 0;
+  font-weight: normal;
+}
 .date {
   font-weight: 700;
   font-family: 'Alegreya Sans SC';
