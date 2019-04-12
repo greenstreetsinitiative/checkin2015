@@ -108,17 +108,21 @@
     {{ WRTW_formset.management_form }}
     {{ WRFW_formset.management_form }}
 
-    <p class="opt-out">Please enter all segments of your commute and the approximate time spent on that segment in minutes. Include walking as an additional segment (e.g. walking from the bus stop to a connecting train). If you commute in a variety of ways, depending on the day, just pick one that you think is your most typical.</p>
+    <p class="opt-out">Please enter all segments of your commute - including commutes between work sites during the day - 
+      and the approximate time spent on that segment in minutes. Include walking as an additional segment (e.g. walking
+      from the bus stop to a connecting train). If you commute in different ways depending on the day, just pick one day
+      that you think is your most typical.</p>
 
     <div class="row wr-day">
       <div class="headingthing">
-        <h2>Your <b>Walk/Ride Day</b> Commute</h2>
+        <h2>Your <b>Walk/Ride Day</b> Commute (To/From work and to other work sites)</h2>
 
         </div>
       <div class="col-sm-6">
         <div class="to-work">
         <center>
         <h4>FROM Home TO Work</h4>
+        <h6>(Add commutes during the day between work sites)</h6>
         <hr class="green">
         </center>
 
@@ -171,14 +175,16 @@
 
     <div class="row normal-day">
       <div class="headingthing">
-        <h2>Your <b>Normal Day</b> Commute</h2>
+        <h2>Your <b>Normal Day</b> Commute (To/From work and to other work sites)</h2>
         </div>
       <div class="col-sm-12">{{ commute_copy }}</div>
       <div class="col-sm-6 normal-legs">
         <div class="to-work">
 
         <center>
-        <h4>FROM Home TO Work</h4><hr class="green">
+        <h4>FROM Home TO Work</h4>
+        <h6>(Add commutes during the day between work sites)</h6>
+        <hr class="green">
         </center>
 
         <div class="legs-wrapper">
