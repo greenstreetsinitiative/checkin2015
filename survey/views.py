@@ -264,9 +264,9 @@ def send_email(commutersurvey):
     subject = ('Walk/Ride Day ' +
                commutersurvey.wr_day_month.month + ' Checkin')
     message_html = (
-        '<p>Dear {name},</p><p>Thank you for checking'
+        '<p>Dear {{name}},</p><p>Thank you for checking'
         ' in your Walk/Ride Day commute! This email confirms your'
-        ' participation in {survey_date}\'s Walk/Ride Day! Feel '
+        ' participation in {{survey_date}}\'s Walk/Ride Day! Feel '
         'free to show it to our <a href="http://checkin'
         '-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/retail/" style="color:'
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
