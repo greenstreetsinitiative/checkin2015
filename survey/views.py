@@ -19,7 +19,7 @@ import json
 from datetime import date
 
 from django.utils.html import strip_tags
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail, BadHeaderError,get_connection
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.html import escape
 
@@ -260,21 +260,23 @@ def add_checkin(request):
                   })
 
 def send_email(commutersurvey):
+    survey_date=commutersurvey.wr_day_month.month
+    year = settings.YEAR
     name = commutersurvey.name or 'Supporter'
     subject = ('Walk/Ride Day ' +
                commutersurvey.wr_day_month.month + ' Checkin')
     message_html = (
-        '<p>Dear {{name}},</p><p>Thank you for checking'
+        '<p>Dear {name},</p><p>Thank you for checking'
         ' in your Walk/Ride Day commute! This email confirms your'
-        ' participation in {{survey_date}}\'s Walk/Ride Day! Feel '
+        ' participation in {survey_date}\'s Walk/Ride Day! Feel '
         'free to show it to our <a href="http://checkin'
         '-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/retail/" style="color:'
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
-        'company is ranked in the' + settings.YEAR + 'Walk/Ride Day CORPORATE '
+        'company is ranked in the {year} Walk/Ride Day CORPORATE '
         'CHALLENGE, <a href="http://'
-        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/' + settings.YEAR + '/" '
+        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/{year}/" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
         '<p>Thank you for being involved! By checking in and '
@@ -290,7 +292,9 @@ def send_email(commutersurvey):
         'style="color: #2ba6cb;text-decoration: none;">Make sure'
         ' they get a chance to check in</p>'.format(
             name=name,
-            survey_date=commutersurvey.wr_day_month.month))
+            survey_date=survey_date,
+            year = year))
+
 
     message_plain = (
         'Dear Supporter, Thank you for checking in '
@@ -303,6 +307,23 @@ def send_email(commutersurvey):
         ' Day. Warmly, Green Streets Initiative')
     recipient_list = [commutersurvey.email,]
     from_email = 'checkin@gogreenstreets.org'
+
+    #remove these lines.  Writes email to console for debugging purposes
+
+#    con = get_connection('django.core.mail.backends.console.EmailBackend')
+
+#    send_mail(subject, message_plain, from_email, recipient_list,
+#              html_message=message_html, fail_silently=True,connection=con)
+
+#    print ('mail sent')
+
+#    assert False
+
+
+
+    #end of remove
+
+
     send_mail(subject, message_plain, from_email, recipient_list,
               html_message=message_html, fail_silently=False)
 
