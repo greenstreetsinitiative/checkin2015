@@ -102,6 +102,12 @@ a[data-toggle="pill"] {
   margin-top: 0;
   font-weight: normal;
 }
+
+.how-will-header {
+  background-color: rgb(227, 240, 227);
+  margin-bottom: 20px;
+}
+
 .date {
   font-weight: 700;
   font-family: 'Alegreya Sans SC';
