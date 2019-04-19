@@ -19,7 +19,7 @@ import json
 from datetime import date
 
 from django.utils.html import strip_tags
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail, BadHeaderError,get_connection
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.html import escape
 
@@ -181,7 +181,8 @@ def add_checkin(request):
                         'carbon_change': -commutersurvey.carbon_change/1000,
                         'change_type': commutersurvey.change_type,
                         'donation_organization':donation_organization,
-                        'month':month
+                        'month':month,
+                        'year':settings.YEAR
                     })
             else:
                 pass
@@ -244,6 +245,7 @@ def add_checkin(request):
     return render(request, "survey/new_checkin.html",
                   {
                       'wr_day': wr_day.wr_day.strftime('%A, %B %d, %Y'),
+                      'wr_day_short': wr_day.wr_day.strftime('%B %d'),
                       'wr_open': wr_day.open_checkin.strftime('%A, %B %d, %Y'),
                       'wr_close': wr_day.close_checkin.strftime('%A, %B %d, %Y'),
                       'form': commute_form,
@@ -259,6 +261,8 @@ def add_checkin(request):
                   })
 
 def send_email(commutersurvey):
+    survey_date=commutersurvey.wr_day_month.month
+    year = settings.YEAR
     name = commutersurvey.name or 'Supporter'
     subject = ('Walk/Ride Day ' +
                commutersurvey.wr_day_month.month + ' Checkin')
@@ -271,9 +275,9 @@ def send_email(commutersurvey):
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
-        'company is ranked in the 2018 Walk/Ride Day CORPORATE '
+        'company is ranked in the {year} Walk/Ride Day CORPORATE '
         'CHALLENGE, <a href="http://'
-        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/2018/" '
+        'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/{year}/" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
         '<p>Thank you for being involved! By checking in and '
@@ -289,7 +293,9 @@ def send_email(commutersurvey):
         'style="color: #2ba6cb;text-decoration: none;">Make sure'
         ' they get a chance to check in</p>'.format(
             name=name,
-            survey_date=commutersurvey.wr_day_month.month))
+            survey_date=survey_date,
+            year = year))
+
 
     message_plain = (
         'Dear Supporter, Thank you for checking in '
@@ -302,8 +308,25 @@ def send_email(commutersurvey):
         ' Day. Warmly, Green Streets Initiative')
     recipient_list = [commutersurvey.email,]
     from_email = 'checkin@gogreenstreets.org'
+
+    #remove these lines.  Writes email to console for debugging purposes
+
+#    con = get_connection('django.core.mail.backends.console.EmailBackend')
+
+#    send_mail(subject, message_plain, from_email, recipient_list,
+#              html_message=message_html, fail_silently=True,connection=con)
+
+#    print ('mail sent')
+
+#    assert False
+
+
+
+    #end of remove
+
+
     send_mail(subject, message_plain, from_email, recipient_list,
-              html_message=message_html, fail_silently=True)
+              html_message=message_html, fail_silently=False)
 
 def write_formset_cookies(request, *args):
     # takes a list of formsets and writes them to the session
