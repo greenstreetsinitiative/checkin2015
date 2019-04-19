@@ -246,6 +246,7 @@ def add_checkin(request):
                   {
                       'wr_day': wr_day.wr_day.strftime('%A, %B %d, %Y'),
                       'wr_day_short': wr_day.wr_day.strftime('%B %d'),
+                      'wr_month_year': wr_day.wr_day.strftime('%B %Y'),
                       'wr_open': wr_day.open_checkin.strftime('%A, %B %d, %Y'),
                       'wr_close': wr_day.close_checkin.strftime('%A, %B %d, %Y'),
                       'form': commute_form,

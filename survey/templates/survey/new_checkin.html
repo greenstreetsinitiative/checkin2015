@@ -27,8 +27,7 @@
 
 <div class="row">
   <center>
-    <h1>{{ wr_day }} Commuter Check-In</h1>
-    Don’t work on Fridays or planning to be on vacation? Check in for another day or log your vacation commute.<br>
+    <h1>{{ wr_month_year }} Commuter Check-In</h1>
     Check-ins will be accepted from <span class="date" style="display: inline-block;">{{ wr_open }}</span> through <span class="date" style="display: inline-block;">{{ wr_close }}</span></p>
     <p><img src="{% static 'img/car-24.png' %}" height="32" width="32"><img src="{% static 'img/school-24.png' %}" height="32" width="32"><img src="{% static 'img/pitch-24.png' %}" height="32" width="32"><img src="{% static 'img/bicycle-24.png' %}" height="32" width="32"><img src="{% static 'img/rail-24.png' %}" height="32" width="32"><img src="{% static 'img/warehouse-24.png' %}" height="32" width="32"><img src="{% static 'img/scooter-24.png' %}" height="32" width="32"></p>
 
@@ -120,7 +119,7 @@
     </div>
     <div class="row wr-day">
       <div class="commute-log-header">
-        <h2>On {{ wr_day_short }} - or another day near then (Walk/Ride Day)</h2>
+        <h2>On {{ wr_day_short }} (Walk/Ride Day <span style="font-size: 22px;">or another day near then</span>)</h2>
         <h4>(To/From work and to other work sites)</h4>
 
         </div>
@@ -128,7 +127,7 @@
         <div class="to-work">
         <center>
         <h4>FROM Home TO Work</h4>
-        <h6>(Include commutes during the day between work sites)</h6>
+        <h6>(Include commutes during the day between work sites if applicable)</h6>
         <hr class="green">
         </center>
 
@@ -194,7 +193,7 @@
 
         <center>
         <h4>FROM Home TO Work</h4>
-        <h6>(Include commutes during the day between work sites)</h6>
+        <h6>(Include commutes during the day between work sites if applicable)</h6>
         <hr class="green">
         </center>
 
