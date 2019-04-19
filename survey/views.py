@@ -245,6 +245,7 @@ def add_checkin(request):
     return render(request, "survey/new_checkin.html",
                   {
                       'wr_day': wr_day.wr_day.strftime('%A, %B %d, %Y'),
+                      'wr_day_short': wr_day.wr_day.strftime('%B %d'),
                       'wr_open': wr_day.open_checkin.strftime('%A, %B %d, %Y'),
                       'wr_close': wr_day.close_checkin.strftime('%A, %B %d, %Y'),
                       'form': commute_form,
