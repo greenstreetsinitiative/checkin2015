@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 from envs.common import *
 from datetime import date
 
-
 # Private settings
 if ON_OPENSHIFT:
     DB_NAME = os.environ['OPENSHIFT_APP_NAME']
@@ -21,6 +20,8 @@ if ON_OPENSHIFT:
     DB_PASSWORD = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
     DB_HOST = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
     DB_PORT = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+    DEBUG = False
+    ALLOWED_HOSTS = ['https://checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com']
 else:
     DB_NAME = os.environ['DB_NAME']
     DB_USER = os.environ['DB_USER']
