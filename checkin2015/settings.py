@@ -14,8 +14,8 @@ from envs.common import *
 from datetime import date
 
 
-DEBUG = False
-ALLOWED_HOSTS = ['https://checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com']
+# DEBUG = False
+# ALLOWED_HOSTS = ['checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com']
 # Private settings
 if ON_OPENSHIFT:
     DB_NAME = os.environ['OPENSHIFT_APP_NAME']
