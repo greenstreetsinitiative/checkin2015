@@ -258,7 +258,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     context = RequestContext(request)
 
     if year is None:
-        return redirect(str(settings.YEAR))
+        return redirect(str(settings.YEAR)+'/')
 
     d = {}
 
