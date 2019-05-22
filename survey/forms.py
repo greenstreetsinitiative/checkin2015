@@ -372,6 +372,12 @@ def MakeLegFormThree(day, direction):
                 'Did you really travel a whole day?')
             self.fields['mode'].error_messages['required'] = (
                 'Please tell us how you did, or will, travel.')
+            self.fields['mode'].queryset = self.fields['mode'].queryset.annotate(
+                custom_order=Case(
+                    When(name='Other', then=Value('zzzzzzz')),
+                    default='name'
+                )
+            ).order_by('custom_order')
 
     return LegForm
 
