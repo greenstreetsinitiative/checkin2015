@@ -9,6 +9,8 @@ from aggregate_if import Count, Sum
 from django.db.models import Count
 from django.shortcuts import redirect
 
+from django.conf import settings
+
 from datetime import date, datetime
 import datetime
 
@@ -210,6 +212,9 @@ def company(request, year=datetime.datetime.now().year, employerid=None, teamid=
 
 def getBoundaries(year):
 
+    if int(year) == 2019:
+        return 50, 1200, 1200
+
     if int(year) == 2018:
         return 99, 1199, 1199
 
@@ -219,6 +224,9 @@ def getBoundaries(year):
     return 50, 300, 2000
 
 def getLabels(year):
+
+    if int(year) == 2019:
+        return  'Small (few than 51)', 'Medium (51 to 1200)', 'Large (1201+ employees)',''
 
     if int(year) == 2018:
         return  'Small (few than 99)', 'Medium (100 to 1199)', 'Large (1200+ employees)',''
@@ -250,7 +258,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     context = RequestContext(request)
 
     if year is None:
-        return redirect('2018/')
+        return redirect(str(settings.YEAR)+'/')
 
     d = {}
 
@@ -281,7 +289,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
         elif size == 'medium':
             companies = companies.filter(nr_employees__gt=lower,nr_employees__lte=middle)
         elif size == 'large':
-            if int(year) == 2018:
+            if int(year) == 2018 or int(year) == 2019:
                 companies = companies.filter(nr_employees__gt=upper)
             else:
                 companies = companies.filter(nr_employees__gt=middle,nr_employees__lte=upper)
@@ -336,7 +344,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     sectors_dict = dict(Sector.objects.values_list('short','name').filter(id__in=sectorsforyear))
     months_arr = ['april', 'may', 'june', 'july', 'august', 'september', 'october']
 
-    if int(year) == 2018:
+    if int(year) == 2018 or int (year) == 2019:
         sizes_arr = [
           ('small', labelOne),
           ('medium', labelTwo),

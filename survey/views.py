@@ -246,6 +246,7 @@ def add_checkin(request):
                   {
                       'wr_day': wr_day.wr_day.strftime('%A, %B %d, %Y'),
                       'wr_day_short': wr_day.wr_day.strftime('%B %d'),
+                      'wr_month_year': wr_day.wr_day.strftime('%B %Y'),
                       'wr_open': wr_day.open_checkin.strftime('%A, %B %d, %Y'),
                       'wr_close': wr_day.close_checkin.strftime('%A, %B %d, %Y'),
                       'form': commute_form,
@@ -275,8 +276,8 @@ def send_email(commutersurvey):
         '#2ba6cb;text-decoration: none;">Retail Partners</a> '
         'to take advantage of their offers of freebies, '
         'discounts, and other goodies!</p><p>To see how your '
-        'company is ranked in the {year} Walk/Ride Day CORPORATE '
-        'CHALLENGE, <a href="http://'
+        'company is ranked in the {year}  Commuter Challenge,'
+        ' <a href="http://'
         'checkin-greenstreets.b9ad.pro-us-east-1.openshiftapps.com/leaderboard/{year}/" '
         'style="color: #2ba6cb;text-decoration: none;">click here'
         '</a>.</p>'
