@@ -7,7 +7,7 @@ from survey.models import Commutersurvey, Employer, Team, Leg, QuestionOfTheMont
 from survey.utils import *
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value
 
 from django.forms.utils import ErrorList
 from django.forms.widgets import HiddenInput
@@ -338,6 +338,13 @@ def MakeLegForm(day, direction):
                 'Did you really travel a whole day?')
             self.fields['mode'].error_messages['required'] = (
                 'Please tell us how you did, or will, travel.')
+            # Alphabetize modes in dropdown and put 'Other' at the end
+            self.fields['mode'].queryset = self.fields['mode'].queryset.annotate(
+                custom_order=Case(
+                    When(name='Other', then=Value('zzzzzzz')),
+                    default='name'
+                )
+            ).order_by('custom_order')
 
     return LegForm
 
