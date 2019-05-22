@@ -9,7 +9,7 @@ from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 from django.db.models import Q
 
-from django.forms.util import ErrorList
+from django.forms.utils import ErrorList
 from django.forms.widgets import HiddenInput
 
 from django.conf import settings

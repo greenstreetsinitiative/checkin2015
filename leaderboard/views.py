@@ -9,6 +9,8 @@ from aggregate_if import Count, Sum
 from django.db.models import Count
 from django.shortcuts import redirect
 
+from django.conf import settings
+
 from datetime import date, datetime
 import datetime
 
@@ -256,7 +258,7 @@ def latest_leaderboard(request, year=datetime.datetime.now().year, sector='all',
     context = RequestContext(request)
 
     if year is None:
-        return redirect('2018/')
+        return redirect(str(settings.YEAR))
 
     d = {}
 
