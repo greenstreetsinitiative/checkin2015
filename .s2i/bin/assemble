@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pip install powershift-cli[image]
+
+exec powershift image assemble

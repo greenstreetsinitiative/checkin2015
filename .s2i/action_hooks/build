@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python $OPENSHIFT_REPO_DIR/wsgi/myproject/manage.py collectstatic --noinput
