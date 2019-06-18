@@ -6,3 +6,4 @@ psycopg2==2.6
 raven==6.5.0
 requests==2.5.1
 six==1.9.0
+gunicorn
