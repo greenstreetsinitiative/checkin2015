@@ -576,7 +576,7 @@ retailPartnerData.prototype.display = function() {
 				content += "<p class=\"rp-name\">" + "<input type=\"checkbox\" name=\"acs\" value=\"" + this.retailPartners[i].name + "\"" + "/>" + this.retailPartners[i].name + "</p>";
 			}
 			else {
-				content += "<a  href=\""+ this.retailPartners[i].website +"\" class=\"rp-name-url\">" + "<input type=\"checkbox\" name=\"acs\" value=\"" + this.retailPartners[i].name + "\"/>" + this.retailPartners[i].name + "</a>";
+				content += "<input type=\"checkbox\" name=\"acs\" value=\"" + this.retailPartners[i].name + "\"/>" + "<a href=\""+ this.retailPartners[i].website +"\" class=\"rp-name-url\">" + this.retailPartners[i].name + "</a>";
 			}
 			content += "<p class=\"rp-p\">"+this.retailPartners[i].address+"</p>"+"<p class=\"rp-p\">"+this.retailPartners[i].offer+"</p>"
 			if(this.retailPartners[i].distance != Math.Infinity){	// If we've calculated the distance, show it.
