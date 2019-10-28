@@ -9,7 +9,7 @@
 3. `brew install python`. This also installs pip.
 4. `pip install virtualenv`
 5. `pip install virtualenvwrapper`
-6. `brew install postgres`. IMPORTANT: Read what brew tells you. You might want to make start postgresql at login `ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents` and then load postgresql now with `launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist`.
+6. `brew install postgres@9.6`. IMPORTANT: Read what brew tells you. You might want to make start postgresql at login `ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents` and then load postgresql now with `launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist`.
 7. `brew install postgis`
 8. Check for errors with `brew doctor` if desired.
 
