@@ -68,7 +68,7 @@ class Employer(models.Model):
     active2017 = models.BooleanField("2017 Challenge", default=False)
     active2018 = models.BooleanField("2018 Challenge", default=False)
     active2019 = models.BooleanField("2019 Challenge", default=False)
-    active2020 = models.BooleanField("2019 Challenge", default=False)
+    active2020 = models.BooleanField("2020 Challenge", default=False)
     nochallenge = models.BooleanField("Not In Challenge", default=False)
     sector = models.ForeignKey('Sector', null=True, blank=True)
 
@@ -270,11 +270,6 @@ class Commutersurvey(models.Model):
     class Meta:
        unique_together = ("name","email","home_address","work_address", "wr_day_month")
 
-    oc
-    start - build
-    checkin - -
-    from
-    -dir =.--follow
     def __unicode__(self):
         return unicode(self.id)
 

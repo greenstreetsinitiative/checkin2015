@@ -293,13 +293,13 @@
     }
   }
 </style>
-        
+
         <!--<div class="col-sm-5">
           {{ extra_form.comments.label_tag }}
         </div>
         <div class="col-sm-7">
           {{ extra_form.comments }}
-          {% if extra_form.comments.errors %}
+          {% if extra_form.comments and extra_form.comments.errors %}
             <div class="help-block">
             {% for error in extra_form.comments.errors %}
               {{ error|escape }}<br>
@@ -315,7 +315,7 @@
 
           <div class="col-sm-7">
             {{ extra_form.questionOne }}
-            {% if extra_form.questionOne.errors %}
+            {% if extra_form.questionOne and extra_form.questionOne.errors %}
               <div class="help-block">
                 {% for error in extra_form.questionOne.errors %}
                   {{ error|escape }}<br>
@@ -334,7 +334,7 @@
 
           <div class="col-sm-7">
             {{ extra_form.questionTwo }}
-            {% if extra_form.questionTwo.errors %}
+            {% if extra_form.questionTwo and extra_form.questionTwo.errors %}
               <div class="help-block">
                 {% for error in extra_form.questionTwo.errors %}
                   {{ error|escape }}<br>
@@ -353,7 +353,7 @@
 
           <div class="col-sm-7">
             {{ extra_form.questionThree }}
-            {% if extra_form.questionThree.errors %}
+            {% if extra_form.questionThree and extra_form.questionThree.errors %}
               <div class="help-block">
                 {% for error in extra_form.questionThree.errors %}
                   {{ error|escape }}<br>
@@ -372,7 +372,7 @@
 
           <div class="col-sm-7">
             {{ extra_form.questionFour }}
-            {% if extra_form.questionFour.errors %}
+            {% if extra_form.questionFour and extra_form.questionFour.errors %}
               <div class="help-block">
                 {% for error in extra_form.questionFour.errors %}
                   {{ error|escape }}<br>
@@ -391,7 +391,7 @@
 
           <div class="col-sm-7">
             {{ extra_form.questionFive }}
-            {% if extra_form.questionFive.errors %}
+            {% if extra_form.questionFive and extra_form.questionFive.errors %}
               <div class="help-block">
                 {% for error in extra_form.questionFive.errors %}
                   {{ error|escape }}<br>
